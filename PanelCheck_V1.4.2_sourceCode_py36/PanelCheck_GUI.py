@@ -110,9 +110,9 @@ class Main_Frame(wx.Frame):
         self.menuFileExport.Append(
           #
           id=si_id, kind=wx.ITEM_NORMAL, item=u'Image Files...')
-        self.menuFileExport.Append(
+        #self.menuFileExport.Append(
          #
-          id=ppt_id, kind=wx.ITEM_NORMAL, item=u'PowerPoint File...')
+         # id=ppt_id, kind=wx.ITEM_NORMAL, item=u'PowerPoint File...')
         self.Bind(wx.EVT_MENU, self.OnMenuFileExportImages_Menu, id=si_id)
         self.Bind(wx.EVT_MENU, self.OnMenuFileExportPPT_Menu, id=ppt_id)
 
@@ -288,7 +288,7 @@ class Main_Frame(wx.Frame):
 
     def _init_ctrls(self, prnt):
         wx.Frame.__init__(self, id=wx.NewId(), name=u'Main_Frame',
-              parent=prnt, pos=wx.Point(331, 170), size=wx.Size(875, 560),
+              parent=prnt, pos=wx.Point(331, 1700), size=wx.Size(8705, 5060),
               style=wx.CLOSE_BOX, title='PanelCheck V1.4.2')
         self._init_utils()
         self.SetClientSize(wx.Size(875, 560))
@@ -381,6 +381,7 @@ class Main_Frame(wx.Frame):
         self.tuck1_panel.lower_right_sizer.AddSpacer(5)
         bsizer.AddSpacer(5)
         bsizer.Add(self.tuck1_cb, 0, wx.FIXED_MINSIZE|wx.ALIGN_CENTER_VERTICAL)
+        #bsizer.Add(self.tuck1_cb, 0, wx.GROW|wx.ALIGN_CENTER_VERTICAL)
         bsizer.AddSpacer(5)
         self.tuck1_radioBoxModel = wx.RadioBox(choices=["Sample averages", "Sample replicates"],
               id=-1, label="Model based on:", parent=self.tuck1_panel,

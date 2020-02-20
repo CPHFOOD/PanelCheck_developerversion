@@ -9,9 +9,9 @@ class Progress(wx.Dialog):
               pos=wx.DefaultPosition, size=wx.DefaultSize,
               style=wx.DEFAULT_DIALOG_STYLE, title=u'Progress:')
         self.SetClientSize(wx.Size(200, 100))
-        
-        pathname = os.path.dirname(sys.argv[0]) 
-        self.progPath = os.path.abspath(pathname).decode(sys.getfilesystemencoding())
+
+        pathname = os.path.dirname(sys.argv[0])
+        self.progPath = os.path.abspath(pathname)
         figpath = self.progPath + u'/fig.ico'
         self.SetIcon(wx.Icon(figpath,wx.BITMAP_TYPE_ICO))
         sizer = wx.BoxSizer(wx.VERTICAL)
@@ -22,9 +22,9 @@ class Progress(wx.Dialog):
         sizer.Add(self.textSummary, 1, wx.EXPAND, 0)
         sizer_inner.Add(self.gauge, 1, wx.EXPAND, 0)
         sizer.Add(sizer_inner, 0, wx.EXPAND, 0)
-        
+
         self.Bind(wx.EVT_CLOSE, self.closeFrame)
-        
+
         self.SetSizer(sizer)
 
 
@@ -38,27 +38,27 @@ class Progress(wx.Dialog):
         self.Layout()
         self.Update()
         self.Show()
-   
-   
-   
+
+
+
     def set_gauge(self, value=0, text=''):
         self.gauge.SetValue(value)
         self.append_text(text)
         self.Layout()
         self.Update()
-   
-   
-   
+
+
+
     def append_text(self, text):
         self.textSummary.AppendText(text)
-        
-        
+
+
     def closeFrame(self, event):
         """
         Exits the program.
-        
+
         @type event:    object
-        @param event:    An event is a structure holding information about an 
+        @param event:    An event is a structure holding information about an
         event passed to a callback or member function.
         """
         self.Destroy()

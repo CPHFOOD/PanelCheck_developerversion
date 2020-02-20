@@ -14,7 +14,7 @@ class AboutFrame(wx.Frame):
         The AboutFrame class creates window with information about PanelCheck and
         credits.
         """
-        wx.Frame.__init__(self, parent, -1, "About", (-1,-1), (-1,-1))
+        wx.Frame.__init__(self, parent, -1, "About", (-1,-1), (-1,-1),style=wx.MINIMIZE_BOX|wx.CLOSE_BOX)
         #self.SetBackgroundColour(wx.NamedColor("BLACK"))
 
         pathname = os.path.dirname(sys.argv[0])
