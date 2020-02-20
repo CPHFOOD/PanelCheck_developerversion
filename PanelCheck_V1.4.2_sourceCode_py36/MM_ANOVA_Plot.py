@@ -4,7 +4,7 @@ import os, sys # for Rpy i/o sources (for correct paths for the scripts)
 from Plot_Tools import *
 import pandas as pd
 #import rpy2.rpy_classic as rpy
-from rpy2.rpy_classic import *
+#from rpy2.rpy_classic import *
 from rpy2 import *
 from rpy2.robjects import r, pandas2ri
 import rpy2.robjects as ro
@@ -34,20 +34,20 @@ def load_mm_anova_data(s_data, plot_data, one_rep=False):
                 msg += plot_data.activeAttributesList[col_ind] + "\n"
 
             msg += "\nThese attributes were left out of the analysis."
-            
-            
+
+
             new_active_attributes_indices = []
             new_active_attributes_list = []
             for att_ind in range(len(plot_data.activeAttributesList)):
                 if att_ind not in out_cols:
                     new_active_attributes_indices.append(att_ind)
-            
+
             for att_ind in new_active_attributes_indices:
                 new_active_attributes_list.append(plot_data.activeAttributesList[att_ind])
             matrix_selected_scores = s_data.MatrixDataSelected(assessors=activeAssessorsList, attributes=new_active_attributes_list, samples=activeSamplesList)
             plot_data.accepted_active_attributes = new_active_attributes_list
-            show_info_msg(msg) 
-           
+            show_info_msg(msg)
+
 
         lables = [s_data.ass_index, s_data.samp_index, s_data.rep_index]
         for i in range(s_data.value_index, len(new_active_attributes_list)-len(out_cols)+s_data.value_index):
@@ -225,8 +225,8 @@ def get_grid_data(s_data, plot_data, f_mat, p_mat, lsd_mat, plot_type):
             samp_ind += 1
 
         numeric_data.append(newline); _index += 1
-        
-        
+
+
         """
         numeric_data.append(["F prod"]); _index += 1
         numeric_data[_index].extend(str_row(f_mat[1]))
@@ -720,7 +720,7 @@ def MixModel_ANOVA_Plotter_2way(s_data, plot_data, num_subplot=[1,1,1], **kwargs
     activeAttributesList = plot_data.activeAttributesList
     activeSamplesList = plot_data.activeSamplesList
     itemID = plot_data.tree_path
-    
+
     if len(activeAssessorsList) < 2: #no active assessors
         dlg = wx.MessageDialog(None, 'Two or more Assessors must be active.',
                            'Error Message',
@@ -802,7 +802,7 @@ def MixModel_ANOVA_Plotter_2way(s_data, plot_data, num_subplot=[1,1,1], **kwargs
     pointAndLabelList = []
     att_indices = arange(len(activeAttributesList))
     _width = 0.75
-    
+
     if isinstance(f_matr,float):
         y_max = f_matr + f_matr*0.1
         limits = [0, len(activeAttributesList)+1, 0, y_max]
@@ -1596,4 +1596,3 @@ def MixModel_ANOVA_LSD_OverviewPlotter(s_data, plot_data, *args, **kwargs):
     lsd_tree_paths = [['LSD1'], ['LSD2']]
 
     return OverviewPlotter(s_data, plot_data, lsd_tree_paths, func, lsd_types)
-

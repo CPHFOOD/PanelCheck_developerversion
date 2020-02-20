@@ -2,7 +2,7 @@
 #psyco.full()
 
 
-import sys, os, wx
+import subprocess,sys, os, wx
 
 import wx.lib.colourdb
 from About import *
@@ -50,7 +50,7 @@ class Main_Frame(wx.Frame):
     def _init_coll_menuFileImport_Items(self, parent):
 
         parent.Append(
-          #  
+          #
           id=wxID_MAIN_FRAMEMENUFILEIMPORTPLAIN,
               kind=wx.ITEM_NORMAL, item=u'Plain Text (Tab delimited)')
         cd_id = wx.NewId(); sd_id = wx.NewId(); pc_id = wx.NewId()
@@ -83,15 +83,15 @@ class Main_Frame(wx.Frame):
     def _init_coll_menuHelp_Items(self, parent):
         workflow_id = wx.NewId()
         parent.Append(
-          #  
+          #
           id=workflow_id,
               kind=wx.ITEM_NORMAL, item=u'Workflow')
         parent.Append(
-          #  
+          #
           id=wxID_MAIN_FRAMEMENUHELPMANUAL,
               kind=wx.ITEM_NORMAL, item=u'Manual (V1.2.1)')
         parent.Append(
-          #  
+          #
           id=wxID_MAIN_FRAMEMENUHELPABOUT,
               kind=wx.ITEM_NORMAL, item=u'About')
         self.Bind(wx.EVT_MENU, self.OnMenuHelpManualMenu,
@@ -108,46 +108,46 @@ class Main_Frame(wx.Frame):
         self.recent_id = wx.NewId()
         si_id = wx.NewId(); ppt_id = wx.NewId(); save_id = wx.NewId();
         self.menuFileExport.Append(
-          # 
+          #
           id=si_id, kind=wx.ITEM_NORMAL, item=u'Image Files...')
         self.menuFileExport.Append(
-         #   
+         #
           id=ppt_id, kind=wx.ITEM_NORMAL, item=u'PowerPoint File...')
         self.Bind(wx.EVT_MENU, self.OnMenuFileExportImages_Menu, id=si_id)
         self.Bind(wx.EVT_MENU, self.OnMenuFileExportPPT_Menu, id=ppt_id)
 
         parent.AppendSubMenu(
               submenu=self.menuFileImport,
-               
+
             #  id=wxID_MAIN_FRAMEMENUFILEIMPORT,
               text=u'Import')
 
         parent.AppendSubMenu(
           submenu=self.menuFileRecent,
-            
+
           #id=wx.NewId(),
           text=u'Import Recent'
               )
         parent.AppendSubMenu(
           submenu=self.menuFileExport,
-           
+
           #id=wx.NewId(),
           text=u'Export'
               )
 
         parent.Append(
-          # 
+          #
           id=save_id,
           item='Save File...',
-          kind=wx.ITEM_NORMAL, 
+          kind=wx.ITEM_NORMAL,
           )
 
         parent.Append(
-          # 
+          #
           id=wxID_MAIN_FRAMEMENUFILECLOSE_FILE,
               kind=wx.ITEM_NORMAL, item='Close File')
         parent.Append(
-          #  
+          #
           id=wxID_MAIN_FRAMEMENUFILEEXIT,
               kind=wx.ITEM_NORMAL, item='Exit')
         self.Bind(wx.EVT_MENU, self.OnMenuFileClose_fileMenu,
@@ -173,12 +173,12 @@ class Main_Frame(wx.Frame):
 
 
 
-        parent.Append( 
+        parent.Append(
           id=wxID_MAIN_FRAMEMENUFILEIMPORT,
           item=u'Plot',
           subMenu=self.menuViewPlot)
 
-        parent.Append(  
+        parent.Append(
           id=wxID_MAIN_FRAMEMENUFILEIMPORT,
           item=u'Selection',
           subMenu=self.menuViewSelect, )
@@ -255,7 +255,7 @@ class Main_Frame(wx.Frame):
         parent.AddPage(imageId=-1, page=self.mm_anova_panel2, select=False,
               text=u'2-way ANOVA')
         parent.AddPage(imageId=-1, page=self.mm_anova_panel3, select=False,
-              text=u'3-way ANOVA')                     
+              text=u'3-way ANOVA')
         #parent.AddPage(imageId=-1, page=self.perf_ind_panel, select=False, item=u'Performance Indices')
 
         self.Bind(wx.EVT_NOTEBOOK_PAGE_CHANGING, self.OnPageChanging, id=parent.GetId())
@@ -457,20 +457,20 @@ class Main_Frame(wx.Frame):
 
 
         """
-        self.perf_ind_panel = TabPanel(parent=self.overall_notebook, func=self.create_plot, choice=self.choice)        
+        self.perf_ind_panel = TabPanel(parent=self.overall_notebook, func=self.create_plot, choice=self.choice)
         boxMain = wx.BoxSizer(wx.HORIZONTAL)
         box = wx.StaticBox(self.perf_ind_panel, 0, "Set target level:")
-        bsizer = wx.StaticBoxSizer(box, wx.VERTICAL)      
+        bsizer = wx.StaticBoxSizer(box, wx.VERTICAL)
         bsizerAGR = wx.BoxSizer(wx.HORIZONTAL)
         bsizerREP = wx.BoxSizer(wx.HORIZONTAL)
         bsizerDIS = wx.BoxSizer(wx.HORIZONTAL)
         self.perf_ind_spin_agr = wx.SpinCtrl(self.perf_ind_panel, -1, "AGR", size=wx.Size(60, -1))
         self.perf_ind_spin_agr.SetRange(0, 100)
         self.perf_ind_spin_agr.SetValue(70)
-        self.perf_ind_spin_rep = wx.SpinCtrl(self.perf_ind_panel, -1, "REP", size=wx.Size(60, -1))        
+        self.perf_ind_spin_rep = wx.SpinCtrl(self.perf_ind_panel, -1, "REP", size=wx.Size(60, -1))
         self.perf_ind_spin_rep.SetRange(0, 100)
         self.perf_ind_spin_rep.SetValue(70)
-        self.perf_ind_spin_dis = wx.SpinCtrl(self.perf_ind_panel, -1, "DIS", size=wx.Size(60, -1))        
+        self.perf_ind_spin_dis = wx.SpinCtrl(self.perf_ind_panel, -1, "DIS", size=wx.Size(60, -1))
         self.perf_ind_spin_dis.SetRange(0, 100)
         self.perf_ind_spin_dis.SetValue(70)
         self.perf_ind_panel.right_part.AddSpacer(5)
@@ -488,7 +488,7 @@ class Main_Frame(wx.Frame):
         bsizerDIS.AddSpacer(5)
         bsizer.Add(bsizerAGR, 0, wx.FIXED|wx.ALIGN_CENTER_HORIZONTAL)
         bsizer.Add(bsizerREP, 0, wx.FIXED|wx.ALIGN_CENTER_HORIZONTAL)
-        bsizer.Add(bsizerDIS, 0, wx.FIXED|wx.ALIGN_CENTER_HORIZONTAL)     
+        bsizer.Add(bsizerDIS, 0, wx.FIXED|wx.ALIGN_CENTER_HORIZONTAL)
         boxMain.Add(bsizer, 0, wx.EXPAND|wx.ALL)
         #self.perf_ind_rb_lvl = wx.RadioBox(self.perf_ind_panel, -1, "Set levels:", wx.DefaultPosition, wx.Size(100, -1), ["individually", "same for all"], 1, wx.RA_SPECIFY_COLS)
         #boxMain.AddSpacer(5)
@@ -497,7 +497,7 @@ class Main_Frame(wx.Frame):
         boxMain.AddSpacer(5)
         boxMain.Add(self.perf_ind_rb_comp, 0, wx.EXPAND|wx.ALL)
         box = wx.StaticBox(self.perf_ind_panel, -1, "Include in plots:")
-        bsizer = wx.StaticBoxSizer(box, wx.VERTICAL)    
+        bsizer = wx.StaticBoxSizer(box, wx.VERTICAL)
         self.perf_ind_cbl_include = wx.CheckListBox(self.perf_ind_panel, -1, wx.DefaultPosition, wx.Size(150, 65), ["Target level", "1% significance level", "5% significance level", "10% significance level"])
         self.perf_ind_cbl_include.Check(0, False)
         self.perf_ind_cbl_include.Check(1, False)
@@ -509,7 +509,7 @@ class Main_Frame(wx.Frame):
         self.perf_ind_panel.right_part.Add(boxMain, 0, wx.FIXED_MINSIZE)
         self.perf_ind_panel.right_part.AddSpacer(5)
         """
-        
+
 
         ##########DropTarget-Setting-Start##########
         self.main_notebook.SetDropTarget(DropTarget(self))
@@ -1049,9 +1049,10 @@ class Main_Frame(wx.Frame):
         @param event:    An event is a structure holding information about an
         event passed to a callback or member function.
         """
-        fil = self.progPath + u"/help.chm"
-        os.startfile(fil)
-
+        filename = self.progPath + u"/help.chm"
+        #os.startfile(fil)
+        opener ="open" if sys.platform == "darwin" else "xdg-open"
+        subprocess.call([opener, filename])
 
     def OnMenuHelpWorkflowMenu(self, event):
         """
@@ -1061,8 +1062,10 @@ class Main_Frame(wx.Frame):
         @param event:    An event is a structure holding information about an
         event passed to a callback or member function.
         """
-        fil = self.progPath + u"/workflow.pdf"
-        os.startfile(fil)
+        filename = self.progPath + u"/workflow.pdf"
+        # os.startfile(fil)
+        opener ="open" if sys.platform == "darwin" else "xdg-open"
+        subprocess.call([opener, filename])
 
 
     def OnMenuHelpAboutMenu(self, event):
@@ -1231,7 +1234,7 @@ class Main_Frame(wx.Frame):
         self.show_mm_anova2_tree()
         self.show_mm_anova3_tree()
         #self.show_perf_ind_tree()
-        
+
         self.show_profilePlot_tree()
         self.show_manhattan_tree()
 
@@ -1355,7 +1358,7 @@ class Main_Frame(wx.Frame):
             tree.SetItemData(child, [attribute])
             tree.SetItemTextColour(child, 'STEELBLUE3')
         tree.Expand(root)
-        
+
 
     def show_corrPlot_tree(self):
         """
@@ -1395,7 +1398,7 @@ class Main_Frame(wx.Frame):
                 tree.SetItemData(grandChild, [attribute, assessor])
                 tree.SetItemTextColour(grandChild, wx.BLUE)
         tree.Expand(root)
-        
+
 
     def show_profilePlot_tree(self):
         """
@@ -1450,7 +1453,7 @@ class Main_Frame(wx.Frame):
             tree.SetItemTextColour(child, 'NAVY')
             #self.colourList[58]
         tree.Expand(root)
-        
+
 
     def show_eggPlot_tree(self):
         """
@@ -1534,7 +1537,7 @@ class Main_Frame(wx.Frame):
             tree.SetItemData(gchild, ["p-values", attribute])
             tree.SetItemTextColour(gchild, 'STEELBLUE3')
         tree.Expand(root)
-        
+
 
     def show_org_tree(self):
         """
@@ -1567,7 +1570,7 @@ class Main_Frame(wx.Frame):
         tree.SetItemData(child, [u'Spiderweb Plot'])
         tree.SetItemTextColour(child, 'STEELBLUE3')
         tree.Expand(root)
-        
+
 
     def show_std_tree(self):
         """
@@ -1637,7 +1640,7 @@ class Main_Frame(wx.Frame):
         tree.SetItemData(child, [u'Spiderweb Plot'])
         tree.SetItemTextColour(child, 'STEELBLUE3')
         tree.Expand(root)
-        
+
 
     def show_fPlot_tree_attribute(self):
         """
@@ -1905,7 +1908,7 @@ class Main_Frame(wx.Frame):
         tree.SetItemData(child, [u'LSD2'])
         tree.SetItemTextColour(child, 'STEELBLUE3')
         tree.Expand(root)
-        
+
 
     def show_mm_anova3_tree(self):
         """
@@ -1966,7 +1969,7 @@ class Main_Frame(wx.Frame):
     def show_perf_ind_tree(self):
         """
         Original performance indices
-          
+
         Overview plot
         Indices table
         AGR prod
@@ -1995,52 +1998,52 @@ class Main_Frame(wx.Frame):
         tree.SetItemTextColour(child, 'DARK GREEN')
         child = tree.AppendItem(root, u'Indices table')
         tree.SetItemData(child, [u'Indices table'])
-        tree.SetItemTextColour(child, 'BLUE')    
+        tree.SetItemTextColour(child, 'BLUE')
         child = tree.AppendItem(root, u'AGR prod')
-        tree.SetItemData(child, [u'AGR prod'])   
+        tree.SetItemData(child, [u'AGR prod'])
         child = tree.AppendItem(root, u'AGR att')
-        tree.SetItemData(child, [u'AGR att'])  
+        tree.SetItemData(child, [u'AGR att'])
         child = tree.AppendItem(root, u'REP prod')
-        tree.SetItemData(child, [u'REP prod']) 
+        tree.SetItemData(child, [u'REP prod'])
         child = tree.AppendItem(root, u'REP att')
-        tree.SetItemData(child, [u'REP att']) 
+        tree.SetItemData(child, [u'REP att'])
         child = tree.AppendItem(root, u'DIS total')
-        tree.SetItemData(child, [u'DIS total']) 
+        tree.SetItemData(child, [u'DIS total'])
         child = tree.AppendItem(root, u'DIS panel-1')
-        tree.SetItemData(child, [u'DIS panel-1']) 
+        tree.SetItemData(child, [u'DIS panel-1'])
         child = tree.AppendItem(root, u'p values for AGR and REP')
-        tree.SetItemData(child, [u'p values for AGR and REP']) 
+        tree.SetItemData(child, [u'p values for AGR and REP'])
         child_sl = tree.AppendItem(root, u'Significance level tables')
-        tree.SetItemData(child_sl, None)        
-        
+        tree.SetItemData(child_sl, None)
+
         child = tree.AppendItem(child_sl, u'RV for 1% sign. level')
         tree.SetItemData(child, [u'RV for 1% sign. level'])
-        tree.SetItemTextColour(child, 'STEELBLUE3')       
+        tree.SetItemTextColour(child, 'STEELBLUE3')
         child = tree.AppendItem(child_sl, u'RV for 5% sign. level')
         tree.SetItemData(child, [u'RV for 5% sign. level'])
-        tree.SetItemTextColour(child, 'STEELBLUE3')       
+        tree.SetItemTextColour(child, 'STEELBLUE3')
         child = tree.AppendItem(child_sl, u'RV for 10% sign. level')
         tree.SetItemData(child, [u'RV for 10% sign. level'])
-        tree.SetItemTextColour(child, 'STEELBLUE3')       
+        tree.SetItemTextColour(child, 'STEELBLUE3')
         child = tree.AppendItem(child_sl, u'RV2 for 1% sign. level')
         tree.SetItemData(child, [u'RV2 for 1% sign. level'])
-        tree.SetItemTextColour(child, 'NAVY')       
+        tree.SetItemTextColour(child, 'NAVY')
         child = tree.AppendItem(child_sl, u'RV2 for 5% sign. level')
         tree.SetItemData(child, [u'RV2 for 5% sign. level'])
-        tree.SetItemTextColour(child, 'NAVY')       
+        tree.SetItemTextColour(child, 'NAVY')
         child = tree.AppendItem(child_sl, u'RV2 for 10% sign. level')
         tree.SetItemData(child, [u'RV2 for 10% sign. level'])
         tree.SetItemTextColour(child, 'NAVY')
-        
+
         root = tree.AppendItem(root_sd, u'Standardized performance indices (only AGR and REP)')
         tree.SetItemData(root, None)
         child = tree.AppendItem(root, u'Indices table')
-        tree.SetItemData(child, [u'Indices table std']) 
-        tree.SetItemTextColour(child, 'BLUE') 
-        
+        tree.SetItemData(child, [u'Indices table std'])
+        tree.SetItemTextColour(child, 'BLUE')
+
         tree.ExpandAll()
         tree.Collapse(child_sl)
-        
+
 
 
 
@@ -2232,7 +2235,7 @@ class Main_Frame(wx.Frame):
 
 
             temp_plot_data = self.profile_plot_data
-            
+
 
             if temp_plot_data == None:
                 new_plot_data = CollectionCalcPlotData(activeAssessors_List, activeAttributes_List, activeSamples_List, pydata, self.menuViewGrid, self.menuViewLegend)
@@ -2672,9 +2675,9 @@ class Main_Frame(wx.Frame):
 
         elif tab_panel == self.perf_ind_panel:
             plot_title = "Performance Indices Plot"
-            
+
             new_plot_data = CollectionCalcPlotData(activeAssessors_List, activeAttributes_List, activeSamples_List, pydata, self.menuViewGrid, self.menuViewLegend)
-            
+
             #performance indices settings
             new_plot_data.special_opts["agr"] = self.perf_ind_spin_agr.GetValue()
             new_plot_data.special_opts["rep"] = self.perf_ind_spin_rep.GetValue()
@@ -2686,44 +2689,44 @@ class Main_Frame(wx.Frame):
             new_plot_data.special_opts["5_sign_lvl"] = self.perf_ind_cbl_include.IsChecked(2)
             new_plot_data.special_opts["10_sign_lvl"] = self.perf_ind_cbl_include.IsChecked(3)
             new_plot_data.special_opts["recalc"] = True
-            
+
             if self.perf_ind_data == None:
                 self.perf_ind_data = new_plot_data
             elif self.perf_ind_data.actives_changed(activeAssessors_List, activeAttributes_List, activeSamples_List):
                 self.perf_ind_data = new_plot_data
             else:
                 recalc = False
-                if new_plot_data.special_opts["comp"] != self.perf_ind_data.special_opts["comp"]:              
+                if new_plot_data.special_opts["comp"] != self.perf_ind_data.special_opts["comp"]:
                     self.perf_ind_data.special_opts["recalc"] = True
                     recalc = True
-                    
+
                 if recalc:
                     self.perf_ind_data = new_plot_data
                 else:
                     new_plot_data.copy_data(self.perf_ind_data)
                     self.perf_ind_data = new_plot_data
                     self.perf_ind_data.special_opts["recalc"] = False
-            
+
             print(self.perf_ind_data.special_opts)
-            
+
             if pydata[0] == "Overview Plot":
-                
+
                 res = perfind_OverviewPlotter(self.s_data, self.perf_ind_data, selection=0)
                 overview_plot = True
             else:
                 res = perfindPlotter(self.s_data, self.perf_ind_data, selection=0)
                 if(res == None): return
-                
+
                 result_list = self.perf_ind_data.numeric_data
                 grid_config = self.perf_ind_data.numeric_data_config
                 frame_name = "Performance Indices - " + str(pydata[0])
                 plot = self.perf_ind_data.special_opts["plot_frame"]
-                
+
                 if pydata[0] == u"Indices table":
                     self.figureList.append(GridFramePerfInd(self, frame_name, result_list, self.s_data, res, config=grid_config))
                     if self.figureList[len(self.figureList)-1] != None:
                         self.figureList[len(self.figureList)-1].Show()
-                        return             
+                        return
 
 
         if plot:
