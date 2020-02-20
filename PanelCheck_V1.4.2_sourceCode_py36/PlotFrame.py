@@ -149,7 +149,7 @@ class PlotFrame(wx.Frame):
         self.overview_plot = self.plot_data.overview_plot
 
         self.mother = mother
-        
+
         self.disable_cursor_link = False
         if "disable_cursor_link" in plot_data.special_opts:
             self.disable_cursor_link = plot_data.special_opts["disable_cursor_link"]
@@ -214,7 +214,7 @@ class PlotFrame(wx.Frame):
         self.results = self.plot_data.numeric_data
         self.plot_type = self.plot_data.plot_type
         #self.plotter = self.set_plotter(self.plot_type)
-        
+
         print("plot type: " + self.plot_type)
 
 
@@ -264,7 +264,7 @@ class PlotFrame(wx.Frame):
 
         #setting the icon for frame
         pathname = os.path.dirname(sys.argv[0])
-        self.progPath = os.path.abspath(pathname).decode(sys.getfilesystemencoding())
+        self.progPath = os.path.abspath(pathname)
         self.icon = wx.Icon(self.progPath + u"/fig.ico", wx.BITMAP_TYPE_ICO)
         self.SetIcon(self.icon)
 
@@ -709,7 +709,7 @@ class PlotFrame(wx.Frame):
 
 
         elif plot_type == "manhattan_ass" or plot_type == "manhattan_att": return ManhattanPlotter
-        
+
         elif plot_type == "perf_ind": return perfindPlotter
 
 
@@ -784,8 +784,8 @@ class PlotFrame(wx.Frame):
         event passed to a callback or member function.
         """
         if self.disable_cursor_link: return
-        
-        
+
+
         if event.inaxes is None:
             if self.overview_plot and self.cursor_set:
                 self.plot_panel.SetCursor(self.cursor_arrow)
@@ -1140,7 +1140,7 @@ class PlotFrame(wx.Frame):
                 print("GridFramePerfInd")
                 _title = self.fig_title["fig"] + ": " + self.fig_title["plot"] + " (" + self.s_data.abspath + ")"
                 self.gridFrame_num = GridFramePerfInd(self, _title, self.results, self.s_data, self.plot_data, config=self.plot_data.numeric_data_config)
-                self.num_res_changed = False           
+                self.num_res_changed = False
             else:
                 _title = self.fig_title["fig"] + ": " + self.fig_title["plot"] + " (" + self.s_data.abspath + ")"
                 self.gridFrame_num = GridFrame(self, _title, self.results, config=self.plot_data.numeric_data_config)
@@ -1409,15 +1409,15 @@ class PlotFrame(wx.Frame):
             if index_is_pos: i = index
             else: i = self.get_pos(self.plot_data.tree_path[0], actives, index)
             tree_path.append(actives[i])
-            
-            
-        
+
+
+
         elif plot_type == "perf_ind":
-            _list = [u'AGR prod', u'AGR att', u'REP prod', u'REP att', u'DIS total', u'DIS panel-1']  
+            _list = [u'AGR prod', u'AGR att', u'REP prod', u'REP att', u'DIS total', u'DIS panel-1']
             if index_is_pos: i = index
-            else: i = self.get_pos(self.plot_data.tree_path[0], _list, index)   
+            else: i = self.get_pos(self.plot_data.tree_path[0], _list, index)
             tree_path.append(_list[i])
-            
+
 
         return tree_path, i
 
@@ -1504,12 +1504,12 @@ class PlotFrame(wx.Frame):
 
         elif plot_type == "manhattan_att":
             tree_path.append(self.active_att[i])
-        
+
         elif plot_type == "perf_ind":
-            _list = [u'AGR prod', u'AGR att', u'REP prod', u'REP att', u'DIS total', u'DIS panel-1'] 
+            _list = [u'AGR prod', u'AGR att', u'REP prod', u'REP att', u'DIS total', u'DIS panel-1']
             tree_path.append(_list[i])
-        
-        
+
+
         return tree_path
 
 
@@ -1601,7 +1601,7 @@ class PlotFrame(wx.Frame):
             plot_data = CollectionCalcPlotData(self.active_ass, self.active_att, self.active_samp, tree_path, self.plot_data.view_grid, self.plot_data.view_legend) # overview_plot = False
             plot_data.copy_data(self.plot_data)
             plot_data.special_opts = self.plot_data.special_opts
-        
+
         else:
             plot_data = PlotData(self.active_ass, self.active_att, self.active_samp, tree_path, self.plot_data.view_grid, self.plot_data.view_legend) # overview_plot = False
 
@@ -1645,7 +1645,7 @@ class PlotFrame(wx.Frame):
         self.plot_panel.figure.clear()
 
         plot_type = self.plot_data.plot_type
-        
+
         print(plot_type)
         print(tree_path)
         print(i)
@@ -1760,11 +1760,11 @@ class PlotFrame(wx.Frame):
 
         elif plot_type == "manhattan_ass" or plot_type == "manhattan_att":
             self.plot_data = ManhattanPlotter(self.s_data, self.plot_data)
-            
+
         elif plot_type == "perf_ind":
             self.plot_data.special_opts["recalc"] = False
-            self.plot_data = perfindPlotter(self.s_data, self.plot_data)            
-            
+            self.plot_data = perfindPlotter(self.s_data, self.plot_data)
+
 
         self.plot_panel.subplot = self.plot_data.ax
         self.plot_panel.figure = self.plot_data.fig

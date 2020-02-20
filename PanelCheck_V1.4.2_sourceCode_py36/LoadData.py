@@ -1260,7 +1260,7 @@ class PlainText(DataFile):
                         row[i] = re.sub(',', '.', row[i])
 
                 if not self.load_data(datasheet, firstRow):
-                   return
+                   return True
 
             else:
                 #self.error = "Not standard file! Cannot load file:\n" + name.encode(self.codec, 'replace')
@@ -1342,7 +1342,7 @@ class Excel(DataFile):
                     del datasheet[0] # remove header row
 
                     if not self.load_data(datasheet, firstRow, encode_text=True):
-                       return
+                       return True
             else:
                 self.fileRead = False
 

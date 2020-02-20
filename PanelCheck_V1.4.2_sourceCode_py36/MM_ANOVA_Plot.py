@@ -5,10 +5,10 @@ from Plot_Tools import *
 import pandas as pd
 #import rpy2.rpy_classic as rpy
 #from rpy2.rpy_classic import *
-from rpy2 import *
-from rpy2.robjects import r, pandas2ri
-import rpy2.robjects as ro
-pandas2ri.activate()
+#from rpy2 import *
+#from rpy2.robjects import r, pandas2ri
+#import rpy2.robjects as ro
+#pandas2ri.activate()
 from numpy import transpose,array,asarray
 
 def load_mm_anova_data(s_data, plot_data, one_rep=False):
