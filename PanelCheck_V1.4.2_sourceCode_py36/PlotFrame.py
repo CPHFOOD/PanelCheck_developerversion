@@ -1233,7 +1233,7 @@ class PlotFrame(wx.Frame):
         """
         actives = []
         for element in list:
-            if dict.has_key(element): actives.append(element)
+            if dict.__contains__(element): actives.append(element)
         return actives
 
 
