@@ -279,7 +279,7 @@ def SampleLinePlotter(s_data, plot_data, num_subplot=[1,1,1], **kwargs):
         for replicate in s_data.ReplicateList:
             key = (items, itemID[0], replicate)
 
-            if plottingSparseMatrix.has_key(key):
+            if plottingSparseMatrix.__contains__(key):
                 #print 'yes', plottings_data.SparseMatrix[key]
                 y_samples = []; x_samples = []
                 for value in range(len(plottingSparseMatrix[key])):
@@ -835,7 +835,7 @@ def ReplicateLinePlotter(s_data, plot_data, **kwargs):
 
         _line = [itemID[1]]
         for x in replicateMeanVector:                   # 2012-06-18: attributeValues does not exist. What is correct here?????
-            _line.append(num2str(x, fmt="%.2f")) 
+            _line.append(num2str(x, fmt="%.2f"))
         resultList.append(_line)
 
 

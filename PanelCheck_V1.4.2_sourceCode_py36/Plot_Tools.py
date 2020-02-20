@@ -3,7 +3,7 @@
 """
 Plot tools module
 """
-import wx, os, sys  
+import wx, os, sys
 import codecs
 import math, string # required python modules
 import pandas as pd
@@ -684,7 +684,7 @@ def attribute_significance(s_data, plot_data, one_rep=False):
     # is an R object and NOT Python object (in this case 'frame' and 'names').
     # set_default_mode(NO_CONVERSION)
     names = r.get('names<-')
-    
+
     frame = data_frame(part)
     frame = names(frame, lables)
     #r.print_(frame)
@@ -735,7 +735,7 @@ def colored_frame(s_data, plot_data, active_att_list, active_att):
     #try:
     if isinstance(plot_data, (CollectionCalcPlotData)):
         print("collection_calc")
-        if not plot_data.collection_calc_data.has_key("p_matr"):
+        if not plot_data.collection_calc_data.__contains__("p_matr"):
             plot_data.collection_calc_data["p_matr"] = attribute_significance(s_data, plot_data, one_rep=one_rep) # Product Effect p-matrix
         elif plot_data.collection_calc_data["p_matr"] == None:
             plot_data.collection_calc_data["p_matr"] = attribute_significance(s_data, plot_data, one_rep=one_rep) # Product Effect p-matrix

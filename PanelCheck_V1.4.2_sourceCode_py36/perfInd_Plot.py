@@ -814,7 +814,7 @@ def perfindPlotter(s_data, plot_data, num_subplot=[1,1,1], **kwargs):
 
     # calculate and setup numeric data
     if plotType == u'AGR prod':
-        if recalc or not plot_data.collection_calc_data.has_key("AGR"):
+        if recalc or not plot_data.collection_calc_data.__contains__("AGR"):
             res = calcAGR(s_data, plot_data)
             plot_data.collection_calc_data["AGR"] = res
         else:
@@ -844,7 +844,7 @@ def perfindPlotter(s_data, plot_data, num_subplot=[1,1,1], **kwargs):
         makePlot(plot_data, num_subplot, conf_dict, target_lvl, sign_lvl_1, sign_lvl_5, sign_lvl_10)
 
     elif plotType == u'AGR att':
-        if recalc or not plot_data.collection_calc_data.has_key("AGR"):
+        if recalc or not plot_data.collection_calc_data.__contains__("AGR"):
             res = calcAGR(s_data, plot_data)
             plot_data.collection_calc_data["AGR"] = res
         else:
@@ -908,7 +908,7 @@ def perfindPlotter(s_data, plot_data, num_subplot=[1,1,1], **kwargs):
     elif plotType == u'REP prod':
         if numberOfReplicates == 1:
             show_err_msg("Number of replicates must be 2 or more."); return
-        if recalc or not plot_data.collection_calc_data.has_key("REP"):
+        if recalc or not plot_data.collection_calc_data.__contains__("REP"):
             res_rep = calcREP(s_data, plot_data)
             plot_data.collection_calc_data["REP"] = res_rep
         else:
@@ -940,7 +940,7 @@ def perfindPlotter(s_data, plot_data, num_subplot=[1,1,1], **kwargs):
     elif plotType == u'REP att':
         if numberOfReplicates == 1:
             show_err_msg("Number of replicates must be 2 or more."); return
-        if recalc or not plot_data.collection_calc_data.has_key("REP"):
+        if recalc or not plot_data.collection_calc_data.__contains__("REP"):
             res_rep = calcREP(s_data, plot_data)
             plot_data.collection_calc_data["REP"] = res_rep
         else:
@@ -971,13 +971,13 @@ def perfindPlotter(s_data, plot_data, num_subplot=[1,1,1], **kwargs):
     elif plotType == u'DIS total':
         if numberOfReplicates == 1:
             show_err_msg("Number of replicates must be 2 or more."); return
-        if recalc or not plot_data.collection_calc_data.has_key("DIS"):
+        if recalc or not plot_data.collection_calc_data.__contains__("DIS"):
             res_dis = calcDIS(s_data, plot_data)
             plot_data.collection_calc_data["DIS"] = res_dis
         else:
             res_dis = plot_data.collection_calc_data["DIS"]
 
-        
+
         curr_lvl = dis_lvl
         dataline = []; dataline.append('DIS count ind'); dataline.extend(res_dis['DIS count ind']); resultList.append(dataline)
         dataline = []; dataline.append('DIS count all_ex1'); dataline.extend(res_dis['DIS count all_ex1'])
@@ -985,13 +985,13 @@ def perfindPlotter(s_data, plot_data, num_subplot=[1,1,1], **kwargs):
         dataline = []; dataline.append('DIS2'); dataline.extend(res_dis['DIS2']); resultList.append(dataline)
         dataline = []; dataline.append('DIS sign all panel'); dataline.append(res_dis['DIS sign all panel']); resultList.append(dataline)
         plot_data.numeric_data = resultList
-        
-        
+
+
         conf_dict = {}
         conf_dict["elements"] = assessorList #res_dis['DIS count ind']
         conf_dict["values1"] = res_dis['DIS']
         #conf_dict["values2"] = res_dis['DIS2']
-        conf_dict["title"] = plotType  
+        conf_dict["title"] = plotType
         conf_dict["vType"] = plotType
         conf_dict["target"] = curr_lvl
 
@@ -1002,7 +1002,7 @@ def perfindPlotter(s_data, plot_data, num_subplot=[1,1,1], **kwargs):
     elif plotType == u"DIS panel-1":
         if numberOfReplicates == 1:
             show_err_msg("Number of replicates must be 2 or more."); return
-        if recalc or not plot_data.collection_calc_data.has_key("DIS"):
+        if recalc or not plot_data.collection_calc_data.__contains__("DIS"):
             res_dis = calcDIS(s_data, plot_data)
             plot_data.collection_calc_data["DIS"] = res_dis
         else:
@@ -1057,37 +1057,37 @@ def perfindPlotter(s_data, plot_data, num_subplot=[1,1,1], **kwargs):
     elif plotType == u'Indices table':
         plot_data.special_opts["plot_frame"] = False
         if numberOfReplicates == 1:
-            if recalc or not plot_data.collection_calc_data.has_key("AGR"):
+            if recalc or not plot_data.collection_calc_data.__contains__("AGR"):
                 res_agr = calcAGR(s_data, plot_data)
                 plot_data.numeric_data_config["AGR"] = res_agr
             else:
                 res_agr = plot_data.collection_calc_data["AGR"]
 
             curr_lvl = agr_lvl
-            agr = PerfIndData(res_agr, "agr", comp, numberOfSamples, numberOfAttributes)            
+            agr = PerfIndData(res_agr, "agr", comp, numberOfSamples, numberOfAttributes)
             dataline = []; dataline.append('Assessors'); dataline.extend(assessorList); dataline.append("Average"); dataline.append("STD"); resultList.append(dataline)
 
             dataline = []; dataline.append('AGR prod'); dataline.extend(agr.prod); dataline.append(round(agr.average_prod, 2)); dataline.append(round(agr.std_prod, 2)); resultList.append(dataline)
             dataline = []; dataline.append('AGR att'); dataline.extend(agr.att); dataline.append(round(agr.average_att, 2)); dataline.append(round(agr.std_att, 2)); resultList.append(dataline)
             dataline = []; dataline.append(''); resultList.append(dataline)
-            
+
             dataline = []; dataline.append("Total # of attr"); resultList.append(dataline)
             dataline = []; dataline.append(numberOfAttributes); resultList.append(dataline)
-            
+
         else:
-            if recalc or not plot_data.collection_calc_data.has_key("AGR"):
+            if recalc or not plot_data.collection_calc_data.__contains__("AGR"):
                 res_agr = calcAGR(s_data, plot_data)
                 plot_data.numeric_data_config["AGR"] = res_agr
             else:
                 res_agr = plot_data.collection_calc_data["AGR"]
 
-            if recalc or not plot_data.collection_calc_data.has_key("REP"):
+            if recalc or not plot_data.collection_calc_data.__contains__("REP"):
                 res_rep = calcREP(s_data, plot_data)
                 plot_data.collection_calc_data["REP"] = res_rep
             else:
                 res_rep = plot_data.collection_calc_data["REP"]
 
-            if recalc or not plot_data.collection_calc_data.has_key("DIS"):
+            if recalc or not plot_data.collection_calc_data.__contains__("DIS"):
                 res_dis = calcDIS(s_data, plot_data)
                 plot_data.collection_calc_data["DIS"] = res_dis
             else:
@@ -1232,11 +1232,11 @@ def makePlot(plot_data, num_subplot, conf_dict, target_on, s1, s5, s10):
     else:
         lables[0] = "prod/att"
         figlegend = fig.legend(lines, lables, 'upper right')
-        
+
     min1 = min(min(y_values), min(y_values))-10
     max1 = max(max(y_values), max(y_values))+10
     if min1 > 0: min1 = 0
-    if max1 < 110: max1 = 110    
+    if max1 < 110: max1 = 110
     ax.set_ylim([min1,max1])
 
 
@@ -1248,16 +1248,16 @@ def makePlot(plot_data, num_subplot, conf_dict, target_on, s1, s5, s10):
 
 def makePlotDIS(plot_data, num_subplot, conf_dict, target_on):
 
-    y_values1 = conf_dict["values1"] 
-    #y_values2 = conf_dict["values2"] 
+    y_values1 = conf_dict["values1"]
+    #y_values2 = conf_dict["values2"]
     title = conf_dict["title"] # att|prod
     vType = conf_dict["vType"] # att|prod
 
-    
+
     elements = []
     for e in conf_dict["elements"]:
         elements.append(str(e))
-    
+
     print("making perf ind DIS plot...")
 
     # Figure
@@ -1291,7 +1291,7 @@ def makePlotDIS(plot_data, num_subplot, conf_dict, target_on):
     x_values_elements = []
     for i in range(1, len(y_values1) + 1):
         x_values_elements.append(i)
-    
+
     for i in range(0, len(elements)+2):
         target_lvl.append(conf_dict["target"])
         x_values.append(i)
@@ -1315,7 +1315,7 @@ def makePlotDIS(plot_data, num_subplot, conf_dict, target_on):
         ax.scatter([i+1], [y_values1[i]], s = scatter_width, color = '#FF8A00', marker = 's')
     #for i in range(len(y_values2)):
     #    pointAndLabelList.append([i+1, y_values2[i], elements[i], 1])
-    #    ax.scatter([i+1], [y_values2[i]], s = scatter_width, color = '#0037CC', marker = 's')        
+    #    ax.scatter([i+1], [y_values2[i]], s = scatter_width, color = '#0037CC', marker = 's')
 
     if not subplot:
         figlegend = fig.legend(lines, lables, 'upper right')
@@ -1326,7 +1326,7 @@ def makePlotDIS(plot_data, num_subplot, conf_dict, target_on):
     min1 = min(min(y_values1), min(y_values1))-10
     max1 = max(max(y_values1), max(y_values1))+10
     if min1 > 0: min1 = 0
-    if max1 < 110: max1 = 110    
+    if max1 < 110: max1 = 110
     ax.set_ylim([min1,max1])
 
     #update plot-data variables:
@@ -2265,10 +2265,10 @@ def perfind_OverviewPlotter(s_data, plot_data, **kwargs):
     """
     Overview Plot
     """
-    
-    
+
+
     numberOfReplicates = len(s_data.ReplicateList)
-    
+
     if numberOfReplicates == 1:
         rotation_list = []
         rotation_list.append(u'AGR prod')
@@ -2278,8 +2278,8 @@ def perfind_OverviewPlotter(s_data, plot_data, **kwargs):
         tree_paths.append([u'AGR prod'])
         tree_paths.append([u'AGR att'])
         plot_data.special_opts["recalc"] = False
-        return OverviewPlotter(s_data, plot_data, tree_paths, perfindPlotter, rotation_list)    
-        
+        return OverviewPlotter(s_data, plot_data, tree_paths, perfindPlotter, rotation_list)
+
     else:
 
         rotation_list = []
