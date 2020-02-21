@@ -79,7 +79,7 @@ class PlotFrame(wx.Frame):
     """
     Class PlotFrame, shows a frame with given figure and axes.
     """
-    def __init__(self, parent, fig_title, s_data, plot_data, mother):
+    def __init__(self, parent, fig_title, s_data, plot_data, mother,abspath):
         """
         Init method for class PlotFrame. Creates all gui items and handles
         frame events. And shows the figure canvas.
@@ -263,9 +263,9 @@ class PlotFrame(wx.Frame):
 
 
         #setting the icon for frame
-        pathname = os.path.dirname(sys.argv[0])
-        self.progPath = os.path.abspath(pathname)
-        self.icon = wx.Icon(self.progPath + u"/fig.ico", wx.BITMAP_TYPE_ICO)
+        #pathname = os.path.dirname(sys.argv[0])
+        #abspath = os.path.abspath(pathname)
+        self.icon = wx.Icon(abspath + "/fig.ico", wx.BITMAP_TYPE_ICO)
         self.SetIcon(self.icon)
 
 
@@ -301,70 +301,70 @@ class PlotFrame(wx.Frame):
 
         #self.button_print = wx.Button(self.button_panel, butt_print, "Print")
             #self.button_save = wx.Button(self.button_panel, butt_save, "Save")
-        self.button_print = wx.BitmapButton(bitmap=wx.Bitmap(self.progPath + u'/gfx/_ctrl_print.gif', wx.BITMAP_TYPE_GIF),
+        self.button_print = wx.BitmapButton(bitmap=wx.Bitmap(abspath + u'/gfx/_ctrl_print.gif', wx.BITMAP_TYPE_GIF),
                   parent=self.button_panel, size=wx.Size(24, 24),
                   style=wx.BU_AUTODRAW, id=butt_print)
         self.button_print.SetToolTip(u'Print Image')
 
-        self.button_print_setup = wx.BitmapButton(bitmap=wx.Bitmap(self.progPath + u'/gfx/_ctrl_print_setup.gif', wx.BITMAP_TYPE_GIF),
+        self.button_print_setup = wx.BitmapButton(bitmap=wx.Bitmap(abspath + u'/gfx/_ctrl_print_setup.gif', wx.BITMAP_TYPE_GIF),
                   parent=self.button_panel, size=wx.Size(24, 24),
                   style=wx.BU_AUTODRAW, id=butt_print_setup)
         self.button_print_setup.SetToolTip(u'Print Setup')
 
-        self.button_copy_clip = wx.BitmapButton(bitmap=wx.Bitmap(self.progPath + u'/gfx/_ctrl_copy.gif', wx.BITMAP_TYPE_GIF),
+        self.button_copy_clip = wx.BitmapButton(bitmap=wx.Bitmap(abspath + u'/gfx/_ctrl_copy.gif', wx.BITMAP_TYPE_GIF),
                   parent=self.button_panel, size=wx.Size(24, 24),
                   style=wx.BU_AUTODRAW, id=butt_copy)
         self.button_copy_clip.SetToolTip(u'Copy Image to Clipboard (CTRL+C)')
-        self.button_save = wx.BitmapButton(bitmap=wx.Bitmap(self.progPath + u'/gfx/_ctrl_save.gif', wx.BITMAP_TYPE_GIF),
+        self.button_save = wx.BitmapButton(bitmap=wx.Bitmap(abspath + u'/gfx/_ctrl_save.gif', wx.BITMAP_TYPE_GIF),
                   parent=self.button_panel, size=wx.Size(24, 24),
                   style=wx.BU_AUTODRAW, id=butt_save)
         self.button_save.SetToolTip(u'Save Image')
 
-        self.butt_zoom_reset = wx.BitmapButton(bitmap=wx.Bitmap(self.progPath + u'/gfx/_nav_home.gif', wx.BITMAP_TYPE_GIF),
+        self.butt_zoom_reset = wx.BitmapButton(bitmap=wx.Bitmap(abspath + u'/gfx/_nav_home.gif', wx.BITMAP_TYPE_GIF),
                   name=u'butt_zoom_reset', parent=self.button_panel, size=wx.Size(24, 24),
                   style=wx.BU_AUTODRAW, id=butt_zoom_reset_id)
         self.butt_zoom_reset.SetToolTip(u'Reset Axes')
 
         self.butt_zoom = buttons.GenBitmapToggleButton(parent=self.button_panel, id=butt_zoom_id,
-                  bitmap=wx.Bitmap(self.progPath + u'/gfx/_nav_zoom.gif', wx.BITMAP_TYPE_GIF), size=wx.Size(24, 24))
+                  bitmap=wx.Bitmap(abspath + u'/gfx/_nav_zoom.gif', wx.BITMAP_TYPE_GIF), size=wx.Size(24, 24))
         self.butt_zoom.SetToolTip(u'Rectangle Zoom')
 
 
         self.butt_pan = buttons.GenBitmapToggleButton(parent=self.button_panel, id=butt_pan_id,
-                  bitmap=wx.Bitmap(self.progPath + u'/gfx/_nav_pan.gif', wx.BITMAP_TYPE_GIF), size=wx.Size(24, 24))
+                  bitmap=wx.Bitmap(abspath + u'/gfx/_nav_pan.gif', wx.BITMAP_TYPE_GIF), size=wx.Size(24, 24))
         self.butt_pan.SetToolTip(u'Pan Axes')
 
         self.button_summ = wx.Button(self.button_panel, butt_sum, "Summary")
         self.button_raw = wx.Button(self.button_panel, butt_rawData, "Raw Data")
         self.button_res = wx.Button(self.button_panel, butt_numResult, "Numerical Results")
-        #self.button_close = wx.BitmapButton(bitmap=wx.Bitmap(self.progPath + u'/gfx/_ctrl_close.gif', wx.BITMAP_TYPE_GIF),
+        #self.button_close = wx.BitmapButton(bitmap=wx.Bitmap(abspath + u'/gfx/_ctrl_close.gif', wx.BITMAP_TYPE_GIF),
         #          name=u'butt_zoom_reset', parent=self.button_panel, size=wx.Size(24, 24),
         #          style=wx.BU_AUTODRAW, id=butt_close)
         #self.button_close.SetToolTipString(u'Close')
 
         if self.pc_ctrl_on:
 
-            self.buttUp = wx.BitmapButton(bitmap=wx.Bitmap(self.progPath + u'/gfx/_pc_pointer_up.gif', wx.BITMAP_TYPE_GIF),
+            self.buttUp = wx.BitmapButton(bitmap=wx.Bitmap(abspath + u'/gfx/_pc_pointer_up.gif', wx.BITMAP_TYPE_GIF),
                   name=u'buttUp', parent=self.button_panel, size=wx.Size(24, 24),
                   style=wx.BU_AUTODRAW, id=buttUp_id)
             self.buttUp.SetToolTip(u'Next PC on vertical-axis')
 
-            self.buttDown = wx.BitmapButton(bitmap=wx.Bitmap(self.progPath + u'/gfx/_pc_pointer_down.gif', wx.BITMAP_TYPE_GIF),
+            self.buttDown = wx.BitmapButton(bitmap=wx.Bitmap(abspath + u'/gfx/_pc_pointer_down.gif', wx.BITMAP_TYPE_GIF),
                   name=u'buttDown', parent=self.button_panel, size=wx.Size(24, 24),
                   style=wx.BU_AUTODRAW, id=buttDown_id)
             self.buttDown.SetToolTip(u'Previous PC on vertical-axis')
 
-            self.buttReset = wx.BitmapButton(bitmap=wx.Bitmap(self.progPath + u'/gfx/_pc_circle.gif', wx.BITMAP_TYPE_GIF),
+            self.buttReset = wx.BitmapButton(bitmap=wx.Bitmap(abspath + u'/gfx/_pc_circle.gif', wx.BITMAP_TYPE_GIF),
                   name=u'buttReset', parent=self.button_panel,size=wx.Size(24, 24),
                   style=wx.BU_AUTODRAW, id=buttReset_id)
             self.buttReset.SetToolTip(u'Reset PC setting')
 
-            self.buttLeft = wx.BitmapButton(bitmap=wx.Bitmap(self.progPath + u'/gfx/_pc_pointer_left.gif', wx.BITMAP_TYPE_GIF),
+            self.buttLeft = wx.BitmapButton(bitmap=wx.Bitmap(abspath + u'/gfx/_pc_pointer_left.gif', wx.BITMAP_TYPE_GIF),
                   name=u'buttLeft', parent=self.button_panel, size=wx.Size(24, 24),
                   style=wx.BU_AUTODRAW, id=buttLeft_id)
             self.buttLeft.SetToolTip(u'Previous PC on horizontal-axis')
 
-            self.buttRight = wx.BitmapButton(bitmap=wx.Bitmap(self.progPath + u'/gfx/_pc_pointer_right.gif', wx.BITMAP_TYPE_GIF),
+            self.buttRight = wx.BitmapButton(bitmap=wx.Bitmap(abspath + u'/gfx/_pc_pointer_right.gif', wx.BITMAP_TYPE_GIF),
                   name=u'buttRight', parent=self.button_panel, size=wx.Size(24, 24),
                   style=wx.BU_AUTODRAW, id=buttRight_id)
             self.buttRight.SetToolTip(u'Next PC on horizontal-axis')

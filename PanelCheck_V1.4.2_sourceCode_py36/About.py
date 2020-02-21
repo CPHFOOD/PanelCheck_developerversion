@@ -37,7 +37,7 @@ class AboutFrame(wx.Frame):
         #self.button_ok = wx.Button(self.button_panel, ok, "OK")
         #self.button_ok.Bind(wx.EVT_BUTTON, self.closeFrame, id=ok)
 
-        self.icon = wx.Icon(self.progPath + u"/fig.ico", wx.BITMAP_TYPE_ICO)
+        self.icon = wx.Icon(self.progPathAbs + "/fig.ico", wx.BITMAP_TYPE_ICO)
         self.SetIcon(self.icon)
 
         sizer = wx.BoxSizer(wx.VERTICAL)

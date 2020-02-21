@@ -16,21 +16,49 @@ class NoRepaintCanvas(FigureCanvasWxAgg):
         self._drawn = 0
         self.point_lables = []
 
+
+
+    def gui_repaint(self, drawDC=None, origin='WX'):
+        """
+        Performs update of the displayed image on the GUI canvas, using the
+        supplied wx.PaintDC device context.
+
+        The 'WXAgg' backend sets origin accordingly.
+        """
+
+        if self.IsShownOnScreen():
+            if not drawDC:
+                # not called from OnPaint use a ClientDC
+                drawDC = wx.ClientDC(self)
+
+            # following is for 'WX' backend on Windows
+            # the bitmap can not be in use by another DC,
+            # see GraphicsContextWx._cache
+            if wx.Platform == '__WXMSW__' and origin == 'WX':
+                img = self.bitmap.ConvertToImage()
+                bmp = img.ConvertToBitmap()
+                drawDC.DrawBitmap(bmp, 0, 0)
+            else:
+                drawDC.DrawBitmap(self.bitmap, 0, 0)
+
+
     def _onPaint(self, evt):
         """
         Called when wxPaintEvt is generated
         """
        # if not self._isRealized:
        #     self.realize()
-        if self._drawn < 2:
+        #if self._drawn < 2:
             # repaint = False
-            self.draw()
-            self._drawn += 1
-        drawDC=wx.PaintDC(self)
-        self.gui_repaint(drawDC=drawDC)
+        #    self.draw()
+        #    self._drawn += 1
+        #drawDC=wx.DC(self)
+        #self.gui_repaint(drawDC=drawDC)
+        #self.gui_repaint(self,drawDC)
+        self.draw()
         #for label in self.point_lables:
         #    label.render(drawDC)
-    
+
     def add_point_label(self, point, txt):
         p = PointLabel(self, point, txt)
         #self.point_lables.append(p)
@@ -39,7 +67,7 @@ class NoRepaintCanvas(FigureCanvasWxAgg):
 
 class PlotPanel(wx.Panel):
     """
-    The PlotPanel has a Figure and a Canvas. OnSize events simply set a 
+    The PlotPanel has a Figure and a Canvas. OnSize events simply set a
     flag, and the actually redrawing of the
     figure is triggered by an Idle event.
     """
@@ -86,7 +114,7 @@ class PlotPanel(wx.Panel):
         self.canvas.SetSize(pixels)
         self.figure.set_size_inches(pixels[0]/self.figure.get_dpi(),
         pixels[1]/self.figure.get_dpi())
-        
+
     def draw(self):
         """Where the actual drawing happens"""
         pass
@@ -111,34 +139,34 @@ class PointLabel:
                 (w, self.h) = self.parent.GetTextExtent(line)
                 if w > self.w: self.w = w
                 self.ind += 1
-            
-            #print self.w   
-            
+
+            #print self.w
+
             self.rect = (self.point[0]+5, self.point[1]+5, self.w+10, self.h*self.ind + 15)
 
             #wpen = wx.Pen(wx.Colour(0, 0, 0), 1, wx.SOLID)
-            #dc.SetPen(wpen)            
-            #dc.ResetBoundingBox() 
+            #dc.SetPen(wpen)
+            #dc.ResetBoundingBox()
             #dc.BeginDrawing()
-                 
-    
-            
-            
+
+
+
+
     def render(self, dc):
             #print "render"
-            
+
             #dc.SetBackgroundMode(wx.SOLID)
             dc.SetTextForeground(self.foreground)
             dc.SetTextBackground(self.background)
-            dc.SetFont(self.font)            
-            
+            dc.SetFont(self.font)
+
             dc.DrawRectangle(self.point[0]+5, self.point[1]+5, self.w+10, self.h*self.ind + 15)
             ind = 0
             for line in self.txt:
                 dc.DrawText(line, self.point[0] + 10, self.point[1] + 10 + dc.GetCharHeight()*ind)
-                ind += 1  
-    
-    
+                ind += 1
+
+
 class PointLabel2:
     def __init__(self, parent, point, txt):
             self.parent = parent
@@ -158,32 +186,32 @@ class PointLabel2:
                 (w, self.h) = self.parent.GetTextExtent(line)
                 if w > self.w: self.w = w
                 self.ind += 1
-                
+
             self.bmp = wx.EmptyBitmap(self.w, self.h)
-            
+
             dc = wx.MemoryDC()
-            dc.SelectObject(self.bmp)                
+            dc.SelectObject(self.bmp)
             dc.SetTextForeground(self.foreground)
             dc.SetTextBackground(self.background)
-            dc.SetFont(self.font)            
-            
+            dc.SetFont(self.font)
+
             dc.DrawRectangle(self.point[0]+5, self.point[1]-4, self.w+10, self.h*self.ind + 8)
             ind = 0
             for line in self.txt:
                 dc.DrawText(line, self.point[0] + 10, self.point[1] + dc.GetCharHeight()*ind)
-                ind += 1              
+                ind += 1
 
-                 
+
     def clear(self):
             memDC = wx.MemoryDC()
             memDC.SelectObject(self.bmp)
             memDC.Clear()
-            
-            
+
+
     def render(self, dc):
             memDC = wx.MemoryDC()
             memDC.SelectObject(self.bmp)
 
             dc.Blit(self.point[0], self.point[1],
                     self.bmp.GetWidth(), self.bmp.GetHeight(),
-                    memDC, 0, 0, wx.COPY, True)             
+                    memDC, 0, 0, wx.COPY, True)

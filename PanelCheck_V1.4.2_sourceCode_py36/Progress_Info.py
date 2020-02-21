@@ -2,7 +2,7 @@ import wx, os, sys
 
 
 class Progress(wx.Dialog):
-    def _init_ctrls(self, prnt):
+    def _init_ctrls(self, prnt,abspath):
         # generated method, don't edit
         #wx.Frame.__init__(self, prnt, -1, "Summary", (-1,-1), (200,100))
         wx.Dialog.__init__(self, id=wx.NewId(), name=u'Progress', parent=prnt,
@@ -10,9 +10,9 @@ class Progress(wx.Dialog):
               style=wx.DEFAULT_DIALOG_STYLE, title=u'Progress:')
         self.SetClientSize(wx.Size(200, 100))
 
-        pathname = os.path.dirname(sys.argv[0])
-        self.progPath = os.path.abspath(pathname)
-        figpath = self.progPath + u'/fig.ico'
+        #pathname = os.path.dirname(sys.argv[0])
+        #self.progPath = os.path.abspath(pathname)
+        figpath = abspath + '/fig.ico'
         self.SetIcon(wx.Icon(figpath,wx.BITMAP_TYPE_ICO))
         sizer = wx.BoxSizer(wx.VERTICAL)
         self.textSummary = wx.TextCtrl(id=wx.NewId(), parent=self,  style=wx.TE_MULTILINE, value=u'')
@@ -29,11 +29,11 @@ class Progress(wx.Dialog):
 
 
 
-    def __init__(self, parent):
+    def __init__(self, parent,abspath):
         """
         Opens progress dialog.
         """
-        self._init_ctrls(parent)
+        self._init_ctrls(parent,abspath)
         self.gauge.SetValue(0)
         self.Layout()
         self.Update()

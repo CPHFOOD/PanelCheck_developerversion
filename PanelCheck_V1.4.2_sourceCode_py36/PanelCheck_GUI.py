@@ -296,7 +296,8 @@ class Main_Frame(wx.Frame):
         self.SetMenuBar(self.menuBar)
         self.Bind(wx.EVT_CLOSE, self.OnMain_FrameClose)
         self.InvalidateBestSize()
-
+        self.ProgPathAbs = os.path.abspath(os.path.dirname(sys.argv[0]))
+        print(self.ProgPathAbs)
         self.statusBar = wx.StatusBar(id=wx.NewId(),
               name=u'statusBar', parent=self, style=0)
         self.statusBar.SetToolTip(u'statusBar')
@@ -520,7 +521,9 @@ class Main_Frame(wx.Frame):
         pathname = os.path.dirname(sys.argv[0])
         #self.progPath = os.path.abspath(pathname).decode(sys.getfilesystemencoding())
         self.progPath = os.path.abspath(pathname)
-        figpath = self.progPath + u'/fig.ico'
+
+        figpath = self.ProgPathAbs + '/fig.ico'
+
         self.SetIcon(wx.Icon(figpath,wx.BITMAP_TYPE_ICO))
         ##########Icon-Setting-End##########
 
@@ -1181,9 +1184,8 @@ class Main_Frame(wx.Frame):
         To be used at beginning of each file loading.
         """
         # initializing summary frame
-        self.summaryFrame = Summary(self)
+        self.summaryFrame = Summary(self,self.ProgPathAbs)
         self.summaryFrame.set_text("Opening file...\n")
-
 
     def update_tabs(self, setting_limits=True):
         """
@@ -1272,8 +1274,8 @@ class Main_Frame(wx.Frame):
             #self.message = wx.lib.dialogs.ScrolledMessageDialog(self, self.summary, "Summary of data")
             #self.message.ShowModal()
             limits = self.s_data.get_MAX_MIN_Values()
-            print("min/max:")
-            print(limits)
+            #print("min/max:")
+            #print(limits)
             self.summaryFrame.set_limits(limits)
             #self.summaryFrame.append_text_summary(self.summary)
             self.summaryFrame.switch_to_summary()
@@ -1284,7 +1286,7 @@ class Main_Frame(wx.Frame):
                 limits = self.summaryFrame.get_limits()
             self.summaryFrame.Destroy()
             self.s_data.scale_limits = limits
-            print(self.s_data.scale_limits)
+            #print(self.s_data.scale_limits)
             self.session_data.update(new_recent=[self.s_data.abspath, self.delimiter], sensory_data=self.s_data)
             self.session_data.store_session_file(filename=self.progPath + "/session.dat")
 
@@ -2108,7 +2110,7 @@ class Main_Frame(wx.Frame):
             plot_data.set_limits(self.s_data.scale_limits)
 
             if pydata[0] == "Overview Plot":
-                res = SampleLineOverviewPlotter(self.s_data, plot_data)
+                res = SampleLineOverviewPlotter(self.s_data, plot_data,self.ProgPathAbs)
                 overview_plot = True
             elif len(pydata) > 1 and pydata[1] == "Overview Plot":
                 plot_data.view_legend = False
@@ -2586,7 +2588,7 @@ class Main_Frame(wx.Frame):
             lsd_types = ['LSD1', 'LSD2']
 
             if pydata[0] == "Overview Plot 1": # F & p
-                res = MixModel_ANOVA_OverviewPlotter(self.s_data, self.mm_anova2_plot_data, plot_type="2way")
+                res = MixModel_ANOVA_OverviewPlotter(self.s_data, self.mm_anova2_plot_data, abspath=self.ProgPathAbs,plot_type="2way")
                 overview_plot = True
             elif pydata[0] == "Overview Plot 2": # LSD
                 res = MixModel_ANOVA_LSD_OverviewPlotter(self.s_data, self.mm_anova2_plot_data, plot_type="2way")
@@ -2625,15 +2627,15 @@ class Main_Frame(wx.Frame):
             lsd_types = ['LSD1', 'LSD2']
 
             if pydata[0] == "Overview Plot 1": # F & p
-                res = MixModel_ANOVA_OverviewPlotter(self.s_data, self.mm_anova3_plot_data, plot_type="3way")
+                res = MixModel_ANOVA_OverviewPlotter(self.s_data, self.mm_anova3_plot_data, plot_type="3way",abspath=self.ProgPathAbs)
                 overview_plot = True
             elif pydata[0] == "Overview Plot 2": # LSD
-                res = MixModel_ANOVA_LSD_OverviewPlotter(self.s_data, self.mm_anova3_plot_data, plot_type="3way")
+                res = MixModel_ANOVA_LSD_OverviewPlotter(self.s_data, self.mm_anova3_plot_data, plot_type="3way",abspath=self.ProgPathAbs)
                 overview_plot = True
             elif pydata[0] in _types:
-                res = MixModel_ANOVA_Plotter_3way(self.s_data, self.mm_anova3_plot_data )
+                res = MixModel_ANOVA_Plotter_3way(self.s_data, self.mm_anova3_plot_data,abspath=self.ProgPathAbs)
             elif pydata[0] in lsd_types:
-                res = MixModel_ANOVA_LSD_Plotter_3way(self.s_data, self.mm_anova3_plot_data )
+                res = MixModel_ANOVA_LSD_Plotter_3way(self.s_data, self.mm_anova3_plot_data,abspath=self.ProgPathAbs)
 
 
 
@@ -2738,7 +2740,8 @@ class Main_Frame(wx.Frame):
 
             if res == None: print("Plotting failed!", self.statusBar.SetStatusText("Plotting failed!"))
             else:
-                self.figureList.append(PlotFrame(None, _title, self.s_data, res, self))
+                print(self.s_data)
+                self.figureList.append(PlotFrame(None, _title, self.s_data, res, self,self.ProgPathAbs))
                 if self.figureList[len(self.figureList)-1] != None:
                     self.figureList[len(self.figureList)-1].Show()
             #except:

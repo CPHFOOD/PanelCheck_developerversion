@@ -108,7 +108,7 @@ class GridFrame(wx.Frame):
         #setting the icon for frame
         pathname = os.path.dirname(sys.argv[0])
         self.progPath = os.path.abspath(pathname)
-        self.icon = wx.Icon(self.progPath + u"/fig.ico", wx.BITMAP_TYPE_ICO)
+        self.icon = wx.Icon(self.progPathAbs + "/fig.ico", wx.BITMAP_TYPE_ICO)
         self.SetIcon(self.icon)
 
         #button initialization
@@ -187,12 +187,12 @@ class GridFramePerfInd(GridFrame):
         @author: Henning Risvik
         @organization: Matforsk - Norwegian Food Research Institute
         """
-        GridFrame.__init__(self, parent, frameName, results, config) 
-        
-        
-        
+        GridFrame.__init__(self, parent, frameName, results, config)
+
+
+
         import PlotData
-        
+
         self.plotType = plot_data.tree_path[0]
         self.plot_data = PlotData.CollectionCalcPlotData()
         plot_data.copy_data_to(self.plot_data)
@@ -201,10 +201,10 @@ class GridFramePerfInd(GridFrame):
         self.plot_data.special_opts["disable_cursor_link"] = True
         self.s_data = s_data
         self.numberOfWindow = 0
-        self.figureList = []        
-        
+        self.figureList = []
+
         self.grid.Bind(gridlib.EVT_GRID_CELL_LEFT_DCLICK, self.onLeftDClickEvent)
-        self.Bind(wx.EVT_CLOSE, self.OnFrameClosing) 
+        self.Bind(wx.EVT_CLOSE, self.OnFrameClosing)
 
 
     def onLeftDClickEvent(self,event=None):
@@ -213,22 +213,22 @@ class GridFramePerfInd(GridFrame):
         """
         row = event.GetRow()
         col = event.GetCol()
-        
-        
+
+
         print(row, col)
-        
+
         import PlotFrame
         import perfInd_Plot
-        
-        if col <= 0 or col > len(self.plot_data.activeAssessorsList): 
+
+        if col <= 0 or col > len(self.plot_data.activeAssessorsList):
             print("no grid plot")
             return
-        
+
         plotted = False
         assessor = self.plot_data.activeAssessorsList[col-1]
         cell_0 = self.grid.GetCellValue(row, 0)
-        
-        if cell_0 == u"AGR prod":            
+
+        if cell_0 == u"AGR prod":
                 perfInd_Plot.cv_AGR_prod(self.s_data, self.plot_data, assessor)
                 plotted = True
         elif cell_0  == u"AGR att":
@@ -236,27 +236,27 @@ class GridFramePerfInd(GridFrame):
                 plotted = True
         elif cell_0 == u"REP prod":
                 perfInd_Plot.cv_REP_prod(self.s_data, self.plot_data, assessor)
-                plotted = True                
+                plotted = True
         elif cell_0 == u"REP att":
                 perfInd_Plot.cv_REP_att(self.s_data, self.plot_data, assessor)
                 plotted = True
-        
+
         if plotted:
-            self.numberOfWindow += 1   
-            _title = {"fig":"Fig. " + str(self.numberOfWindow), "plot":self.plotType}                        
+            self.numberOfWindow += 1
+            _title = {"fig":"Fig. " + str(self.numberOfWindow), "plot":self.plotType}
             self.figureList.append(PlotFrame.PlotFrame(None, _title, self.s_data, self.plot_data, self))
             if self.figureList[len(self.figureList)-1] != None:
                 self.figureList[len(self.figureList)-1].Show()
 
 
-    def OnFrameClosing(self, event): 
+    def OnFrameClosing(self, event):
         for frame in self.figureList:
             try:
                 frame.Close()
             except:
                 print("Dead frame")
-        self.Hide()                
-    
+        self.Hide()
+
 
 
 class DataGrid(gridlib.PyGridTableBase):
@@ -441,4 +441,3 @@ class DataGridSheet(gridlib.Grid):
             wx.TheClipboard.Clear()
             wx.TheClipboard.SetData(wx.TextDataObject(s))
             wx.TheClipboard.Close()
-

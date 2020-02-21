@@ -660,7 +660,10 @@ def attribute_significance(s_data, plot_data, one_rep=False):
 
     raw = hstack((matrix_num_lables, matrix_selected_scores))
 
-    progress = Progress(None)
+    pathname = os.path.dirname(sys.argv[0])
+    progPath = os.path.abspath(pathname)
+    print(progPath)
+    progress = Progress(None,progPath)
     progress.set_gauge(value=0, text="Using R...\n")
     # Cannot use unicode-strings, since it causes rpy to crash.
     # Need to convert unicode-strings to non-unicode strings
@@ -668,9 +671,7 @@ def attribute_significance(s_data, plot_data, one_rep=False):
 
 
     # get program absolute-path:
-    pathname = os.path.dirname(sys.argv[0])
-    progPath = os.path.abspath(pathname).decode(sys.getfilesystemencoding())
-    last_dir = os.getcwdu()
+    last_dir = os.getcwd()
     os.chdir(progPath) # go to program path (for R script source)
 
 
@@ -819,7 +820,7 @@ def significance_legend(plot_data, pos='upper right'):
 
 ############### General Plot Methods ###############
 
-def OverviewPlotter(s_data, plot_data, itemID_list, plotter, current_list, special_selection=0):
+def OverviewPlotter(s_data, plot_data, itemID_list, plotter, current_list, special_selection=0,abspath='None'):
     """
     Overview Plot
     """
@@ -840,13 +841,13 @@ def OverviewPlotter(s_data, plot_data, itemID_list, plotter, current_list, speci
     #print num_edge
 
     c_list = current_list[:]
-
-    progress = Progress(None)
+    progress = Progress(None,abspath)
     progress.set_gauge(value=0, text="Calculating...\n")
-    part = int(ceil(100/num_plots)); val = part
+    part = int(floor(100/num_plots))
+    val = part
 
     plot_data.tree_path = itemID_list[0]
-    plot_data = plotter(s_data, plot_data, num_subplot=[num_edge, num_edge, 1], selection=special_selection)
+    plot_data = plotter(s_data, plot_data, num_subplot=[num_edge, num_edge, 1], selection=special_selection,abspath=None)
 
 
     txt = c_list[0] + " done\n"
@@ -885,6 +886,7 @@ def OverviewPlotter(s_data, plot_data, itemID_list, plotter, current_list, speci
         num += 1
         txt = c_plot + " done\n"
         val += part
+        print(val)
         progress.set_gauge(value=val, text=txt)
 
     progress.Destroy()

@@ -321,6 +321,7 @@ class Main(wx.App):
         except:
             pass
 
+
         self.main = PanelCheck_GUI.create(None, filename, delimiter)
         self.main.Centre()
         self.main.Show()
@@ -340,7 +341,7 @@ class MySplashScreen(wa.SplashScreen):
         pathname = os.path.dirname(sys.argv[0])
         #progPath = os.path.abspath(pathname).decode(sys.getfilesystemencoding())
         progPath = os.path.abspath(pathname)
-        im = wx.Image(progPath + u'/logo.png', wx.BITMAP_TYPE_ANY)
+        im = wx.Image(progPath + '/logo.png', wx.BITMAP_TYPE_ANY)
         bmp = wx.Bitmap(im)
         splashStyle = wa.SPLASH_CENTRE_ON_SCREEN | wa.SPLASH_TIMEOUT
         splashDuration = 2100 # milliseconds
@@ -354,7 +355,7 @@ class MySplashScreen(wa.SplashScreen):
 
         #wx.Yield()
         wx.GetApp().Yield()
-        
+
     def OnExit(self, evt):
         self.Hide()
         # The program will freeze without this line.

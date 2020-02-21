@@ -11,7 +11,7 @@ import pandas as pd
 #pandas2ri.activate()
 from numpy import transpose,array,asarray
 
-def load_mm_anova_data(s_data, plot_data, one_rep=False):
+def load_mm_anova_data(s_data, plot_data, one_rep=False,abspath='None'):
 
     activeAssessorsList = plot_data.activeAssessorsList
     activeAttributesList = plot_data.activeAttributesList
@@ -69,7 +69,7 @@ def load_mm_anova_data(s_data, plot_data, one_rep=False):
 
         raw = hstack((matrix_num_lables, matrix_selected_scores))
 
-        progress = Progress(None)
+        progress = Progress(None,abspath)
         progress.set_gauge(value=0, text="Using R...\n")
         # Cannot use unicode-strings, since it causes rpy to crash.
         # Need to convert unicode-strings to non-unicode strings
@@ -77,10 +77,10 @@ def load_mm_anova_data(s_data, plot_data, one_rep=False):
 
 
         # get program absolute-path:
-        pathname = os.path.dirname(sys.argv[0])
-        progPath = os.path.abspath(pathname).decode(sys.getfilesystemencoding())
-        last_dir = os.getcwdu()
-        os.chdir(progPath) # go to program path (for R script source)
+        #pathname = os.path.dirname(sys.argv[0])
+        #progPath = os.path.abspath(pathname).decode(sys.getfilesystemencoding())
+        last_dir = os.getcwd()
+        os.chdir(abspath) # go to program path (for R script source)
 
 
 
@@ -686,7 +686,7 @@ def MixModel_ANOVA_LSD_Plotter_2way1rep(s_data, plot_data, num_subplot=[1,1,1], 
 
 
 
-def MixModel_ANOVA_Plotter_2way(s_data, plot_data, num_subplot=[1,1,1], **kwargs):
+def MixModel_ANOVA_Plotter_2way(s_data, plot_data, num_subplot=[1,1,1],abspath='None', **kwargs):
     """
     Mixed Modal ANOVA Plotter
 
@@ -751,7 +751,7 @@ def MixModel_ANOVA_Plotter_2way(s_data, plot_data, num_subplot=[1,1,1], **kwargs
         return
 
 
-    res = load_mm_anova_data(s_data, plot_data)
+    res = load_mm_anova_data(s_data, plot_data,abspath)
 
     activeAttributesList = plot_data.accepted_active_attributes
 
@@ -1096,7 +1096,7 @@ def MixModel_ANOVA_LSD_Plotter_2way(s_data, plot_data, num_subplot=[1,1,1], **kw
 
 
 
-def MixModel_ANOVA_Plotter_3way(s_data, plot_data, num_subplot=[1,1,1], **kwargs):
+def MixModel_ANOVA_Plotter_3way(s_data, plot_data, num_subplot=[1,1,1],abspath=None, **kwargs):
     """
     Mixed Modal ANOVA Plotter
 
@@ -1160,7 +1160,7 @@ def MixModel_ANOVA_Plotter_3way(s_data, plot_data, num_subplot=[1,1,1], **kwargs
         return
 
 
-    res = load_mm_anova_data(s_data, plot_data)
+    res = load_mm_anova_data(s_data, plot_data,abspath)
 
 
     activeAttributesList = plot_data.accepted_active_attributes
@@ -1547,7 +1547,7 @@ def set_points_in_range(ax, ydata, selected, point_list): # selected [1, ..., n]
 
 
 
-def MixModel_ANOVA_OverviewPlotter(s_data, plot_data, *args, **kwargs):
+def MixModel_ANOVA_OverviewPlotter(s_data, plot_data, *args,abspath=None, **kwargs):
     """
     Overview Plot
     """
@@ -1570,7 +1570,7 @@ def MixModel_ANOVA_OverviewPlotter(s_data, plot_data, *args, **kwargs):
         print("Error: wrong plot type id_str")
         return
 
-    return OverviewPlotter(s_data, plot_data, itemID_list, func, rotation_list)
+    return OverviewPlotter(s_data, plot_data, itemID_list, func, rotation_list,abspath)
 
 
 

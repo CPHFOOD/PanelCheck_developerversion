@@ -59,8 +59,8 @@ class DataFile:
             self.enc, self.dec = codecs.lookup(self.encoding3)[:2] # most likely using 'ascii'
             self.codec = self.encoding3
 
-        print("Encoder: " + str(self.enc))
-        print("Decoder: " + str(self.dec))
+        #print("Encoder: " + str(self.enc))
+        #print("Decoder: " + str(self.dec))
 
         self.s_data.filename = self.filename
         self.s_data.codec = self.codec
@@ -190,7 +190,7 @@ class DataFile:
             print("Opening file: " + str(name.encode(self.codec, 'replace')))
             # self.name is allready a unicode type of wxString produced via the wxFileDialog
             # we can only trust that it always works
-            print(str(name))
+            #print(str(name))
             with open(str(name), 'r') as myfile:
                 #dataFile = open(myfile, 'r+')
             # All the data is read into memory
@@ -319,7 +319,7 @@ class DataFile:
         Works on list.
         """
         numRows = len(lines)
-        print(numRows)
+        #print(numRows)
 
         newNumRows = 0
         # testing vertical used range
@@ -352,7 +352,7 @@ class DataFile:
         """
         numCols = len(datasheet[0])
         numRows = len(datasheet)
-        print(numCols, numRows)
+        #print(numCols, numRows)
 
         newNumCols = 0
         newNumRows = 0
@@ -371,7 +371,7 @@ class DataFile:
             else:
                 break
 
-        print(newNumCols, newNumRows)
+        #print(newNumCols, newNumRows)
 
         if newNumRows < numRows or newNumCols < numCols:
             # creating new datasheet containing the real used-range
@@ -458,53 +458,53 @@ class DataFile:
         """
         cols = len(self.AttributeList)
         rows = len(self.SampleList) * len(self.ReplicateList)
-        print('Hi'*50)
+
         mvt_dict = {}
         mv_ass_info = {}
 
         for ass in self.AssessorList:
-            print(ass)
+            #print(ass)
             ass_mat = zeros((rows, cols), float)
             row_ind = 0; num_missing = 0
 
-        for samp in self.SampleList:
-            for rep in self.ReplicateList:
-                key = (ass, samp, rep)
-                att_vec = self.s_data.SparseMatrix[key]
-                ass_row = zeros((cols), float)
-                nan_list = []
-                for i in range(len(att_vec)):
-                    if att_vec[i] == "NaN":
-                        ass_row[i] = nan
-                        nan_list.append(i)
-                    else:
+            for samp in self.SampleList:
+                for rep in self.ReplicateList:
+                    key = (ass, samp, rep)
+                    att_vec = self.s_data.SparseMatrix[key]
+                    ass_row = zeros((cols), float)
+                    nan_list = []
+                    for i in range(len(att_vec)):
+                        if att_vec[i] == "NaN":
+                            ass_row[i] = nan
+                            nan_list.append(i)
+                        else:
                         #print att_vec[i]
-                        ass_row[i] = float(att_vec[i])
+                            ass_row[i] = float(att_vec[i])
 
-                if len(nan_list) > 0:
-                    mvt_dict[key] = nan_list
-                    num_missing += len(nan_list)
+            if len(nan_list) > 0:
+                mvt_dict[key] = nan_list
+                num_missing += len(nan_list)
 
-                ass_mat[row_ind] = ass_row
-                row_ind += 1
+            ass_mat[row_ind] = ass_row
+            row_ind += 1
 
-        if self.too_many_mv_in_matrix(ass_mat):
-            return None, None
-
-
-        # mv_ass_info[ass] = mvt.MVA(ass_mat)
-        mv_ass_info[ass] = float(num_missing) / float(rows * cols)
-        if mv_ass_info[ass] > 0:
-            self.s_data.has_mv = True
-        ass_mat = mvt.IMP(ass_mat) # impute new values for NaN values
+            if self.too_many_mv_in_matrix(ass_mat):
+                return None, None
 
 
-        row_ind = 0
-        for samp in self.SampleList:
-            for rep in self.ReplicateList:
-                key = (ass, samp, rep)
-                self.s_data.SparseMatrix[key] = ass_mat[row_ind]
-                row_ind += 1
+            # mv_ass_info[ass] = mvt.MVA(ass_mat)
+            mv_ass_info[ass] = float(num_missing) / float(rows * cols)
+            if mv_ass_info[ass] > 0:
+                self.s_data.has_mv = True
+            ass_mat = mvt.IMP(ass_mat) # impute new values for NaN values
+
+
+            row_ind = 0
+            for samp in self.SampleList:
+                for rep in self.ReplicateList:
+                    key = (ass, samp, rep)
+                    self.s_data.SparseMatrix[key] = ass_mat[row_ind]
+                    row_ind += 1
 
         return mvt_dict, mv_ass_info
 
@@ -911,7 +911,7 @@ class DataFile:
         """
         # missing values analysis:
         missing_values_positions, rows_missing = self.missing_values_analysis(datasheet)
-        print(rows_missing)
+        #print(rows_missing)
         self.summaryFrame.grid.set_color_on_pos(missing_values_positions)
 
         #m_data = self.values_array(datasheet, missing_values_positions)

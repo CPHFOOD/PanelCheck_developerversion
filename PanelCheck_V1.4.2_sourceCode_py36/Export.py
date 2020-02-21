@@ -19,7 +19,7 @@ class Export_Images_Dialog(wx.Dialog):
 
         pathname = os.path.dirname(sys.argv[0])
         self.progPath = os.path.abspath(pathname).decode(sys.getfilesystemencoding())
-        figpath = self.progPath + u'/fig.ico'
+        figpath = self.progPathAbs + '/fig.ico'
         self.SetIcon(wx.Icon(figpath,wx.BITMAP_TYPE_ICO))
 
         self.parent = prnt
@@ -463,7 +463,7 @@ class Export_Images_Dialog(wx.Dialog):
             self.check_CheckBoxList(self.SampleList, self._checkList_Samp, False)
             for ind in changes["samp"]:
                 self._checkList_Samp.Check(ind, True)
- 
+
 
 
 class ExportImages:
