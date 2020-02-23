@@ -261,12 +261,12 @@ def save_dataset(abspath, dataset):
 
 
 class DelimiterSelector(wx.Dialog):
-    def __init__(self, prnt):
+    def __init__(self, prnt,progPathAbs):
         wx.Dialog.__init__(self, id=wx.NewId(), name=u'Select delimiter:', parent=prnt, title="Select delimiter:",
                       pos=wx.DefaultPosition, size=wx.DefaultSize, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER)
-        pathname = os.path.dirname(sys.argv[0])
-        self.progPath = os.path.abspath(pathname).decode(sys.getfilesystemencoding())
-        figpath = self.progPath + u'/fig.ico'
+        #pathname = os.path.dirname(sys.argv[0])
+        #self.progPath = os.path.abspath(pathname).decode(sys.getfilesystemencoding())
+        figpath = progPathAbs + u'/fig.ico'
         self.SetIcon(wx.Icon(figpath,wx.BITMAP_TYPE_ICO))
 
         s_sizer = wx.BoxSizer(wx.VERTICAL)

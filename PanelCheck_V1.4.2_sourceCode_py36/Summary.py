@@ -42,7 +42,8 @@ class SummaryFrame(wx.Frame):
         self.SetSizer(self.box)
         self.Layout()
 
-    def __init__(self, parent, text):
+    def __init__(self, parent, text,abspath=None):
+        self.progPathAbs = abspath
         self._init_ctrls(parent, text)
 
     def closeFrame(self, event=None):
@@ -59,7 +60,7 @@ class SummaryFrame(wx.Frame):
 
 class Starter(wx.App):
     def OnInit(self):
-        frame = SummaryFrame(None, "")
+        frame = SummaryFrame(None,"",abspath='asd')
         self.SetTopWindow(frame)
         frame.Show()
         return 1

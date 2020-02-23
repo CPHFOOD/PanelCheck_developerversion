@@ -14,9 +14,9 @@ class Summary(wx.Dialog):
         wx.Dialog.__init__(self, id=wx.NewId(), name=u'Summary', parent=prnt,
               pos=wx.DefaultPosition, size=wx.DefaultSize, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER)
         self.SetClientSize(wx.Size(440, 440))
-        pathname = os.path.dirname(sys.argv[0])
+        #pathname = os.path.dirname(sys.argv[0])
         #self.progPath = os.path.abspath(pathname).decode(sys.getfilesystemencoding())
-        self.progPath = os.path.abspath(pathname)
+        #self.progPath = os.path.abspath(pathname)
         figpath = self.ProgPathAbs + '/fig.ico'
         self.SetIcon(wx.Icon(figpath,wx.BITMAP_TYPE_ICO))
 
@@ -198,7 +198,7 @@ class Summary(wx.Dialog):
         """
         Opens summary frame with option for setting scale limit values.
         """
-        self.ProgPathAbs=abspath
+        self.ProgPathAbs = abspath
         self.limits = []
         self._init_ctrls(parent)
         self.gauge1.SetValue(0)

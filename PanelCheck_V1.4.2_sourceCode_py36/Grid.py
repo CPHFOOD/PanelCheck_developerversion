@@ -50,7 +50,7 @@ class GridFrame(wx.Frame):
     """
     Class GridFrame for worksheet type of data visualization.
     """
-    def __init__(self, parent, frameName, results, config=None):
+    def __init__(self, parent, frameName, results, config=None,abspath=None):
         """
         Init method for class GridFrame. Creates all gui items and handles
         frame events.
@@ -71,7 +71,7 @@ class GridFrame(wx.Frame):
         ##        self.attList = attributeList
         ##        self.sparseMatrix = matrix
         ##        self.results = results
-
+        self.progPathAbs = abspath
         #grid initialization
         grid_id = wx.NewId()
         # wxGrid(wxWindow* parent, wxWindowID id, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxWANTS_CHARS, const wxString& name = wxPanelNameStr)

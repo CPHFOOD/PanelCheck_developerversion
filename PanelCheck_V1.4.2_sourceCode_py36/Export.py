@@ -13,12 +13,12 @@ from PanelCheck_Plots import *
 from PlotData import *
 
 class Export_Images_Dialog(wx.Dialog):
-    def __init__(self, prnt, s_data, saving_ppt_file=False, view_grid=False, view_legend=False, active_plots=[], selection_changes={}):
+    def __init__(self, prnt, s_data, saving_ppt_file=False, view_grid=False, view_legend=False, active_plots=[], selection_changes={},abspath=None):
         wx.Dialog.__init__(self, id=wx.NewId(), name=u'Export Images:', parent=prnt, title="Save Image Files:",
                       pos=wx.DefaultPosition, size=wx.DefaultSize, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER)
-
-        pathname = os.path.dirname(sys.argv[0])
-        self.progPath = os.path.abspath(pathname).decode(sys.getfilesystemencoding())
+        self.progPathAbs = abspath
+        #pathname = os.path.dirname(sys.argv[0])
+        #self.progPath = os.path.abspath(pathname)
         figpath = self.progPathAbs + '/fig.ico'
         self.SetIcon(wx.Icon(figpath,wx.BITMAP_TYPE_ICO))
 

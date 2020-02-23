@@ -608,7 +608,7 @@ def has_error(plot_data):
     return False
 
 
-def ManhattanPlotter(s_data, plot_data, num_subplot=[1,1,1], selection=0):
+def ManhattanPlotter(s_data, plot_data, num_subplot=[1,1,1], selection=0,abspath=None):
     """
 
     Manhattan Plot main method. Returns "filled" PlotData or None type if plotting fails.
@@ -896,7 +896,7 @@ def set_plot_adjustments(plot_data, s_data, projection_type, m_data_shape, curre
 
 
 
-def ManhattanAssOverviewPlotter(s_data, plot_data, selection=0):
+def ManhattanAssOverviewPlotter(s_data, plot_data, selection=0,abspath=None):
     """
     Overview Plot (assessor)
 
@@ -928,7 +928,7 @@ def ManhattanAssOverviewPlotter(s_data, plot_data, selection=0):
     cmap = colormaps['manhattan']
     colorbar = set_manhattan_colorbar(plot_data.fig, cmap)
 
-    res = OverviewPlotter(s_data, plot_data, pydata_list, ManhattanPlotter, rotation_list, special_selection=selection)
+    res = OverviewPlotter(s_data, plot_data, pydata_list, ManhattanPlotter, rotation_list, special_selection=selection,abspath=abspath)
 
 
     if res == None: return None
@@ -940,7 +940,7 @@ def ManhattanAssOverviewPlotter(s_data, plot_data, selection=0):
 
 
 
-def ManhattanAttOverviewPlotter(s_data, plot_data, selection=0):
+def ManhattanAttOverviewPlotter(s_data, plot_data, selection=0,abspath=None):
     """
     Overview Plot (attributes)
 
@@ -977,7 +977,7 @@ def ManhattanAttOverviewPlotter(s_data, plot_data, selection=0):
     colorbar = set_manhattan_colorbar(plot_data.fig, cmap)
 
 
-    res = OverviewPlotter(s_data, plot_data, pydata_list, ManhattanPlotter, rotation_list, special_selection=selection)
+    res = OverviewPlotter(s_data, plot_data, pydata_list, ManhattanPlotter, rotation_list, special_selection=selection,abspath=abspath)
 
     if res == None: return None
 

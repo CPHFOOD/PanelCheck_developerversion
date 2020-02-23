@@ -3,6 +3,8 @@
 
 from Plot_Tools import *
 import os, sys
+import pdb
+import numpy
 """
 #def profilePlotCalc(f_assessorAveragesList, f_selectedAtt, f_activeSamplesList):
 
@@ -13,10 +15,10 @@ import os, sys
     3. Ranks the samples scores of every assessor the same way
     4. Returns ranked sample means for selected attribute
     5. Returns ranked sample scores of each assessor for selected attribute
-    
+
     # First find dimensions of the average arrays of each assessor
     rows, cols = f_assessorAveragesList[0].shape
-    
+
 
     # Now compute the average of each given sample over the given assessors
     sampleAveragesList = []
@@ -72,11 +74,12 @@ def get_min_pos(_array):
     min_pos = 0
     min_val = _array[0]
     arr_len = len(_array)
-    if arr_len == 1: 
+    #pdb.set_trace()
+    if arr_len == 1:
         return 0
     else:
         for i in range(1, arr_len):
-            if isinstance(_array[i], (float, int)) and min_val > _array[i]:
+            if(isinstance(_array[i], (float, int)) and (min_val > _array[i])):
                 min_val = _array[i]
                 min_pos = i
         return min_pos
@@ -85,30 +88,30 @@ def get_min_pos(_array):
 
 def sort_indices(mean_array):
     _mean_array = list(mean_array.copy())
-    indices_sorted = []   
+    indices_sorted = []
     while len(indices_sorted) < len(_mean_array):
         pos = get_min_pos(_mean_array)
         indices_sorted.append(pos)
-        _mean_array[pos] = '*'
-    return indices_sorted 
-    
-    
+        _mean_array[pos] = np.Inf
+    return indices_sorted
+
+
 
 def profileCalc(s_data, attribute, active_assessors, active_samples, averages_on):
     cols = len(active_samples)
     if averages_on:
-        rows = len(active_assessors) 
+        rows = len(active_assessors)
     else:
         rows = len(active_assessors) * len(s_data.ReplicateList)
-    
-    
+
+
     mean_array_sorted = zeros((cols), float)
     assessors_scores_sorted = zeros((rows, cols), float) # each row is scores for one assessor
     samples_sorted = []
-    
-    
-    assessors_scores = zeros((rows, cols), float) # each row is scores for one assessor     
-    
+
+
+    assessors_scores = zeros((rows, cols), float) # each row is scores for one assessor
+
     if averages_on:
         for ass_ind in range(len(active_assessors)):
             # average of replicates
@@ -122,23 +125,23 @@ def profileCalc(s_data, attribute, active_assessors, active_samples, averages_on
                 for rep_ind in range(len(s_data.ReplicateList)):
                     assessors_scores[row_ind, :] = m_data[ass_ind, :, rep_ind, 0] # Note: only one attribute
                     row_ind += 1
-            
-       
+
+
     mean_array = average(assessors_scores, 0)
     indices_sorted = sort_indices(mean_array)
-    
+
     #print indices_sorted
-    
+
     for ind in range(cols):
         ind_sort = indices_sorted[ind]
-        
+
         samples_sorted.append(active_samples[ind_sort])
-        
+
         mean_array_sorted[ind] = mean_array[ind_sort]
-        
+
         assessors_scores_sorted[:, ind] = assessors_scores[:, ind_sort]
-    
-    
+
+
     return mean_array_sorted, assessors_scores_sorted, samples_sorted, mean_array, assessors_scores
 
 
@@ -149,28 +152,28 @@ def profilePlotter(s_data, plot_data, num_subplot=[1,1,1], **kwargs):
     Function for plotting Profile Plot in PanelCheck (some small modifications
     need to be made before implemented into PanelCheck).
     """
-    
+
     if "selection" in kwargs:
         selection = kwargs["selection"]
     else:
         selection = [0, 0]
-        
+
     if "selection" in plot_data.special_opts:
         selection = plot_data.special_opts["selection"]
-    
+
     samples_averages_on = False
     increasing_intensity_on = False
-    
+
     # use sample averages (0|1)
     if selection[0] == 0:
         samples_averages_on = True
     # use increasing intensity (0|1)
     if selection[1] == 0:
         increasing_intensity_on = True
-    
-    
+
+
     f_selectedAttribute = plot_data.tree_path[0]
-    
+
     """
     # Compute average matrix for each active assessor for all active samples
     # and store them in list
@@ -200,10 +203,10 @@ def profilePlotter(s_data, plot_data, num_subplot=[1,1,1], **kwargs):
     orderedActiveSamplesList = results[2]
     #print orderedActiveSamplesList
     """
-    
+
     mean_sorted, assessors_lines, samples_sorted, mean_unsorted, assessors_lines_unsorted  = profileCalc(s_data, f_selectedAttribute, plot_data.activeAssessorsList, plot_data.activeSamplesList, samples_averages_on)
-    
-    
+
+
     if increasing_intensity_on:
         mean = mean_sorted
         samples = samples_sorted
@@ -212,10 +215,10 @@ def profilePlotter(s_data, plot_data, num_subplot=[1,1,1], **kwargs):
         mean = mean_unsorted
         samples = plot_data.activeSamplesList
         assessors_scores = assessors_lines_unsorted
-    
+
     #print mean
     #print samples
-    
+
     # Figure
     replot = False; subplot = plot_data.overview_plot; scatter_width = 35
     if plot_data.fig != None: replot = True
@@ -228,38 +231,38 @@ def profilePlotter(s_data, plot_data, num_subplot=[1,1,1], **kwargs):
 
     # Plotting the results (here just for testing purposes; will not be
     # implemented like this in PanelCheck)
-    
-    
+
+
     _range = arange(0, len(samples))
-    # Fist plot the ranked samples mean for the selected attribute as a thick 
+    # Fist plot the ranked samples mean for the selected attribute as a thick
     # black line
     ax.plot(_range + 0.5, mean, 'k-', label='mean', linewidth=3)
 
     # Now plot assessors
     colors = ['r-', 'g-', 'c-', 'y-', 'k-', 'b-', 'r--', 'g--', 'c--', 'y--', 'k--', 'b--', 'r-.', 'g-.', 'c-.', 'y-.', 'k-.', 'b-.']
     c_index = 0
-    
-  
+
+
     colors = assign_colors(s_data.AssessorList, ["rep"])
-    
-    
-    
+
+
+
     plotList = []; resultList = []
     emptyLine = ['']
     _list = ['']
     _list.extend(samples)
     resultList.append(_list)
-    
+
     _list = []
     _list.append("Mean")
     _list.extend(str_row(mean))
     resultList.append(_list)
     resultList.append(emptyLine)
-    
+
     linestyles = ['-', '--', '-.', ':']
     _list = []
     _legend_texts = []
-    
+
     if samples_averages_on:
         for assessor in range(len(plot_data.activeAssessorsList)):
             _numericData = []
@@ -287,21 +290,21 @@ def profilePlotter(s_data, plot_data, num_subplot=[1,1,1], **kwargs):
                     _numericData.append(num2str(x, fmt="%.2f"))
                 resultList.append(_numericData)
                 ind += 1
-        
-            
+
+
     ax.grid(plot_data.view_grid)
     if plot_data.view_legend:
         h, l = ax.get_legend_handles_labels()
         fig.legend(h,l)
 
         #_legend_texts.append(''); _legend_texts.append('Mean')
-        #plotList.append(None); 
+        #plotList.append(None);
         #plotList.append(Line2D([],[], color = "#000000", linewidth=3))
-        #fig.legend(plotList, _legend_texts, 'upper right')    
+        #fig.legend(plotList, _legend_texts, 'upper right')
 
 
     y_lims = ax.get_ylim()
-    
+
     # xmax = number of samples tested
     limits = [0, len(samples), plot_data.limits[2], plot_data.limits[3]]
     if not subplot:
@@ -322,36 +325,36 @@ def profilePlotter(s_data, plot_data, num_subplot=[1,1,1], **kwargs):
 
     #show()
 
-    
+
     pointAndLabelList = []
-    
-    
+
+
     frame_colored = colored_frame(s_data, plot_data, plot_data.activeAttributesList, plot_data.tree_path[0])
     if frame_colored:
         significance_legend(plot_data, pos='lower right')
-    
+
     print(plot_data.collection_calc_data["p_matr"])
-    
+
     #update plot-data variables:
     plot_data.point_lables = pointAndLabelList
-    
+
     rawDataList = raw_data_grid(s_data, plot_data)
-    
+
     plot_data.numeric_data = resultList
     plot_data.raw_data = rawDataList
     plot_data.plot_type = "profile"
-    plot_data.point_lables_type = 0    
-    
-    
+    plot_data.point_lables_type = 0
+
+
     return plot_data
 
 
 
-def profileOverviewPlotter(s_data, plot_data, **kwargs):
+def profileOverviewPlotter(s_data, plot_data,abspath=None, **kwargs):
     """
     Overview plot
     """
     itemID_list = [] # takes part in what to be plotted
     for att in s_data.AttributeList:
         itemID_list.append([att])
-    return OverviewPlotter(s_data, plot_data, itemID_list, profilePlotter, s_data.AttributeList, special_selection=kwargs["selection"])    
+    return OverviewPlotter(s_data, plot_data, itemID_list, profilePlotter, s_data.AttributeList, special_selection=kwargs["selection"],abspath=abspath)

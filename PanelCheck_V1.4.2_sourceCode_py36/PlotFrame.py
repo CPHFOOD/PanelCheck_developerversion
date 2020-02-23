@@ -147,7 +147,7 @@ class PlotFrame(wx.Frame):
         self.active_att = self.plot_data.activeAttributesList
         self.active_samp = self.plot_data.activeSamplesList
         self.overview_plot = self.plot_data.overview_plot
-
+        self.ProgPathAbs = abspath
         self.mother = mother
 
         self.disable_cursor_link = False
@@ -256,8 +256,8 @@ class PlotFrame(wx.Frame):
 
 
 
-        print(self.epsilonX)
-        print(self.epsilonY)
+        #print(self.epsilonX)
+        #print(self.epsilonY)
 
 
 
@@ -265,7 +265,7 @@ class PlotFrame(wx.Frame):
         #setting the icon for frame
         #pathname = os.path.dirname(sys.argv[0])
         #abspath = os.path.abspath(pathname)
-        self.icon = wx.Icon(abspath + "/fig.ico", wx.BITMAP_TYPE_ICO)
+        self.icon = wx.Icon(self.ProgPathAbs + "/fig.ico", wx.BITMAP_TYPE_ICO)
         self.SetIcon(self.icon)
 
 
@@ -301,37 +301,37 @@ class PlotFrame(wx.Frame):
 
         #self.button_print = wx.Button(self.button_panel, butt_print, "Print")
             #self.button_save = wx.Button(self.button_panel, butt_save, "Save")
-        self.button_print = wx.BitmapButton(bitmap=wx.Bitmap(abspath + u'/gfx/_ctrl_print.gif', wx.BITMAP_TYPE_GIF),
+        self.button_print = wx.BitmapButton(bitmap=wx.Bitmap(self.ProgPathAbs + u'/gfx/_ctrl_print.gif', wx.BITMAP_TYPE_GIF),
                   parent=self.button_panel, size=wx.Size(24, 24),
                   style=wx.BU_AUTODRAW, id=butt_print)
         self.button_print.SetToolTip(u'Print Image')
 
-        self.button_print_setup = wx.BitmapButton(bitmap=wx.Bitmap(abspath + u'/gfx/_ctrl_print_setup.gif', wx.BITMAP_TYPE_GIF),
+        self.button_print_setup = wx.BitmapButton(bitmap=wx.Bitmap(self.ProgPathAbs + u'/gfx/_ctrl_print_setup.gif', wx.BITMAP_TYPE_GIF),
                   parent=self.button_panel, size=wx.Size(24, 24),
                   style=wx.BU_AUTODRAW, id=butt_print_setup)
         self.button_print_setup.SetToolTip(u'Print Setup')
 
-        self.button_copy_clip = wx.BitmapButton(bitmap=wx.Bitmap(abspath + u'/gfx/_ctrl_copy.gif', wx.BITMAP_TYPE_GIF),
+        self.button_copy_clip = wx.BitmapButton(bitmap=wx.Bitmap(self.ProgPathAbs + u'/gfx/_ctrl_copy.gif', wx.BITMAP_TYPE_GIF),
                   parent=self.button_panel, size=wx.Size(24, 24),
                   style=wx.BU_AUTODRAW, id=butt_copy)
         self.button_copy_clip.SetToolTip(u'Copy Image to Clipboard (CTRL+C)')
-        self.button_save = wx.BitmapButton(bitmap=wx.Bitmap(abspath + u'/gfx/_ctrl_save.gif', wx.BITMAP_TYPE_GIF),
+        self.button_save = wx.BitmapButton(bitmap=wx.Bitmap(self.ProgPathAbs + u'/gfx/_ctrl_save.gif', wx.BITMAP_TYPE_GIF),
                   parent=self.button_panel, size=wx.Size(24, 24),
                   style=wx.BU_AUTODRAW, id=butt_save)
         self.button_save.SetToolTip(u'Save Image')
 
-        self.butt_zoom_reset = wx.BitmapButton(bitmap=wx.Bitmap(abspath + u'/gfx/_nav_home.gif', wx.BITMAP_TYPE_GIF),
+        self.butt_zoom_reset = wx.BitmapButton(bitmap=wx.Bitmap(self.ProgPathAbs + u'/gfx/_nav_home.gif', wx.BITMAP_TYPE_GIF),
                   name=u'butt_zoom_reset', parent=self.button_panel, size=wx.Size(24, 24),
                   style=wx.BU_AUTODRAW, id=butt_zoom_reset_id)
         self.butt_zoom_reset.SetToolTip(u'Reset Axes')
 
         self.butt_zoom = buttons.GenBitmapToggleButton(parent=self.button_panel, id=butt_zoom_id,
-                  bitmap=wx.Bitmap(abspath + u'/gfx/_nav_zoom.gif', wx.BITMAP_TYPE_GIF), size=wx.Size(24, 24))
+                  bitmap=wx.Bitmap(self.ProgPathAbs + u'/gfx/_nav_zoom.gif', wx.BITMAP_TYPE_GIF), size=wx.Size(24, 24))
         self.butt_zoom.SetToolTip(u'Rectangle Zoom')
 
 
         self.butt_pan = buttons.GenBitmapToggleButton(parent=self.button_panel, id=butt_pan_id,
-                  bitmap=wx.Bitmap(abspath + u'/gfx/_nav_pan.gif', wx.BITMAP_TYPE_GIF), size=wx.Size(24, 24))
+                  bitmap=wx.Bitmap(self.ProgPathAbs + u'/gfx/_nav_pan.gif', wx.BITMAP_TYPE_GIF), size=wx.Size(24, 24))
         self.butt_pan.SetToolTip(u'Pan Axes')
 
         self.button_summ = wx.Button(self.button_panel, butt_sum, "Summary")
@@ -344,27 +344,27 @@ class PlotFrame(wx.Frame):
 
         if self.pc_ctrl_on:
 
-            self.buttUp = wx.BitmapButton(bitmap=wx.Bitmap(abspath + u'/gfx/_pc_pointer_up.gif', wx.BITMAP_TYPE_GIF),
+            self.buttUp = wx.BitmapButton(bitmap=wx.Bitmap(self.ProgPathAbs + u'/gfx/_pc_pointer_up.gif', wx.BITMAP_TYPE_GIF),
                   name=u'buttUp', parent=self.button_panel, size=wx.Size(24, 24),
                   style=wx.BU_AUTODRAW, id=buttUp_id)
             self.buttUp.SetToolTip(u'Next PC on vertical-axis')
 
-            self.buttDown = wx.BitmapButton(bitmap=wx.Bitmap(abspath + u'/gfx/_pc_pointer_down.gif', wx.BITMAP_TYPE_GIF),
+            self.buttDown = wx.BitmapButton(bitmap=wx.Bitmap(self.ProgPathAbs + u'/gfx/_pc_pointer_down.gif', wx.BITMAP_TYPE_GIF),
                   name=u'buttDown', parent=self.button_panel, size=wx.Size(24, 24),
                   style=wx.BU_AUTODRAW, id=buttDown_id)
             self.buttDown.SetToolTip(u'Previous PC on vertical-axis')
 
-            self.buttReset = wx.BitmapButton(bitmap=wx.Bitmap(abspath + u'/gfx/_pc_circle.gif', wx.BITMAP_TYPE_GIF),
+            self.buttReset = wx.BitmapButton(bitmap=wx.Bitmap(self.ProgPathAbs + u'/gfx/_pc_circle.gif', wx.BITMAP_TYPE_GIF),
                   name=u'buttReset', parent=self.button_panel,size=wx.Size(24, 24),
                   style=wx.BU_AUTODRAW, id=buttReset_id)
             self.buttReset.SetToolTip(u'Reset PC setting')
 
-            self.buttLeft = wx.BitmapButton(bitmap=wx.Bitmap(abspath + u'/gfx/_pc_pointer_left.gif', wx.BITMAP_TYPE_GIF),
+            self.buttLeft = wx.BitmapButton(bitmap=wx.Bitmap(self.ProgPathAbs + u'/gfx/_pc_pointer_left.gif', wx.BITMAP_TYPE_GIF),
                   name=u'buttLeft', parent=self.button_panel, size=wx.Size(24, 24),
                   style=wx.BU_AUTODRAW, id=buttLeft_id)
             self.buttLeft.SetToolTip(u'Previous PC on horizontal-axis')
 
-            self.buttRight = wx.BitmapButton(bitmap=wx.Bitmap(abspath + u'/gfx/_pc_pointer_right.gif', wx.BITMAP_TYPE_GIF),
+            self.buttRight = wx.BitmapButton(bitmap=wx.Bitmap(self.ProgPathAbs + u'/gfx/_pc_pointer_right.gif', wx.BITMAP_TYPE_GIF),
                   name=u'buttRight', parent=self.button_panel, size=wx.Size(24, 24),
                   style=wx.BU_AUTODRAW, id=buttRight_id)
             self.buttRight.SetToolTip(u'Next PC on horizontal-axis')
@@ -447,7 +447,7 @@ class PlotFrame(wx.Frame):
 
         #event binding
         #EVT_PAINT(self, self.onPaint)
-        print(self.plot_panel.canvas)
+        #print(self.plot_panel.canvas)
 
         #self.plot_panel.canvas.Bind(wx.EVT_KEY_DOWN, self.onKeyEvent, id=self.plot_panel_id)
 
@@ -827,6 +827,14 @@ class PlotFrame(wx.Frame):
 
 
 
+    def indexer(self,row,col):
+        k = 0
+        indexer = {}
+        for i in range(row):
+            for j in range(col):
+                indexer[(i,j)] = k
+                k += 1
+        return indexer
 
     def mouse_click(self, event):
         """
@@ -837,9 +845,6 @@ class PlotFrame(wx.Frame):
         if not self.overview_plot:
             if event.inaxes is None: return
             else:
-
-
-
                 if self.lsd_plot:
                     self.m_x = event.xdata
                     self.m_y = event.ydata
@@ -848,14 +853,8 @@ class PlotFrame(wx.Frame):
                     #print self.lsd_line_selected
                     if self.lsd_line_selected == -1: # none selected
                         self.click_action(event)
-
-
-
                 else:
                     self.click_action(event)
-
-
-
         else:
             if self.disable_cursor_link: return
             if event.inaxes is None: return
@@ -866,14 +865,21 @@ class PlotFrame(wx.Frame):
             #self.replot(self.plot_type, ax._num)
             #self.update_gui()
             #self.overview_plot = False
-            print(ax._num)
-            plot_data = self.newplot(self.plot_type, ax._num)
+            #print(ax.__dict__.keys(),'\n\n{}'.format(ax._position))
+
+
+            #indexer = {(0, 0): 0, (0, 1): 1, (0, 2): 2, (1, 0): 3, (1, 1): 4, (1, 2): 5, (2, 0): 6, (2, 1): 7, (2, 2): 8}
+            #print("Row: {} Col: {} Pos: {}".format(ax.rowNum,ax.colNum,(ax.rowNum+1)*(ax.colNum+1)))
+            #print(ax.__dict__.keys())
+            idx = self.indexer(ax.numRows,ax.numCols)
+            #print(idx)
+            plot_data = self.newplot(self.plot_type,idx[(ax.rowNum,ax.colNum)])
             plot_data.set_limits(self.plot_data.limits)
 
             fig_tit = deepcopy(self.fig_title)
             fig_tit["fig"] += "." + str(self.number)
 
-            pf = PlotFrame(self, fig_tit, self.s_data, plot_data, self.mother)
+            pf = PlotFrame(self, fig_tit, self.s_data, plot_data, self.mother,abspath=self.ProgPathAbs)
             self.number += 1
             pf.Show();
             """

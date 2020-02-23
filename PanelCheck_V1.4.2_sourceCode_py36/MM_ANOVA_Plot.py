@@ -11,7 +11,7 @@ import pandas as pd
 #pandas2ri.activate()
 from numpy import transpose,array,asarray
 
-def load_mm_anova_data(s_data, plot_data, one_rep=False,abspath='None'):
+def load_mm_anova_data(s_data, plot_data, one_rep=False,abspath=None):
 
     activeAssessorsList = plot_data.activeAssessorsList
     activeAttributesList = plot_data.activeAttributesList
@@ -79,10 +79,8 @@ def load_mm_anova_data(s_data, plot_data, one_rep=False,abspath='None'):
         # get program absolute-path:
         #pathname = os.path.dirname(sys.argv[0])
         #progPath = os.path.abspath(pathname).decode(sys.getfilesystemencoding())
-        last_dir = os.getcwd()
-        os.chdir(abspath) # go to program path (for R script source)
-
-
+        #last_dir = os.getcwd()
+        #os.chdir(abspath) # go to program path (for R script source)
 
         # Need to transpose the raw data matrix since rpy transposes when transferring
         # it to an R-data frame
@@ -91,17 +89,17 @@ def load_mm_anova_data(s_data, plot_data, one_rep=False,abspath='None'):
         # Constructing the data frame in R:
         # Switch to 'no conversion', such that everything that is created now
         # is an R object and NOT Python object (in this case 'frame' and 'names').
-        set_default_mode(NO_CONVERSION)
+        #set_default_mode(NO_CONVERSION)
         names = r.get('names<-')
 
-        frame = ro.conversion.py2ri(part)
+        frame = ro.conversion.py2rpy(part)
         frame = names(frame, lables)
         #r.print_(frame)
 
 
         # Switch back to basic conversion, so that variable res (see below) will be a
         # python list and NOT a R object
-        set_default_mode(BASIC_CONVERSION)
+        #set_default_mode(BASIC_CONVERSION)
 
 
         # Now running Per's R-function to analyse the constructed data frame. All
@@ -131,7 +129,7 @@ def load_mm_anova_data(s_data, plot_data, one_rep=False,abspath='None'):
 
     #print res
 
-        os.chdir(last_dir) # go back
+        #os.chdir(last_dir) # go back
         progress.set_gauge(value=100, text="Done\n")
         progress.Destroy()
         return res
@@ -751,43 +749,61 @@ def MixModel_ANOVA_Plotter_2way(s_data, plot_data, num_subplot=[1,1,1],abspath='
         return
 
 
-    res = load_mm_anova_data(s_data, plot_data,abspath)
+    res = load_mm_anova_data(s_data, plot_data,abspath=abspath)
 
     activeAttributesList = plot_data.accepted_active_attributes
 
     # 0 1 2
     # One of these types have been selected:
     _types = [u'F1', u'F2', u'F3']
+    #import pdb; pdb.set_trace()
     if itemID[0] == _types[0]: # REP*SAMP vs ERROR
         _title = "Assessor Effect"
-        f_matr = res[0].rx(8,True) # 7
-        p_matr = res[2].rx(8,True) # 7
+        #f_matr = res[0].rx(8,True) # 7
+        f_matr = res[0][7]
+        #p_matr = res[2].rx(8,True) # 7
+        p_matr = res[2][7] # 7
         #print 'Third if statement yields f_matr as: {} with type: {} and res[0]: with type {} and values \n {}'.format(f_matr,type(f_matr),type(res[0]),res[0])
     elif itemID[0] == _types[2]: # SAMP*ASS vs ERROR
         _title = "Product Effect"
-        f_matr = res[0].rx(7,True)
-        p_matr = res[2].rx(7,True)
+        #f_matr = res[0].rx(7,True)
+        #p_matr = res[2].rx(7,True)
+        f_matr = res[0][6]
+        p_matr = res[2][6]
     elif itemID[0] == _types[1]: # SAMP vs SAMP*ASS
         _title = "Assessor*Product Interaction"
-        f_matr = res[0].rx(9,True)
-        p_matr = res[2].rx(9,True)
+        #f_matr = res[0].rx(9,True)
+        #p_matr = res[2].rx(9,True)
+        f_matr = res[0][8]
+        p_matr = res[2][8]
     else:
         return # error
     f_list = []
-    f_list.append(res[0].rx(8,True))
-    f_list.append(res[0].rx(7,True))
-    f_list.append(res[0].rx(9,True))
+    #f_list.append(res[0].rx(8,True))
+    #f_list.append(res[0].rx(7,True))
+    #f_list.append(res[0].rx(9,True))
+    f_list.append(res[0][7])
+    f_list.append(res[0][6])
+    f_list.append(res[0][8])
     p_list = [] # 7,6,8
-    p_list.append(res[1].rx(8,True))
-    p_list.append(res[1].rx(7,True))
-    p_list.append(res[1].rx(9,True))
+    #p_list.append(res[1].rx(8,True))
+    #p_list.append(res[1].rx(7,True))
+    #p_list.append(res[1].rx(9,True))
+    p_list.append(res[1][7])
+    p_list.append(res[1][6])
+    p_list.append(res[1][8])
     # p_matr2
-    p_list.append(res[2].rx(8,True))
-    p_list.append(res[2].rx(7,True))
-    p_list.append(res[2].rx(9,True))
+    #p_list.append(res[2].rx(8,True))
+    #p_list.append(res[2].rx(7,True))
+    #p_list.append(res[2].rx(9,True))
+    p_list.append(res[2][7])
+    p_list.append(res[2][6])
+    p_list.append(res[2][8])
     lsd_list = []
-    lsd_list.append(res[3].rx(2,True))
-    lsd_list.append(res[3].rx(3,True))
+    #lsd_list.append(res[3].rx(2,True))
+    #lsd_list.append(res[3].rx(3,True))
+    lsd_list.append(res[3][2])
+    lsd_list.append(res[3][3])
     # Figure
     replot = False; subplot = plot_data.overview_plot; scatter_width = 35
     if plot_data.fig != None: replot = True
@@ -829,7 +845,7 @@ def MixModel_ANOVA_Plotter_2way(s_data, plot_data, num_subplot=[1,1,1],abspath='
         actives_cutted = activeAttributesList[:]
         if len(activeAttributesList) > 5: # cut labels
             for i in range(len(actives_cutted)): actives_cutted[i] = actives_cutted[i][0:5] + ".."
-    set_xlabeling(ax, actives_cutted)
+        set_xlabeling(ax, actives_cutted)
     if len(activeAttributesList) > 5:
         set_xlabeling_rotation(ax, 'vertical')
     if plot_data.view_legend:
@@ -860,7 +876,7 @@ def MixModel_ANOVA_Plotter_2way(s_data, plot_data, num_subplot=[1,1,1],abspath='
     return plot_data
 
 
-def MixModel_ANOVA_LSD_Plotter_2way(s_data, plot_data, num_subplot=[1,1,1], **kwargs):
+def MixModel_ANOVA_LSD_Plotter_2way(s_data, plot_data, num_subplot=[1,1,1], abspath=None,**kwargs):
     """
     Mixed Modal ANOVA Plotter
 
@@ -925,7 +941,7 @@ def MixModel_ANOVA_LSD_Plotter_2way(s_data, plot_data, num_subplot=[1,1,1], **kw
 
 
 
-    res = load_mm_anova_data(s_data, plot_data)
+    res = load_mm_anova_data(s_data, plot_data,abspath=abspath)
 
     activeAttributesList = plot_data.accepted_active_attributes
 
@@ -935,27 +951,27 @@ def MixModel_ANOVA_LSD_Plotter_2way(s_data, plot_data, num_subplot=[1,1,1], **kw
     lsd_types_names = ['Sample means & LSD', 'Sample means & Bonferroni LSD']
     if itemID[0] == lsd_types[0]:
         _title = lsd_types_names[0]
-        lsd_matr = res[3].rx(2,True)
+        lsd_matr = res[3][1]
     elif itemID[0] == lsd_types[1]:
         _title = lsd_types_names[1]
-        lsd_matr = res[3].rx(3,True)
+        lsd_matr = res[3][2]
     else:
         return # error
     f_list = []
-    f_list.append(res[0].rx(8,True))
-    f_list.append(res[0].rx(7,True))
-    f_list.append(res[0].rx(9,True))
+    f_list.append(res[0][7])
+    f_list.append(res[0][6])
+    f_list.append(res[0][8])
     p_list = []
-    p_list.append(res[1].rx(8,True))
-    p_list.append(res[1].rx(7,True))
-    p_list.append(res[1].rx(9,True))
+    p_list.append(res[1][7])
+    p_list.append(res[1][6])
+    p_list.append(res[1][8])
     # p_matr2
-    p_list.append(res[2].rx(8,True))
-    p_list.append(res[2].rx(7,True))
-    p_list.append(res[2].rx(9,True))
+    p_list.append(res[2][7])
+    p_list.append(res[2][6])
+    p_list.append(res[2][8])
     lsd_list = []
-    lsd_list.append(res[3].rx(3,True))
-    lsd_list.append(res[3].rx(2,True))
+    lsd_list.append(res[3][2])
+    lsd_list.append(res[3][1])
     att_indices = arange(len(activeAttributesList))
     num_active_samps = len(activeSamplesList)
     averages_matrix = zeros((1, len(activeAttributesList)), float)
@@ -1019,7 +1035,7 @@ def MixModel_ANOVA_LSD_Plotter_2way(s_data, plot_data, num_subplot=[1,1,1], **kw
     lsd_colors = {0.0:'#999999', 1.0:'#FFD800', 2.0:'#FF8A00', 3.0:'#E80B0B'}
     for i in range(len(activeAttributesList)):
         max_aver = max_aver_list[i]
-        lsd_color = lsd_colors[res[2].rx(6,True)[i]]
+        lsd_color = lsd_colors[res[2][5][i]]
         plot_data.lsd_lines.append(ax.plot([i+0.5, i+0.5], [max_aver, max_aver-lsd_matr[i]], lsd_color, linewidth=3))
         pt = (i+0.5, i+0.5), (max_aver, max_aver-lsd_matr[i])
         vertices.append(pt)
@@ -1090,12 +1106,6 @@ def MixModel_ANOVA_LSD_Plotter_2way(s_data, plot_data, num_subplot=[1,1,1], **kw
 
 
 
-
-
-
-
-
-
 def MixModel_ANOVA_Plotter_3way(s_data, plot_data, num_subplot=[1,1,1],abspath=None, **kwargs):
     """
     Mixed Modal ANOVA Plotter
@@ -1160,7 +1170,7 @@ def MixModel_ANOVA_Plotter_3way(s_data, plot_data, num_subplot=[1,1,1],abspath=N
         return
 
 
-    res = load_mm_anova_data(s_data, plot_data,abspath)
+    res = load_mm_anova_data(s_data, plot_data,abspath=abspath)
 
 
     activeAttributesList = plot_data.accepted_active_attributes
@@ -1170,55 +1180,55 @@ def MixModel_ANOVA_Plotter_3way(s_data, plot_data, num_subplot=[1,1,1],abspath=N
     _types = ['F1', 'F2', 'F2b', 'F3', 'F4', 'F5']
     if itemID[0] == _types[0]: # REP*SAMP vs ERROR
         _title = "Assessor Effect"
-        f_matr = res[0].rx(1,True)
-        p_matr = res[2].rx(1,True)
+        f_matr = res[0][0]
+        p_matr = res[2][0]
     elif itemID[0] == _types[1]: # SAMP*ASS vs ERROR
         _title = "Product Effect"
-        f_matr = res[0].rx(2,True)
-        p_matr = res[2].rx(2,True)
+        f_matr = res[0][1]
+        p_matr = res[2][1]
     elif itemID[0] == _types[2]:
         _title = "Replicate Effect"
-        f_matr = res[0].rx(3,True)
-        p_matr = res[2].rx(3,True)
+        f_matr = res[0][2]
+        p_matr = res[2][2]
     elif itemID[0] == _types[3]: # SAMP vs SAMP*ASS
         _title = "Assessor*Product Interaction"
-        f_matr = res[0].rx(4,True)
-        p_matr = res[2].rx(4,True)
+        f_matr = res[0][3]
+        p_matr = res[2][3]
     elif itemID[0] == _types[4]: # SAMP in 3-way mixed model
         _title = "Product*Replicate Interaction"
-        f_matr = res[0].rx(6,True)
-        p_matr = res[2].rx(6,True)
+        f_matr = res[0][5]
+        p_matr = res[2][5]
     elif itemID[0] == _types[5]:
         _title = "Assessor*Replicate Interaction"
-        f_matr = res[0].rx(5,True)
-        p_matr = res[2].rx(5,True)
+        f_matr = res[0][4]
+        p_matr = res[2][4]
     else:
         print("Error: wrong tree path id")
         return # error
     f_list = []
-    f_list.append(res[0].rx(1,True))
-    f_list.append(res[0].rx(2,True))
-    f_list.append(res[0].rx(3,True))
-    f_list.append(res[0].rx(4,True))
-    f_list.append(res[0].rx(6,True))
-    f_list.append(res[0].rx(5,True))
+    f_list.append(res[0][0])
+    f_list.append(res[0][1])
+    f_list.append(res[0][2])
+    f_list.append(res[0][3])
+    f_list.append(res[0][5])
+    f_list.append(res[0][4])
     p_list = []
-    p_list.append(res[1].rx(1,True))
-    p_list.append(res[1].rx(2,True))
-    p_list.append(res[1].rx(3,True))
-    p_list.append(res[1].rx(4,True))
-    p_list.append(res[1].rx(6,True))
-    p_list.append(res[1].rx(5,True))
+    p_list.append(res[1][0])
+    p_list.append(res[1][1])
+    p_list.append(res[1][2])
+    p_list.append(res[1][3])
+    p_list.append(res[1][5])
+    p_list.append(res[1][4])
     # p_matr2
-    p_list.append(res[2].rx(1,True))
-    p_list.append(res[2].rx(2,True))
-    p_list.append(res[2].rx(3,True))
-    p_list.append(res[2].rx(4,True))
-    p_list.append(res[2].rx(6,True))
-    p_list.append(res[2].rx(5,True))
+    p_list.append(res[2][0])
+    p_list.append(res[2][1])
+    p_list.append(res[2][2])
+    p_list.append(res[2][3])
+    p_list.append(res[2][5])
+    p_list.append(res[2][4])
     lsd_list = []
-    lsd_list.append(res[3].rx(1,True))
-    lsd_list.append(res[3].rx(2,True))
+    lsd_list.append(res[3][0])
+    lsd_list.append(res[3][1])
     # Figure
     replot = False; subplot = plot_data.overview_plot; scatter_width = 35
     if plot_data.fig != None: replot = True
@@ -1259,7 +1269,7 @@ def MixModel_ANOVA_Plotter_3way(s_data, plot_data, num_subplot=[1,1,1],abspath=N
         actives_cutted = activeAttributesList[:]
         if len(activeAttributesList) > 5: # cut labels
             for i in range(len(actives_cutted)): actives_cutted[i] = actives_cutted[i][0:5] + ".."
-    set_xlabeling(ax, actives_cutted)
+        set_xlabeling(ax, actives_cutted)
     if len(activeAttributesList) > 5:
         set_xlabeling_rotation(ax, 'vertical')
     if plot_data.view_legend:
@@ -1286,12 +1296,12 @@ def MixModel_ANOVA_Plotter_3way(s_data, plot_data, num_subplot=[1,1,1],abspath=N
     plot_data.numeric_data = resultList
     plot_data.plot_type = "mm_anova_f_3way"
     plot_data.point_lables_type = 1
-    plot_data.p_matr = res[2].rx(6,True) # for profile plot
+    plot_data.p_matr = res[2][5] # for profile plot
     #Frame draw, for standard Matplotlib frame only use show()
     return plot_data
 
 
-def MixModel_ANOVA_LSD_Plotter_3way(s_data, plot_data, num_subplot=[1,1,1], **kwargs):
+def MixModel_ANOVA_LSD_Plotter_3way(s_data, plot_data, num_subplot=[1,1,1],abspath=None, **kwargs):
     """
     Mixed Modal ANOVA Plotter
 
@@ -1354,9 +1364,7 @@ def MixModel_ANOVA_LSD_Plotter_3way(s_data, plot_data, num_subplot=[1,1,1], **kw
         dlg.Destroy()
         return
 
-
-
-    res = load_mm_anova_data(s_data, plot_data)
+    res = load_mm_anova_data(s_data, plot_data,abspath=abspath)
 
     activeAttributesList = plot_data.accepted_active_attributes
 
@@ -1366,36 +1374,36 @@ def MixModel_ANOVA_LSD_Plotter_3way(s_data, plot_data, num_subplot=[1,1,1], **kw
     lsd_types_names = ['Sample means & LSD', 'Sample means & Bonferroni LSD']
     if itemID[0] == lsd_types[0]:
         _title = lsd_types_names[0]
-        lsd_matr = res[3].rx(1,True)
+        lsd_matr = res[3][0]
     elif itemID[0] == lsd_types[1]:
         _title = lsd_types_names[1]
-        lsd_matr = res[3].rx(2,True)
+        lsd_matr = res[3][1]
     else:
         return # error
     f_list = []
-    f_list.append(res[0].rx(1,True))
-    f_list.append(res[0].rx(2,True))
-    f_list.append(res[0].rx(3,True))
-    f_list.append(res[0].rx(4,True))
-    f_list.append(res[0].rx(6,True))
-    f_list.append(res[0].rx(5,True))
+    f_list.append(res[0][0])
+    f_list.append(res[0][1])
+    f_list.append(res[0][2])
+    f_list.append(res[0][3])
+    f_list.append(res[0][5])
+    f_list.append(res[0][4])
     p_list = []
-    p_list.append(res[1].rx(1,True))
-    p_list.append(res[1].rx(2,True))
-    p_list.append(res[1].rx(3,True))
-    p_list.append(res[1].rx(4,True))
-    p_list.append(res[1].rx(6,True))
-    p_list.append(res[1].rx(5,True))
+    p_list.append(res[1][0])
+    p_list.append(res[1][1])
+    p_list.append(res[1][2])
+    p_list.append(res[1][3])
+    p_list.append(res[1][5])
+    p_list.append(res[1][4])
     # p_matr2
-    p_list.append(res[2].rx(1,True))
-    p_list.append(res[2].rx(2,True))
-    p_list.append(res[2].rx(3,True))
-    p_list.append(res[2].rx(4,True))
-    p_list.append(res[2].rx(6,True))
-    p_list.append(res[2].rx(5,True))
+    p_list.append(res[2][0])
+    p_list.append(res[2][1])
+    p_list.append(res[2][2])
+    p_list.append(res[2][3])
+    p_list.append(res[2][5])
+    p_list.append(res[2][4])
     lsd_list = []
-    lsd_list.append(res[3].rx(1,True))
-    lsd_list.append(res[3].rx(2,True))
+    lsd_list.append(res[3][0])
+    lsd_list.append(res[3][1])
     att_indices = arange(len(activeAttributesList))
     num_active_samps = len(activeSamplesList)
     averages_matrix = zeros((1, len(activeAttributesList)), float)
@@ -1459,7 +1467,7 @@ def MixModel_ANOVA_LSD_Plotter_3way(s_data, plot_data, num_subplot=[1,1,1], **kw
     lsd_colors = {0.0:'#999999', 1.0:'#FFD800', 2.0:'#FF8A00', 3.0:'#E80B0B'}
     for i in range(len(activeAttributesList)):
         max_aver = max_aver_list[i]
-        lsd_color = lsd_colors[res[2].rx(1,True)[i]]
+        lsd_color = lsd_colors[res[2][0][i]]
         plot_data.lsd_lines.append(ax.plot([i+0.5, i+0.5], [max_aver, max_aver-lsd_matr[i]], lsd_color, linewidth=3))
         pt = (i+0.5, i+0.5), (max_aver, max_aver-lsd_matr[i])
         vertices.append(pt)
@@ -1570,11 +1578,11 @@ def MixModel_ANOVA_OverviewPlotter(s_data, plot_data, *args,abspath=None, **kwar
         print("Error: wrong plot type id_str")
         return
 
-    return OverviewPlotter(s_data, plot_data, itemID_list, func, rotation_list,abspath)
+    return OverviewPlotter(s_data, plot_data, itemID_list, func, rotation_list,abspath=abspath)
 
 
 
-def MixModel_ANOVA_LSD_OverviewPlotter(s_data, plot_data, *args, **kwargs):
+def MixModel_ANOVA_LSD_OverviewPlotter(s_data, plot_data,abspath=None,*args, **kwargs):
     """
     Overview Plot
     """
@@ -1595,4 +1603,4 @@ def MixModel_ANOVA_LSD_OverviewPlotter(s_data, plot_data, *args, **kwargs):
     lsd_types = ['LSD1', 'LSD2']
     lsd_tree_paths = [['LSD1'], ['LSD2']]
 
-    return OverviewPlotter(s_data, plot_data, lsd_tree_paths, func, lsd_types)
+    return OverviewPlotter(s_data, plot_data, lsd_tree_paths, func, lsd_types,abspath=abspath)

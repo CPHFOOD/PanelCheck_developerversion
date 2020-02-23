@@ -50,7 +50,8 @@ from Math_Tools import *
 from copy import deepcopy, copy
 
 def save_rdata_file(df, filename):
-    r_data = ro.conversion.py2ri(transpose(df))
+    #r_data = ro.conversion.py2ri(transpose(df))
+    r_data = ro.conversion.py2rpy(transpose(df))
     ro.r.assign("my_df", r_data)
     ro.r("save(my_df, file='{}')".format(filename))
     os.chmod(filename, 0o777)
@@ -58,7 +59,7 @@ def save_rdata_file(df, filename):
 def data_frame(data):
     #data = pd.DataFrame(data)
 #    print(data)
-    r_dataframe = ro.conversion.py2ri(transpose(data))
+    r_dataframe = ro.conversion.py2rpy(transpose(data))
 #    save_rdata_file(data,'/Users/linder2411/Desktop/r_data.Rdata')
     return r_dataframe
 
@@ -479,6 +480,7 @@ def raw_data_grid(s_data, plot_data, active_assessors=None, active_attributes=No
 
 ############### numerical data for ANOVA ###############
 def numerical_data_grid(s_data, plot_data, ANOVA_F, ANOVA_p, ANOVA_MSE, F_signifcances):
+    import pdb
     """
     Return list of numerical data
     """
@@ -494,16 +496,15 @@ def numerical_data_grid(s_data, plot_data, ANOVA_F, ANOVA_p, ANOVA_MSE, F_signif
     resultList.append(emptyLine)
 
     for ass_ind in range(len(plot_data.activeAssessorsList)):
-
         assessorLine = [plot_data.activeAssessorsList[ass_ind], '', '', '', '']
         headerLine = ['Nr.', 'Attribute', 'F value', 'p value', 'MSE value']
         resultList.append(assessorLine)
         resultList.append(headerLine)
 
         for att_ind in range(len(plot_data.activeAttributesList)):
-
             actual_att_ind = s_data.AttributeList.index(plot_data.activeAttributesList[att_ind])
             # Constructing the line that contains calculation-results
+            print(att_ind)
             valueLine = [actual_att_ind+1, plot_data.activeAttributesList[att_ind], num2str(ANOVA_F[ass_ind][att_ind], fmt="%.2f"), num2str(ANOVA_p[ass_ind][att_ind]), num2str(ANOVA_MSE[ass_ind][att_ind], fmt="%.2f")]
             resultList.append(valueLine)
         resultList.append(emptyLine)
@@ -662,7 +663,7 @@ def attribute_significance(s_data, plot_data, one_rep=False):
 
     pathname = os.path.dirname(sys.argv[0])
     progPath = os.path.abspath(pathname)
-    print(progPath)
+    #print(progPath)
     progress = Progress(None,progPath)
     progress.set_gauge(value=0, text="Using R...\n")
     # Cannot use unicode-strings, since it causes rpy to crash.
@@ -718,10 +719,13 @@ def attribute_significance(s_data, plot_data, one_rep=False):
     os.chdir(last_dir) # go back
     progress.set_gauge(value=100, text="Done\n")
     progress.Destroy()
+    #print(res[1][1][0])
+    #print(res[2][6][0])
+
     if one_rep:
-        return res[1].rx(1,True) # Product Effect p-matrix
+        return res[1][1] # Product Effect p-matrix
     else:
-        return res[2].rx(6,True) # Product Effect p-matrix
+        return res[2][6] # Product Effect p-matrix
 
 
 
@@ -735,18 +739,19 @@ def colored_frame(s_data, plot_data, active_att_list, active_att):
 
     #try:
     if isinstance(plot_data, (CollectionCalcPlotData)):
-        print("collection_calc")
+        #print("collection_calc")
         if not plot_data.collection_calc_data.__contains__("p_matr"):
             plot_data.collection_calc_data["p_matr"] = attribute_significance(s_data, plot_data, one_rep=one_rep) # Product Effect p-matrix
-        elif plot_data.collection_calc_data["p_matr"] == None:
+        elif plot_data.collection_calc_data["p_matr"].size == 0:
             plot_data.collection_calc_data["p_matr"] = attribute_significance(s_data, plot_data, one_rep=one_rep) # Product Effect p-matrix
         else:
             pass #ok
         p_matr = plot_data.collection_calc_data["p_matr"]
     else:
+        #import pdb; pdb.set_trace()
         if not hasattr(plot_data, "p_matr"):
             plot_data.p_matr = attribute_significance(s_data, plot_data, one_rep=one_rep) # Product Effect p-matrix
-        elif plot_data.p_matr == None:
+        elif 'None' in str(type(plot_data.p_matr)):
             plot_data.p_matr = attribute_significance(s_data, plot_data, one_rep=one_rep) # Product Effect p-matrix
         else:
             pass #ok
@@ -771,8 +776,8 @@ def colored_frame(s_data, plot_data, active_att_list, active_att):
 
     #print active_att
     #print plot_data.ax.get_legend_handles_labels()
-
-    if p_matr == None:
+    #print(p_matr)
+    if p_matr.size == 0:
         print("Cannot set frame color: STD=0 for one or more attributes")
         return False
     elif len(p_matr) != len(active_atts):
@@ -785,7 +790,7 @@ def colored_frame(s_data, plot_data, active_att_list, active_att):
 
     current_att_ind = active_atts.index(active_att)
 
-    print(current_att_ind)
+    #print(current_att_ind)
 
 
     # set frame coloring:
@@ -806,13 +811,14 @@ def significance_legend(plot_data, pos='upper right'):
     _colors = ['#999999', '#FFD800', '#FF8A00', '#E80B0B']
     if plot_data.view_legend:
         plotList = [None]
-        lables = ['Prod. sign.\n(2-way ANOVA):','ns','p<0.05','p<0.01','p<0.001']
-        i = 0
+        lables = ['','ns','p<0.05','p<0.01','p<0.001']
+        #lables = ['ns','p<0.05','p<0.01','p<0.001']
+        #i = 0
         for c in _colors:
             plotList.append(Line2D([],[], color = c, linewidth=5))
-            i += 1
+            #i += 1
 
-        figlegend = plot_data.fig.legend(plotList, lables, pos)
+        figlegend = plot_data.fig.legend(plotList, lables, pos,title='Prod. sign.\n (2-way ANOVA):')
 
 
 
@@ -820,7 +826,7 @@ def significance_legend(plot_data, pos='upper right'):
 
 ############### General Plot Methods ###############
 
-def OverviewPlotter(s_data, plot_data, itemID_list, plotter, current_list, special_selection=0,abspath='None'):
+def OverviewPlotter(s_data, plot_data, itemID_list, plotter, current_list, special_selection=0,abspath=None):
     """
     Overview Plot
     """
@@ -847,7 +853,7 @@ def OverviewPlotter(s_data, plot_data, itemID_list, plotter, current_list, speci
     val = part
 
     plot_data.tree_path = itemID_list[0]
-    plot_data = plotter(s_data, plot_data, num_subplot=[num_edge, num_edge, 1], selection=special_selection,abspath=None)
+    plot_data = plotter(s_data, plot_data, num_subplot=[num_edge, num_edge, 1], selection=special_selection,abspath=abspath)
 
 
     txt = c_list[0] + " done\n"
@@ -886,7 +892,7 @@ def OverviewPlotter(s_data, plot_data, itemID_list, plotter, current_list, speci
         num += 1
         txt = c_plot + " done\n"
         val += part
-        print(val)
+        #print(val)
         progress.set_gauge(value=val, text=txt)
 
     progress.Destroy()

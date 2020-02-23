@@ -9,7 +9,7 @@ else:
 
 
 class AboutFrame(wx.Frame):
-    def __init__(self, parent):
+    def __init__(self, parent,abspath):
         """
         The AboutFrame class creates window with information about PanelCheck and
         credits.
@@ -17,10 +17,10 @@ class AboutFrame(wx.Frame):
         wx.Frame.__init__(self, parent, -1, "About", (-1,-1), (-1,-1),style=wx.MINIMIZE_BOX|wx.CLOSE_BOX)
         #self.SetBackgroundColour(wx.NamedColor("BLACK"))
 
-        pathname = os.path.dirname(sys.argv[0])
+        #pathname = os.path.dirname(sys.argv[0])
         #self.progPath = os.path.abspath(pathname).decode(sys.getfilesystemencoding())
-        self.progPath = os.path.abspath(pathname)
-
+        #self.progPath = os.path.abspath(pathname)
+        self.progPath = abspath
         #self.html_panel = wx.Panel(self, id = wx.NewId())
         if wx.Platform == '__WXMSW__':
             self.html = html.IEHtmlWindow(self, -1, style = wx.NO_FULL_REPAINT_ON_RESIZE)
@@ -37,7 +37,7 @@ class AboutFrame(wx.Frame):
         #self.button_ok = wx.Button(self.button_panel, ok, "OK")
         #self.button_ok.Bind(wx.EVT_BUTTON, self.closeFrame, id=ok)
 
-        self.icon = wx.Icon(self.progPathAbs + "/fig.ico", wx.BITMAP_TYPE_ICO)
+        self.icon = wx.Icon(self.progPath + "/fig.ico", wx.BITMAP_TYPE_ICO)
         self.SetIcon(self.icon)
 
         sizer = wx.BoxSizer(wx.VERTICAL)

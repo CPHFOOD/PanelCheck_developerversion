@@ -94,7 +94,7 @@ class PerfIndData:
         return conf_dict
 
 
-def calcAGR(s_data, plot_data, sigLvl=0.05, permutationTestEnabled = False):
+def calcAGR(s_data, plot_data, sigLvl=0.05, permutationTestEnabled = False,abspath=None):
 
     assessorList = plot_data.activeAssessorsList
     attributeList = plot_data.activeAttributesList
@@ -118,7 +118,7 @@ def calcAGR(s_data, plot_data, sigLvl=0.05, permutationTestEnabled = False):
     agr = plot_data.special_opts["agr"] # target level
 
     progress_value = 0
-    progress = Progress(None)
+    progress = Progress(None,abspath=progPath)
     progress.set_gauge(value=progress_value, text="Calculating AGR...\n")
 
 
@@ -256,7 +256,7 @@ def calcAGR(s_data, plot_data, sigLvl=0.05, permutationTestEnabled = False):
 
 
 
-def calcREP(s_data, plot_data, permutationTestEnabled = False):
+def calcREP(s_data, plot_data, permutationTestEnabled = False,progPath=None):
 
     assessorList = plot_data.activeAssessorsList
     attributeList = plot_data.activeAttributesList
@@ -283,7 +283,7 @@ def calcREP(s_data, plot_data, permutationTestEnabled = False):
 
 
     progress_value = 0
-    progress = Progress(None)
+    progress = Progress(None,abspath=progPath)
     progress.set_gauge(value=progress_value, text="Calculating REP...\n")
 
 
@@ -405,7 +405,7 @@ def calcREP(s_data, plot_data, permutationTestEnabled = False):
     return res
 
 
-def calcDIS(s_data, plot_data):
+def calcDIS(s_data, plot_data,progPath):
 
     assessorList = plot_data.activeAssessorsList
     attributeList = plot_data.activeAttributesList
@@ -416,7 +416,7 @@ def calcDIS(s_data, plot_data):
 
 
     progress_value = 0
-    progress = Progress(None)
+    progress = Progress(None,abspath=progPath)
     progress.set_gauge(value=progress_value, text="Calculating DIS...\n")
 
     i = 1
@@ -764,7 +764,7 @@ def set_sign_level_numeric_data(sign_type, plot_data, samples_count, attributes_
 
 
 
-def perfindPlotter(s_data, plot_data, num_subplot=[1,1,1], **kwargs):
+def perfindPlotter(s_data, plot_data, num_subplot=[1,1,1],abspath=None, **kwargs):
     """
     This function computes performance indices for assessors from a sensory
     panel.
@@ -815,7 +815,7 @@ def perfindPlotter(s_data, plot_data, num_subplot=[1,1,1], **kwargs):
     # calculate and setup numeric data
     if plotType == u'AGR prod':
         if recalc or not plot_data.collection_calc_data.__contains__("AGR"):
-            res = calcAGR(s_data, plot_data)
+            res = calcAGR(s_data, plot_data,abspath=abspath)
             plot_data.collection_calc_data["AGR"] = res
         else:
             res = plot_data.collection_calc_data["AGR"]
@@ -845,7 +845,7 @@ def perfindPlotter(s_data, plot_data, num_subplot=[1,1,1], **kwargs):
 
     elif plotType == u'AGR att':
         if recalc or not plot_data.collection_calc_data.__contains__("AGR"):
-            res = calcAGR(s_data, plot_data)
+            res = calcAGR(s_data, plot_data,abspath=abspath)
             plot_data.collection_calc_data["AGR"] = res
         else:
             res = plot_data.collection_calc_data["AGR"]
@@ -878,8 +878,8 @@ def perfindPlotter(s_data, plot_data, num_subplot=[1,1,1], **kwargs):
     elif plotType == u'p values for AGR and REP':
         if numberOfReplicates == 1:
             show_err_msg("Number of replicates must be 2 or more."); return
-        res_agr = calcAGR(s_data, plot_data, permutationTestEnabled = True)
-        res_rep = calcREP(s_data, plot_data, permutationTestEnabled = True)
+        res_agr = calcAGR(s_data, plot_data, permutationTestEnabled = True,abspath=abspath)
+        res_rep = calcREP(s_data, plot_data, permutationTestEnabled = True,abspath=abspath)
 
         curr_lvl = agr_lvl
         agr = PerfIndData(res_agr, "agr", comp, numberOfSamples, numberOfAttributes)
@@ -972,7 +972,7 @@ def perfindPlotter(s_data, plot_data, num_subplot=[1,1,1], **kwargs):
         if numberOfReplicates == 1:
             show_err_msg("Number of replicates must be 2 or more."); return
         if recalc or not plot_data.collection_calc_data.__contains__("DIS"):
-            res_dis = calcDIS(s_data, plot_data)
+            res_dis = calcDIS(s_data, plot_data,progPath = abspath)
             plot_data.collection_calc_data["DIS"] = res_dis
         else:
             res_dis = plot_data.collection_calc_data["DIS"]
@@ -1003,7 +1003,7 @@ def perfindPlotter(s_data, plot_data, num_subplot=[1,1,1], **kwargs):
         if numberOfReplicates == 1:
             show_err_msg("Number of replicates must be 2 or more."); return
         if recalc or not plot_data.collection_calc_data.__contains__("DIS"):
-            res_dis = calcDIS(s_data, plot_data)
+            res_dis = calcDIS(s_data, plot_data,progPath = abspath)
             plot_data.collection_calc_data["DIS"] = res_dis
         else:
             res_dis = plot_data.collection_calc_data["DIS"]
@@ -1058,7 +1058,7 @@ def perfindPlotter(s_data, plot_data, num_subplot=[1,1,1], **kwargs):
         plot_data.special_opts["plot_frame"] = False
         if numberOfReplicates == 1:
             if recalc or not plot_data.collection_calc_data.__contains__("AGR"):
-                res_agr = calcAGR(s_data, plot_data)
+                res_agr = calcAGR(s_data, plot_data,abspath=abspath)
                 plot_data.numeric_data_config["AGR"] = res_agr
             else:
                 res_agr = plot_data.collection_calc_data["AGR"]
@@ -1076,7 +1076,7 @@ def perfindPlotter(s_data, plot_data, num_subplot=[1,1,1], **kwargs):
 
         else:
             if recalc or not plot_data.collection_calc_data.__contains__("AGR"):
-                res_agr = calcAGR(s_data, plot_data)
+                res_agr = calcAGR(s_data, plot_data,abspath=abspath)
                 plot_data.numeric_data_config["AGR"] = res_agr
             else:
                 res_agr = plot_data.collection_calc_data["AGR"]
@@ -1088,7 +1088,7 @@ def perfindPlotter(s_data, plot_data, num_subplot=[1,1,1], **kwargs):
                 res_rep = plot_data.collection_calc_data["REP"]
 
             if recalc or not plot_data.collection_calc_data.__contains__("DIS"):
-                res_dis = calcDIS(s_data, plot_data)
+                res_dis = calcDIS(s_data, plot_data, progPath = abspath)
                 plot_data.collection_calc_data["DIS"] = res_dis
             else:
                 res_dis = plot_data.collection_calc_data["DIS"]
@@ -2261,7 +2261,7 @@ def resultsTable(resultsDict):
     """
 
 
-def perfind_OverviewPlotter(s_data, plot_data, **kwargs):
+def perfind_OverviewPlotter(s_data, plot_data, abspath,**kwargs):
     """
     Overview Plot
     """
@@ -2278,7 +2278,7 @@ def perfind_OverviewPlotter(s_data, plot_data, **kwargs):
         tree_paths.append([u'AGR prod'])
         tree_paths.append([u'AGR att'])
         plot_data.special_opts["recalc"] = False
-        return OverviewPlotter(s_data, plot_data, tree_paths, perfindPlotter, rotation_list)
+        return OverviewPlotter(s_data, plot_data, tree_paths, perfindPlotter, rotation_list,abspath=abspath)
 
     else:
 
@@ -2301,4 +2301,4 @@ def perfind_OverviewPlotter(s_data, plot_data, **kwargs):
         #rotation_list.append(u'DIS panel-1')
         #rotation_list.append(u'p values for AGR and REP')
         plot_data.special_opts["recalc"] = False
-        return OverviewPlotter(s_data, plot_data, tree_paths, perfindPlotter, rotation_list)
+        return OverviewPlotter(s_data, plot_data, tree_paths, perfindPlotter, rotation_list,abspath=abspath)

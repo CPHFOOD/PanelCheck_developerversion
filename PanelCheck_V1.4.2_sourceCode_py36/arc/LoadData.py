@@ -1,8 +1,10 @@
+#!/usr/bin/env python
+#This is the matrix data loader for Numeric
+
 #from Numeric import *
 from numpy import array, nan, zeros, shape
 import string, re, sys, codecs, wx, os
 from SensoryData import SensoryData
-import pdb
 #from win32com.client import Dispatch
 import mvt
 import xlrd
@@ -17,6 +19,7 @@ class DataFile:
     def __init__(self, parent, name):
         """
         Looks up which codec to use and initializes variables.
+
         @type parent:     object
         @param parent:    self object from PanelCheck_GUI module.
         """
@@ -176,6 +179,7 @@ class DataFile:
         """
         Opens and reads a text file.
         Each line is read in as an element in the self.text list.
+
         name = full file path (unicode type)
         """
 
@@ -343,6 +347,7 @@ class DataFile:
         Works on list of lists.
         Inspects the [M*N] datasheet.
         Tests: [(0,0),(1,0),(2,0), ... ,(N-1,0)]  and  [(0,0),(0,1),(0,2), ... , (0,M-1)]
+
         Returns a [(M-m) * (N-n)] datasheet.
         """
         numCols = len(datasheet[0])
@@ -447,6 +452,8 @@ class DataFile:
     def missing_values_analysis_assessors(self):
         """
         Missing values/unacceptable values are imputed
+
+
         @return: (dict, dict)
         """
         cols = len(self.AttributeList)
@@ -455,11 +462,11 @@ class DataFile:
         mvt_dict = {}
         mv_ass_info = {}
 
-        ass_mat = zeros((rows, cols), float)
         for ass in self.AssessorList:
             #print(ass)
-            #ass_mat = zeros((rows, cols), float)
+            ass_mat = zeros((rows, cols), float)
             row_ind = 0; num_missing = 0
+
             for samp in self.SampleList:
                 for rep in self.ReplicateList:
                     key = (ass, samp, rep)
@@ -474,12 +481,12 @@ class DataFile:
                         #print att_vec[i]
                             ass_row[i] = float(att_vec[i])
 
-                    if len(nan_list) > 0:
-                        mvt_dict[key] = nan_list
-                        num_missing += len(nan_list)
+            if len(nan_list) > 0:
+                mvt_dict[key] = nan_list
+                num_missing += len(nan_list)
 
-                    ass_mat[row_ind] = ass_row
-                    row_ind += 1
+            ass_mat[row_ind] = ass_row
+            row_ind += 1
 
             if self.too_many_mv_in_matrix(ass_mat):
                 return None, None
@@ -496,11 +503,9 @@ class DataFile:
             for samp in self.SampleList:
                 for rep in self.ReplicateList:
                     key = (ass, samp, rep)
-                    #print(key)
-                    #print(self.s_data.SparseMatrix[key])
                     self.s_data.SparseMatrix[key] = ass_mat[row_ind]
-                    #print('\t',self.s_data.SparseMatrix[key])
                     row_ind += 1
+
         return mvt_dict, mv_ass_info
 
 
@@ -508,7 +513,9 @@ class DataFile:
         """
         Searches that all assessors exists for all samples, and vice versa.
         A samples goes as missing if a single replicate is missing.
+
         Returns two lists: missing_assessors, missing_samples
+
         1. get list of assessors and list of samples
         2. get existing samples for each assessor
         3. find assessomissing samplesrs with
@@ -567,8 +574,8 @@ class DataFile:
         #print "unbalanced data analysis results:"
         #print missing_assessors, missing_samples, missing_replicates
         missing_assessors.sort(); missing_samples.sort()
-        #pdb.set_trace()
         return missing_assessors, missing_samples, missing_replicates
+
 
 
     def balanceData_remove_assessors(self, datasheet, missing_assessors, ass_index = 0):
@@ -613,6 +620,7 @@ class DataFile:
     def is_standard_file(self, firstRow):
         """
         Returns true if file is acceptable.
+
         A very incomplete check, but now controls if first row is acceptable.
         One check could of course be file id in the first bytes for example.
         More can be added later.
@@ -650,6 +658,7 @@ class DataFile:
     def only_filled_lists(self, lists):
         """
         Returns false if any of the standard lists are empty.
+
         lists[0] - self.AssessorList
         lists[1] - self.SampleList
         lists[2] - self.ReplicateList
@@ -701,13 +710,17 @@ class DataFile:
         """
         Uses other error-check methods.
         Show dialogs windows for different situations.
+
+
         attributes = self.AttributeList
         matrix = self.ListCollection (Note: first columns should contain non-score values)
+
         1. Iterate Attributes list
         2. Search for equal names in attribute list.
         3. If equal names found, compare two by two columns.
         4. If columns are equal, automatic deletion of column (can question user for deletion)
         5. If columns are not equal inform about equal attribute names.
+
         """
         #print attributes
         #print matrix
@@ -774,6 +787,7 @@ class DataFile:
     def row_has_unacceptable(self, row, rowNum):
         """
         Returns position of None value if row has a None value. Or returns -1.
+
         """
 ##        for i in range (0, len(row)):
 ##            if row[i] == None:
@@ -895,11 +909,11 @@ class DataFile:
         """
         File loading for general files
         """
-
         # missing values analysis:
         missing_values_positions, rows_missing = self.missing_values_analysis(datasheet)
         #print(rows_missing)
         self.summaryFrame.grid.set_color_on_pos(missing_values_positions)
+
         #m_data = self.values_array(datasheet, missing_values_positions)
         if len(missing_values_positions) > 0:
                if len(rows_missing) > 0:
@@ -992,37 +1006,38 @@ class DataFile:
                     if type(row[ass_index]) == int:
                         newAssessor = assessorExpression + ' ' + str(row[ass_index])
                     elif type(row[ass_index]) == float:
-                        newAssessor = assessorExpression + ' ' + str(row[ass_index])
+                        newAssessor = assessorExpression + ' ' + str(int(row[ass_index]))
                     else:
-                        newAssessor = row[ass_index]
+                        newAssessor = self.safe_uni_enc(row[ass_index])
 
                     if type(row[samp_index]) == int:
                         newSample = sampleExpression + ' ' + str(row[samp_index])
                     elif type(row[samp_index]) == float:
                         newSample = sampleExpression + ' ' + str(int(row[samp_index]))
                     else:
-                        newSample = row[samp_index]
+                        newSample = self.safe_uni_enc(row[samp_index])
 
                     if type(row[rep_index]) == int:
                         newReplicate = replicateExpression + ' ' + str(row[rep_index])
                     elif type(row[rep_index]) == float:
                         newReplicate = replicateExpression + ' ' + str(int(row[rep_index]))
                     else:
-                        newReplicate = row[rep_index]
+                        newReplicate = self.safe_uni_enc(row[rep_index])
+
                 else:
                     if self.isFloat(row[ass_index]):
                         newAssessor = assessorExpression + ' ' + str(row[ass_index])
                     else:
-                        newAssessor = row[ass_index]
+                        newAssessor = self.safe_uni_dec(row[ass_index])
                     if self.isFloat(row[samp_index]):
                         newSample = sampleExpression + ' ' + str(row[samp_index])
                     else:
-                        newSample = row[samp_index]
+                        newSample = self.safe_uni_dec(row[samp_index])
 
                     if self.isFloat(row[rep_index]):
                         newReplicate = replicateExpression + ' ' + str(row[rep_index])
                     else:
-                        newReplicate = row[rep_index]
+                        newReplicate = self.safe_uni_dec(row[rep_index])
 
                     if newAssessor not in self.AssessorList:
                         self.AssessorList.append(newAssessor)
@@ -1032,17 +1047,21 @@ class DataFile:
 
                     if newReplicate not in self.ReplicateList:
                         self.ReplicateList.append(newReplicate)
+
                     #for i in range(len(row)):
                     #    row[i] = re.sub(',', '.', row[i])
+
                     row_collection = []
                     for i in range(len(row)):
                         if i not in out_columns: row_collection.append(row[i])
                     self.ListCollection.append(row_collection)
+
                     #row_collection = []
                     #for i in range(len(m_data[row_ind])):
                     #    if i not in out_columns:
                     #    row_collection.append(m_data[row_ind, i])
                     #self.ListCollection.append(row_collection)
+
                     floatList = []
                     for i in range(len(row)):
                         if i not in out_columns and i != ass_index and i != samp_index and i != rep_index: floatList.append(row[i])
@@ -1052,30 +1071,39 @@ class DataFile:
                     #    self.showErrorDialog("Possibly missing data! Cannot proceed loading.")
                     #    self.fileRead = False; return
 
+
                     if self.s_data.SparseMatrix.__contains__((newAssessor,newSample,newReplicate)):
                         self.duplicate_keys.append((newAssessor,newSample,newReplicate))
-                    #pdb.set_trace()
                     self.s_data.SparseMatrix[(newAssessor,newSample,newReplicate)] = floatList
 
             else:
                 self.summaryFrame.append_text("\nError: Too few column values on line\n")
-                colValues = []
 
-            if len(self.duplicate_keys) > 0:
-                str_list = ""
-                for k in self.duplicate_keys: str_list += k[0] + ", " + k[1] + ", " + k[2] + "\n"
+            colValues = []
 
-                self.showErrorDialog("Cannot proceed loading. The following assessor-sample-replicate\n" \
+        if len(self.duplicate_keys) > 0:
+            str_list = ""
+            for k in self.duplicate_keys: str_list += k[0] + ", " + k[1] + ", " + k[2] + "\n"
+
+            self.showErrorDialog("Cannot proceed loading. The following assessor-sample-replicate\n" \
                                + "combinations are used for more than one score row:\n" + str_list + "\nPlease check your data set.")
-                self.summaryFrame.Destroy()
-                self.fileRead = False
-                return False
+            self.summaryFrame.Destroy()
+            self.fileRead = False
+            return False
+
+
         # error checking:
         #if self.matrix_has_unacceptable(self.ListCollection):
             # Unaccpetable value, stopping load
             #self.fileRead = False
             #return False
+
+
+
         self.find_equal_columns(self.ListCollection, self.AttributeList)
+
+
+
         # Imputes missing values and converts attribute vectors to numpy arrays
         mv_dict, mv_inf = self.missing_values_analysis_assessors()
 
@@ -1087,7 +1115,6 @@ class DataFile:
 
         # file loading did not fail
         # update sensory data
-
         self.s_data.AssessorList = self.AssessorList
         self.s_data.SampleList = self.SampleList
         self.s_data.ReplicateList = self.ReplicateList
@@ -1114,6 +1141,7 @@ class DataFile:
         self.summaryFrame.Update()
         self.summaryFrame.set_gauge(100) # reading of file finished 100%
         self.fileRead = True
+
         return True
 
 
@@ -1145,25 +1173,33 @@ class PlainText(DataFile):
         The class 'PlainText' reads the sensory data into an Numeric array
         from a "plain" text file. All values should be tab-separated (\t).
         This class will function as an extended DataFile class.
+
         First row: strings describing what columns contain.
         First column: indicator - assessor numbers.
         Second column: indicator - sample numbers.
         Third column: indicator - replicate numbers.
         All following columns: assessor score values.
+
         @version: 1.3
         @since: 07.03.2005
+
         @status:
                     - reads attributes into attribute list (first row in text file)
                     - handles Unicode for attribute list (norwegian characters are possible now)
                     - reads score values into an array/matrix
                     - creates a sparse matrix where data is accessible through key words
+
         @todo: nothing I can think of right now
+
         @author: Oliver Tomic, Henning Risvik
         @organization: Matforsk - Norwegian Food Research Institute
+
         @type name:     string
         @param name:    Absolute file-path of the data file to be read.
+
         @type parent:     object
         @param parent:    self object from PanelCheck_GUI module.
+
         Short overview:
         ------------------------------------------------------------
         1. Initializing, inheriting from DataFile class.
@@ -1242,15 +1278,20 @@ class Excel(DataFile):
         """
         This class reads the sensory data into an Numeric array from a win32
         Excel (*.xls) file. This class will function as an extended DataFile class.
+
         First row: strings describing what columns contain.
         First column (A): indicator - assessors.
         Second column (B): indicator - samples.
         Third column (C): indicator - replicates.
         All following columns (D, ...): assessor score values.
+
+
         @version: 1.0
         @since: 07.08.2005
+
         @author: Henning Risvik
         @organization: Matforsk - Norwegian Food Research Institute
+
         @type name:     string
         @param name:    Absolute file-path of the data file to be read.
         """
@@ -1279,6 +1320,7 @@ class Excel(DataFile):
             self.summaryFrame.append_text("\nUsing Excel Application...\n")
             workBook = excelApp.Workbooks.Open(self.name)
             sheet = workBook.ActiveSheet
+
             datasheet_tup = sheet.UsedRange.Value #Tuple of Tuple: 2d matrix containing values
             datasheet_tup = self.get_real_UsedRange_matrix(datasheet_tup) #datasheet is a 2dArray
         '''
@@ -1314,21 +1356,29 @@ class Excel(DataFile):
             dlg.ShowModal()
             dlg.Destroy()
     '''
+
     # print number of sheets
         print book.nsheets
+
     # print sheet names
         print book.sheet_names()
+
     # get the first worksheet
+
+
     # read a row
         print first_sheet.row_values(0)
+
     # read a cell
         cell = first_sheet.cell(0,0)
         print cell
         print cell.value
+
     # read a row slice
         print first_sheet.row_slice(rowx=0,
                                 start_colx=0,
                                 end_colx=2)
+
         datasheet = first_sheet
     '''
 
@@ -1355,6 +1405,7 @@ class Excel(DataFile):
         """
         Inspects the [M*N] datasheet.
         Tests: [(0,0),(1,0),(2,0), ... ,(N-1,0)]  and  [(0,0),(0,1),(0,2), ... , (0,M-1)]
+
         Returns a [(M-m) * (N-n)] datasheet.
         """
         numCols = len(datasheet[0])

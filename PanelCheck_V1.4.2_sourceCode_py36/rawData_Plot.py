@@ -8,13 +8,13 @@
 from Plot_Tools import *
 
 
-def RawDataAssessorPlotter(s_data, plot_data, num_subplot=[1,1,1], **kwargs):    
-    
+def RawDataAssessorPlotter(s_data, plot_data, num_subplot=[1,1,1], **kwargs):
+
     activeAssessorsList = plot_data.activeAssessorsList
     activeAttributesList = plot_data.activeAttributesList
     activeSamplesList = plot_data.activeSamplesList
-    itemID = plot_data.tree_path    
-    
+    itemID = plot_data.tree_path
+
     # list checks
     if itemID[0] not in activeAssessorsList: #no active assessors
         dlg = wx.MessageDialog(None, 'Assessor is not active in CheckBox',
@@ -45,12 +45,12 @@ def RawDataAssessorPlotter(s_data, plot_data, num_subplot=[1,1,1], **kwargs):
     resultList = []
     specSparseMatrix = {}
     tempMatrix = zeros((1, len(s_data.AttributeList)), float)
-    
+
     # Loop through all active samples for the specific assessor
     for sample in activeSamplesList:
 
         for replicate in s_data.ReplicateList:
-            
+
             # Fetch the required data from sparse matrix
             _object = s_data.SparseMatrix[(itemID[0], sample, replicate)]
 
@@ -64,22 +64,22 @@ def RawDataAssessorPlotter(s_data, plot_data, num_subplot=[1,1,1], **kwargs):
             newObject = mat(newObject)
             tempMatrix = vstack((tempMatrix, newObject))
             specSparseMatrix[(itemID[0], sample, replicate)] = array(newObject)
-            
+
     # Transforming matrix back to array and removing first row with zeros
     tempMatrix = array(tempMatrix)
     tempMatrix = tempMatrix[1:, :]
-    
+
     # Create list that holds the index of each active attribute in
     # attributeList
     columns = []
     for att in s_data.AttributeList:
         if att in activeAttributesList:
             columns.append(s_data.AttributeList.index(att))
-            
-            
+
+
     # New matrix with active attributes
     specMatrix = take(tempMatrix, columns, 1)
-    
+
     # Compute averages and STD's
     averages = average(specMatrix, 0)
     #print averages
@@ -91,9 +91,9 @@ def RawDataAssessorPlotter(s_data, plot_data, num_subplot=[1,1,1], **kwargs):
     results['STDs'] = standDevs
     results['specSparseMatrix'] = specSparseMatrix
     results['D'] = specMatrix
-    
+
     emptyLine = ['']
-    
+
     rawDataList = raw_data_grid(s_data, plot_data, [itemID[0]])
 
 
@@ -116,12 +116,12 @@ def RawDataAssessorPlotter(s_data, plot_data, num_subplot=[1,1,1], **kwargs):
     _line = []
     for x in standDevs:
         _line.append(num2str(x, fmt="%.2f"))
-    resultList.append(_line)    
+    resultList.append(_line)
     resultList.append([""])
-                
+
 
     plot_data.view_legend = False
-    
+
     # Figure
     replot = False; subplot = plot_data.overview_plot
     if plot_data.fig != None: replot = True
@@ -136,14 +136,14 @@ def RawDataAssessorPlotter(s_data, plot_data, num_subplot=[1,1,1], **kwargs):
     x_values = arange(1, len(averages)+1)
     width = 0.35
     ax.bar(x_values-(width/2), averages, width, color='#FF0000', yerr=standDevs)
-    
+
     pointAndLabelList = []
     for i in range(len(activeAttributesList)):
         label = activeAttributesList[i] + ": Average=" + str(averages[i]) + ", STD=" + str(standDevs[i])
         pointAndLabelList.append([x_values[i], averages[i], label])
-    
-    ax.grid(plot_data.view_grid) 
-    
+
+    ax.grid(plot_data.view_grid)
+
     _title = "Mean & STD Plot: " + itemID[0]
     limits = plot_data.limits
     if not subplot:
@@ -151,10 +151,10 @@ def RawDataAssessorPlotter(s_data, plot_data, num_subplot=[1,1,1], **kwargs):
         set_xlabeling(ax, activeAttributesList)
     if len(activeAttributesList) > 7:
         set_xlabeling_rotation(ax, 'vertical', fontsize=10)
-    else: 
-        axes_setup(ax, '', '', _title, [0, len(activeAttributesList)+1, 0, limits[3]], font_size=10)    
-   
-    
+    else:
+        axes_setup(ax, '', '', _title, [0, len(activeAttributesList)+1, 0, limits[3]], font_size=10)
+
+
     #update plot-data variables:
     plot_data.point_label_line_width = width * 0.5
     plot_data.point_lables = pointAndLabelList
@@ -164,7 +164,7 @@ def RawDataAssessorPlotter(s_data, plot_data, num_subplot=[1,1,1], **kwargs):
     plot_data.point_lables_type = 1
 
     #Frame draw, for standard Matplotlib frame only use show()
-    return plot_data    
+    return plot_data
 
 
 def RawDataAttributePlotter(s_data, plot_data, num_subplot=[1,1,1], **kwargs):
@@ -194,17 +194,17 @@ def RawDataAttributePlotter(s_data, plot_data, num_subplot=[1,1,1], **kwargs):
                                wx.OK | wx.ICON_INFORMATION)
         dlg.ShowModal()
         dlg.Destroy()
-        return    
-    
-    
+        return
+
+
     # Dictionaries and matrix where numbers will be stored in
     results = {}
     specSparseMatrix = {}
     tempMatrix = zeros((1, len(s_data.AssessorList)), float)
-    
+
     attIndex = s_data.AttributeList.index(itemID[0])
     #print attIndex
-    
+
     # Construct a list that holds the scores of the active assessors for the
     # active samples. The score of each assessors are stored in lists, too.
     attributeVectors = []
@@ -212,7 +212,7 @@ def RawDataAttributePlotter(s_data, plot_data, num_subplot=[1,1,1], **kwargs):
 
         assessorVector = []
         for samp in activeSamplesList:
-            
+
             for rep in s_data.ReplicateList:
 
                 value = float(s_data.SparseMatrix[(ass, samp, rep)][attIndex])
@@ -227,17 +227,17 @@ def RawDataAttributePlotter(s_data, plot_data, num_subplot=[1,1,1], **kwargs):
     # Compute averages and STD's
     averages = average(attributeArray, 1)
     standDevs = STD(attributeArray, 1)
-    
-    
+
+
     # Store results in results dictionary
     results['averages'] = averages
     results['STDs'] = standDevs
 
     emptyLine = ['']
-            
+
     rawDataList = raw_data_grid(s_data, plot_data)
-    
-    
+
+
     # Store results in results dictionary
     results['averages'] = averages
     results['STDs'] = standDevs
@@ -258,7 +258,7 @@ def RawDataAttributePlotter(s_data, plot_data, num_subplot=[1,1,1], **kwargs):
     _line = []
     for x in standDevs:
         _line.append(num2str(x, fmt="%.2f"))
-    resultList.append(_line)    
+    resultList.append(_line)
     resultList.append([""])
 
 
@@ -281,20 +281,20 @@ def RawDataAttributePlotter(s_data, plot_data, num_subplot=[1,1,1], **kwargs):
     _colors = assign_colors(s_data.AssessorList, ["rep"])
     colors = []
     for ass in activeAssessorsList:
-        colors.append(_colors[(ass, "rep")][0])    
-    
+        colors.append(_colors[(ass, "rep")][0])
+
     x_values = arange(1, len(averages)+1)
     width = 0.35
     ax.bar(x_values-(width/2), averages, width, color="#00DD00", yerr=standDevs)
-    
-    ax.grid(plot_data.view_grid) 
+
+    ax.grid(plot_data.view_grid)
 
     pointAndLabelList = []
     for i in range(len(activeAssessorsList)):
         label = activeAssessorsList[i] + ": Average=" + str(averages[i]) + ", STD=" + str(standDevs[i])
         pointAndLabelList.append([x_values[i], averages[i], label])
-        
-    
+
+
     _title = "Mean & STD Plot: " + itemID[0]
     limits = plot_data.limits
     if not subplot:
@@ -302,16 +302,16 @@ def RawDataAttributePlotter(s_data, plot_data, num_subplot=[1,1,1], **kwargs):
         set_xlabeling(ax, activeAssessorsList)
     if len(activeAssessorsList) > 7:
         set_xlabeling_rotation(ax, 'vertical', fontsize=10)
-    else: 
-        axes_setup(ax, '', '', _title, [0, len(activeAssessorsList)+1, 0, limits[3]], font_size=10)    
-    
-    
+    else:
+        axes_setup(ax, '', '', _title, [0, len(activeAssessorsList)+1, 0, limits[3]], font_size=10)
+
+
     frame_colored = colored_frame(s_data, plot_data, activeAttributesList, itemID[0])
 
     if frame_colored:
         significance_legend(plot_data)
-    
-    
+
+
     #update plot-data variables:
     plot_data.point_label_line_width = width * 0.5
     plot_data.point_lables = pointAndLabelList
@@ -319,22 +319,21 @@ def RawDataAttributePlotter(s_data, plot_data, num_subplot=[1,1,1], **kwargs):
     plot_data.raw_data = rawDataList
     plot_data.numeric_data = resultList
     plot_data.plot_type = "mean_std_att"
-
+    #plot_data.fig.legend.title='asd'
     #Frame draw, for standard Matplotlib frame only use show()
-    return plot_data    
+    return plot_data
 
 
-def RawDataAssessorOverviewPlotter(s_data, plot_data, **kwargs):
+def RawDataAssessorOverviewPlotter(s_data, plot_data,abspath, **kwargs):
     itemID_list = [] # takes part in what to be plotted
     for ass in plot_data.activeAssessorsList:
         itemID_list.append([ass])
-    return OverviewPlotter(s_data, plot_data, itemID_list, RawDataAssessorPlotter, plot_data.activeAssessorsList)    
-   
-   
-   
-def RawDataAttributeOverviewPlotter(s_data, plot_data, **kwargs):
+    return OverviewPlotter(s_data, plot_data, itemID_list, RawDataAssessorPlotter, plot_data.activeAssessorsList,abspath=abspath)
+
+
+
+def RawDataAttributeOverviewPlotter(s_data, plot_data,abspath, **kwargs):
     itemID_list = [] # takes part in what to be plotted
     for att in plot_data.activeAttributesList:
         itemID_list.append([att])
-    return OverviewPlotter(s_data, plot_data, itemID_list, RawDataAttributePlotter, plot_data.activeAttributesList)    
-                           
+    return OverviewPlotter(s_data, plot_data, itemID_list, RawDataAttributePlotter, plot_data.activeAttributesList,abspath=abspath)

@@ -6,7 +6,7 @@ from Plot_Tools import *
 ##ipshell = IPShellEmbed()
 
 
-def SampleLinePlotter(s_data, plot_data, num_subplot=[1,1,1],abspath='None', **kwargs):
+def SampleLinePlotter(s_data, plot_data, num_subplot=[1,1,1],abspath=None, **kwargs):
     """
     This function generates the line plot for a specific sample. The number
     of assessors and attributes can be chosen in the checkListBoxes in the
@@ -348,7 +348,7 @@ def SampleLinePlotter(s_data, plot_data, num_subplot=[1,1,1],abspath='None', **k
 
 
 
-def AssessorLinePlotter(s_data, plot_data, num_subplot=[1,1,1], **kwargs):
+def AssessorLinePlotter(s_data, plot_data, num_subplot=[1,1,1],abspath=None,**kwargs):
     """
     This function generates the line plot for an specific assessor for a given
     sample. The numberof assessors and attributes can be chosen in the
@@ -683,7 +683,7 @@ def AssessorLinePlotter(s_data, plot_data, num_subplot=[1,1,1], **kwargs):
         return plot_data
 
 
-def ReplicateLinePlotter(s_data, plot_data, **kwargs):
+def ReplicateLinePlotter(s_data, plot_data,abspath=None, **kwargs):
     """
     This function generates the line plot for a specific replicate of a
     given assessor for a given sample. The numberof assessors and attributes
@@ -935,7 +935,7 @@ def ReplicateLinePlotter(s_data, plot_data, **kwargs):
 
 
 
-def SampleLineOverviewPlotter(s_data, plot_data,abspath, **kwargs):
+def SampleLineOverviewPlotter(s_data, plot_data,abspath=None, **kwargs):
     """
     Sample Line Overview Plot
     """
@@ -984,18 +984,18 @@ def SampleLineOverviewPlotter(s_data, plot_data,abspath, **kwargs):
     itemID_list = [] # takes part in what to be plotted
     for samp in s_data.SampleList:
         itemID_list.append([samp])
-    return OverviewPlotter(s_data, plot_data, itemID_list, SampleLinePlotter, s_data.SampleList,abspath)
+    return OverviewPlotter(s_data, plot_data, itemID_list, SampleLinePlotter, s_data.SampleList,abspath=abspath)
 
 
 
-def AssessorLineOverviewPlotter(s_data, plot_data, **kwargs):
+def AssessorLineOverviewPlotter(s_data, plot_data,abspath=None,**kwargs):
     """
     Assessor Line Overview Plot
     """
     itemID_list = [] # takes part in what to be plotted
     for ass in plot_data.activeAssessorsList:
         itemID_list.append([plot_data.tree_path[0], ass])
-    return OverviewPlotter(s_data, plot_data, itemID_list, AssessorLinePlotter, plot_data.activeAssessorsList)
+    return OverviewPlotter(s_data, plot_data, itemID_list, AssessorLinePlotter, plot_data.activeAssessorsList,abspath=abspath)
 
 
 
