@@ -3,7 +3,7 @@
 from Plot_Tools import *
 
 
-def EggshellPlotter(s_data, plot_data, num_subplot=[1,1,1], **kwargs):
+def EggshellPlotter(s_data, plot_data, num_subplot=[1, 1, 1], **kwargs):
     """
     This is the correlation plot function. In this plot the values of
     a single assessor are plotted against the average values of the
@@ -52,22 +52,21 @@ def EggshellPlotter(s_data, plot_data, num_subplot=[1,1,1], **kwargs):
     used for iterating through the active asessors
     ActiveSample_list: list
     """
-    #print itemID, ' was selected'
+    # print itemID, ' was selected'
 
     activeAssessorsList = plot_data.activeAssessorsList
     activeAttributesList = plot_data.activeAttributesList
     activeSamplesList = plot_data.activeSamplesList
     itemID = plot_data.tree_path
 
-
-    if len(activeAssessorsList) < 1: #no active assessors
+    if len(activeAssessorsList) < 1:  # no active assessors
         dlg = wx.MessageDialog(None, 'No assessors are active in CheckBox',
                                'Error Message',
                                wx.OK | wx.ICON_INFORMATION)
         dlg.ShowModal()
         dlg.Destroy()
         return
-    if len(activeSamplesList) < 1: #no active samples
+    if len(activeSamplesList) < 1:  # no active samples
         dlg = wx.MessageDialog(None, 'No samples are active in CheckBox',
                                'Error Message',
                                wx.OK | wx.ICON_INFORMATION)
@@ -75,17 +74,20 @@ def EggshellPlotter(s_data, plot_data, num_subplot=[1,1,1], **kwargs):
         dlg.Destroy()
         return
 
-
-
     # Figure
-    replot = False; subplot = plot_data.overview_plot
-    if plot_data.fig != None: replot = True
-    else: plot_data.fig = Figure(None)
-    if subplot: # is subplot
-        plot_data.ax = plot_data.fig.add_subplot(num_subplot[0], num_subplot[1], num_subplot[2])
-    else: plot_data.ax = axes_create(plot_data.view_legend, plot_data.fig)
-    ax = plot_data.ax; fig = plot_data.fig
-
+    replot = False
+    subplot = plot_data.overview_plot
+    if plot_data.fig is not None:
+        replot = True
+    else:
+        plot_data.fig = Figure(None)
+    if subplot:  # is subplot
+        plot_data.ax = plot_data.fig.add_subplot(
+            num_subplot[0], num_subplot[1], num_subplot[2])
+    else:
+        plot_data.ax = axes_create(plot_data.view_legend, plot_data.fig)
+    ax = plot_data.ax
+    fig = plot_data.fig
 
     # Construction of Tucker1-matrix, where assessor matrices are
     # put beside each other starting with assessor1, then assessor 2
@@ -98,7 +100,8 @@ def EggshellPlotter(s_data, plot_data, num_subplot=[1,1,1], **kwargs):
 
     # This matrix contains the average score (over replicates) that one
     # assessor gives for a particular sample.
-    SampleScoreAverageMatrix = zeros((numberOfSamples, numberOfAssessors), float)
+    SampleScoreAverageMatrix = zeros(
+        (numberOfSamples, numberOfAssessors), float)
 
     # This finds out which attribute was selected using the index
     # method for lists
@@ -107,7 +110,7 @@ def EggshellPlotter(s_data, plot_data, num_subplot=[1,1,1], **kwargs):
     # Here starts the calculation of the rank matrix containing the
     # rankings for all samples for all assessors.
     for assessor in activeAssessorsList:
-        #print assessor, itemID
+        # print assessor, itemID
 
         # Average values (over all replicates) and sample name of each sample
         # are collected in a dictionary first.
@@ -115,19 +118,20 @@ def EggshellPlotter(s_data, plot_data, num_subplot=[1,1,1], **kwargs):
 
         # Here starts calculation sample average over replicates
         for sample in activeSamplesList:
-            #print sample
+            # print sample
 
             sum = 0
             for replicate in s_data.ReplicateList:
-                value = s_data.SparseMatrix[(assessor, sample, replicate)][attributePosition]
+                value = s_data.SparseMatrix[(
+                    assessor, sample, replicate)][attributePosition]
                 sum = sum + float(value)
 
             average_ = sum / len(s_data.ReplicateList)
             #rankSampleDictionary[sample] = str(average_)
             rankSampleDictionary[sample] = average_
-            #print assessor, sample, rankSampleDictionary[sample]
-            SampleScoreAverageMatrix[activeSamplesList.index(sample)][activeAssessorsList.index(assessor)] = average_
-
+            # print assessor, sample, rankSampleDictionary[sample]
+            SampleScoreAverageMatrix[activeSamplesList.index(
+                sample)][activeAssessorsList.index(assessor)] = average_
 
         # Average and sample names are put in tuples that are stored in a
         # tupleList. (average, item)
@@ -141,22 +145,22 @@ def EggshellPlotter(s_data, plot_data, num_subplot=[1,1,1], **kwargs):
         # tupleList is sorted and reversed, such that the highest values
         # come first and the lowest last.
         tupleList.sort()
-##        print tupleList
-##        print
+# print tupleList
+# print
         tupleList.reverse()
-##        print tupleList
-##        print
+# print tupleList
+# print
 
         samplesAndRanks = {}
         # Here starts the calcuation of the rankings
-        #print '*** calc of rankings ***'
+        # print '*** calc of rankings ***'
         equalList = []
         indexList = []
 
         # Check items from first to next-to-last
         for item in range(len(tupleList) - 1):
 
-            #print item, tupleList[item]
+            # print item, tupleList[item]
             # If the actual item and the following one (runner up)
             # ARE EQUAL do this:
             if tupleList[item][0] == tupleList[item + 1][0]:
@@ -169,7 +173,6 @@ def EggshellPlotter(s_data, plot_data, num_subplot=[1,1,1], **kwargs):
                 # The runner-up item is also added to the equalList
                 equalList.append(tupleList[item + 1])
                 indexList.append(tupleList.index(tupleList[item + 1]) + 1)
-
 
                 # This one is for the case when the last item in the tupleList
                 # is equal to the next-to-last.
@@ -187,7 +190,7 @@ def EggshellPlotter(s_data, plot_data, num_subplot=[1,1,1], **kwargs):
                 # equal to the actual item
                 continue
 
-            #print '\n'#'it gets here'
+            # print '\n'#'it gets here'
 
             # This here calculates the common rank for those samples that
             # have the same average value for the specific assessor
@@ -201,7 +204,6 @@ def EggshellPlotter(s_data, plot_data, num_subplot=[1,1,1], **kwargs):
                 for sampleNames in equalList:
                     samplesAndRanks[sampleNames[1]] = realRanks
 
-
             # If the actual item and the runner-up ARE NOT EQUAL, do
             # the following:
             if tupleList[item][0] > tupleList[item + 1][0]:
@@ -210,7 +212,6 @@ def EggshellPlotter(s_data, plot_data, num_subplot=[1,1,1], **kwargs):
                     realRank = tupleList.index(tupleList[item]) + 1
 
                     samplesAndRanks[tupleList[item][1]] = float(realRank)
-
 
             # Empty the lists that are used for equal items. They will be
             # filled again when new equal items come up again
@@ -226,23 +227,24 @@ def EggshellPlotter(s_data, plot_data, num_subplot=[1,1,1], **kwargs):
                 if len(equalList) == 0:
                     samplesAndRanks[tupleList[item + 1][1]] = len(tupleList)
 
-        #print samplesAndRanks
-        #print
+        # print samplesAndRanks
+        # print
 
         for samples in activeSamplesList:
-            RankMatrix[activeSamplesList.index(samples)][activeAssessorsList.index(assessor)] = samplesAndRanks[samples]
+            RankMatrix[activeSamplesList.index(samples)][activeAssessorsList.index(
+                assessor)] = samplesAndRanks[samples]
 
-##    print tupleList
-##    print
+# print tupleList
+# print
 
-    #print
-    #print 'Rank Matrix'
-    #print RankMatrix
-    #print
+    # print
+    # print 'Rank Matrix'
+    # print RankMatrix
+    # print
 
 ##    copyOfRankMatrix = RankMatrix.copy()
 ##
-##    # Carrying out PCA for determination of the consensus ranking
+# Carrying out PCA for determination of the consensus ranking
 ##    PCAanalysis = PCA(copyOfRankMatrix, 1)
 ##    scores = PCAanalysis.GetScores()
 
@@ -262,57 +264,58 @@ def EggshellPlotter(s_data, plot_data, num_subplot=[1,1,1], **kwargs):
 
         for assessor in range(numberOfAssessors):
 
-            InverseRankMatrix[sample][assessor] = numberOfSamples + 1 - RankMatrix[sample][assessor]
+            InverseRankMatrix[sample][assessor] = numberOfSamples + \
+                1 - RankMatrix[sample][assessor]
 
-    #print
-    #print InverseRankMatrix
-    #print
-    #print SampleScoreAverageMatrix
+    # print
+    # print InverseRankMatrix
+    # print
+    # print SampleScoreAverageMatrix
 
     #sampleRankAverage = average(RankMatrix, axis=0, weights=None)
     # --- only for Masked Arrays
 
     # Transpose the SampleScoreAverageMatrix and get score average for each
     # sample over all assessors
-    #print SampleScoreAverageMatrix
-    #print SampleScoreAverageMatrix.transpose()
+    # print SampleScoreAverageMatrix
+    # print SampleScoreAverageMatrix.transpose()
     sampleRankAverage = average(SampleScoreAverageMatrix.transpose(), 0)
-    #print sampleRankAverage
-    #print
+    # print sampleRankAverage
+    # print
 
     # Calculate average for each sample over all assessors and then sort averages
     # by size to find the consensus ranking
     sampleList = []
     for sample in range(len(activeSamplesList)):
         newTuple = (sampleRankAverage[sample], activeSamplesList[sample])
-        #print newTuple
+        # print newTuple
         sampleList.append(newTuple)
 
     sampleList.sort()
-    #print
-    #print s_data.SampleList
-    #print
-    #s_data.SampleList.reverse()
-    #print s_data.SampleList
+    # print
+    # print s_data.SampleList
+    # print
+    # s_data.SampleList.reverse()
+    # print s_data.SampleList
 
-    #print
-    #print '***sorted***'
-    #for sample in sampleList:
+    # print
+    # print '***sorted***'
+    # for sample in sampleList:
     #    print sample
 
     # This matrix contains the ranks of each sample for each assessor, however
     # they are sorted according to consensus rank
     consensusRankedMatrix = zeros((numberOfSamples, numberOfAssessors), float)
-    #print
+    # print
     for sample in range(len(sampleList)):
         indexedSample = sampleList[sample][1]
-        indexedRowVector = InverseRankMatrix[activeSamplesList.index(indexedSample)]
+        indexedRowVector = InverseRankMatrix[activeSamplesList.index(
+            indexedSample)]
 
         consensusRankedMatrix[sample] = indexedRowVector
 
-    #print 'consensusRankedMatrix'
-    #print consensusRankedMatrix
-
+    # print 'consensusRankedMatrix'
+    # print consensusRankedMatrix
 
     # This matrix contains the cumulative ranks that are necessary for
     # further calculation
@@ -325,27 +328,25 @@ def EggshellPlotter(s_data, plot_data, num_subplot=[1,1,1], **kwargs):
             culSum = culSum + consensusRankedMatrix[sample][assessor]
             cumulativeRankedMatrix[sample][assessor] = culSum
 
-    #print
-    #print 'cumulativeRankedMatrix'
-    #print cumulativeRankedMatrix
-
+    # print
+    # print 'cumulativeRankedMatrix'
+    # print cumulativeRankedMatrix
 
     # This matrix contains the final values that are to be plotted in the
     # eggshell plot.
     eggshellMatrix = zeros((numberOfSamples, numberOfAssessors), float)
-    #print
+    # print
     for sample in range(1, numberOfSamples + 1):
         equ_i = float((numberOfSamples + 1) * sample) / 2
-        #print 'equ_i = ', equ_i
+        # print 'equ_i = ', equ_i
 
         eggshellMatrix[sample - 1] = cumulativeRankedMatrix[sample - 1] - equ_i
-        #print eggshellMatrix[sample - 1]
-        #print cumulativeRankedMatrix[sample - 1]
+        # print eggshellMatrix[sample - 1]
+        # print cumulativeRankedMatrix[sample - 1]
 
-
-    #print
-    #print 'eggshellMatrix'
-    #print eggshellMatrix
+    # print
+    # print 'eggshellMatrix'
+    # print eggshellMatrix
 
     print
 
@@ -356,10 +357,9 @@ def EggshellPlotter(s_data, plot_data, num_subplot=[1,1,1], **kwargs):
         min_i = float(sample * (sample + 1)) / 2
 
         b_i = min_i - equ_i
-        #print b_i
+        # print b_i
 
         baseline.append(b_i)
-
 
     print
     # Here starts the plotting procedure
@@ -369,14 +369,30 @@ def EggshellPlotter(s_data, plot_data, num_subplot=[1,1,1], **kwargs):
     # Collect info for legend
     plotList = []
 
-
     # This plots the baseline of the eggshell plot
     x_values = arange(1, numberOfSamples + 1)
     y_values = baseline
     ax.plot(x_values, y_values, 'm-', linewidth=2)
 
-    assessorPlotSettings = ['r-', 'g-', 'c-', 'y-', 'k-', 'b-', 'r--', 'g--', 'c--', 'y--', 'k--', 'b--', 'r-.', 'g-.', 'c-.', 'y-.', 'k-.', 'b-.']
-
+    assessorPlotSettings = [
+        'r-',
+        'g-',
+        'c-',
+        'y-',
+        'k-',
+        'b-',
+        'r--',
+        'g--',
+        'c--',
+        'y--',
+        'k--',
+        'b--',
+        'r-.',
+        'g-.',
+        'c-.',
+        'y-.',
+        'k-.',
+        'b-.']
 
     colors = assign_colors(s_data.AssessorList, ["rep"])
 
@@ -390,20 +406,25 @@ def EggshellPlotter(s_data, plot_data, num_subplot=[1,1,1], **kwargs):
         if y_max < max(eggshellMatrix[:, assessor]):
             y_max = max(eggshellMatrix[:, assessor])
 
-        #print 'y_max = ', y_max
-        if assessor > (numberOfAssessors*0.5):
+        # print 'y_max = ', y_max
+        if assessor > (numberOfAssessors * 0.5):
             linestyle = "--"
 
         #ax.plot(x_values, y_values, color=colors[(activeAssessorsList[assessor], "rep")][0], linestyle=linestyle, label=activeAssessorsList[assessor])
-        plotList.append(ax.plot(x_values, y_values, color=colors[(activeAssessorsList[assessor], "rep")][0], linestyle=linestyle, label=activeAssessorsList[assessor]))
+        plotList.append(ax.plot(x_values,
+                                y_values,
+                                color=colors[(activeAssessorsList[assessor],
+                                              "rep")][0],
+                                linestyle=linestyle,
+                                label=activeAssessorsList[assessor]))
         #c_index += 1
-        #if c_index >= len(assessorPlotSettings):
+        # if c_index >= len(assessorPlotSettings):
         #    c_index = 0
 
     # If 'Legend' is activated by user
     if plot_data.view_legend:
         h, l = ax.get_legend_handles_labels()
-        fig.legend(h,l)
+        fig.legend(h, l)
         #fig.legend(plotList, activeAssessorsList, 'upper right')
 
     # Defining the titles, axes names, etc
@@ -413,13 +434,16 @@ def EggshellPlotter(s_data, plot_data, num_subplot=[1,1,1], **kwargs):
     min_y_scale = min(baseline) - (y_max - min(baseline)) * 0.05
     max_y_scale = y_max + (y_max - min(baseline)) * 0.1
     if not subplot:
-        axes_setup(ax, 'consensus ranking', 'value', myTitle, [min_x_scale, max_x_scale, min_y_scale, max_y_scale])
-    else: axes_setup(ax, '', '', myTitle, [min_x_scale, max_x_scale, min_y_scale, max_y_scale], font_size=10)
+        axes_setup(ax, 'consensus ranking', 'value', myTitle, [
+                   min_x_scale, max_x_scale, min_y_scale, max_y_scale])
+    else:
+        axes_setup(
+            ax, '', '', myTitle, [
+                min_x_scale, max_x_scale, min_y_scale, max_y_scale], font_size=10)
 
     # Starting generation of the list that contains the raw data
     # that is shown in "Raw Data" when pushing the button in the plot
     emptyLine = ['']
-
 
     rawDataList = raw_data_grid(s_data, plot_data)
 
@@ -461,23 +485,34 @@ def EggshellPlotter(s_data, plot_data, num_subplot=[1,1,1], **kwargs):
         if len(samples) > 11:
             set_xlabeling_rotation(ax, 'vertical')
 
-    frame_colored = colored_frame(s_data, plot_data, activeAttributesList, itemID[0])
+    frame_colored = colored_frame(
+        s_data,
+        plot_data,
+        activeAttributesList,
+        itemID[0])
     if frame_colored:
         significance_legend(plot_data, pos='lower right')
 
-    #update plot-data variables:
+    # update plot-data variables:
     plot_data.raw_data = rawDataList
     plot_data.numeric_data = resultList
     plot_data.plot_type = "egg"
 
-    #Frame draw, for standard Matplotlib frame only use show()
+    # Frame draw, for standard Matplotlib frame only use show()
     return plot_data
 
-def EggshellOverviewPlotter(s_data, plot_data,abspath, **kwargs):
+
+def EggshellOverviewPlotter(s_data, plot_data, abspath, **kwargs):
     """
     Overview plot
     """
-    itemID_list = [] # takes part in what to be plotted
+    itemID_list = []  # takes part in what to be plotted
     for att in s_data.AttributeList:
         itemID_list.append([att])
-    return OverviewPlotter(s_data, plot_data, itemID_list, EggshellPlotter, s_data.AttributeList,abspath=abspath)
+    return OverviewPlotter(
+        s_data,
+        plot_data,
+        itemID_list,
+        EggshellPlotter,
+        s_data.AttributeList,
+        abspath=abspath)

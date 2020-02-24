@@ -1,5 +1,6 @@
 import _pickle as bin
-import copy, os.path
+import copy
+import os.path
 import pdb
 """
 
@@ -37,8 +38,6 @@ Henning Risvik (31.12.2007)
 """
 
 
-
-
 class SessionData:
     """
     holds:
@@ -49,10 +48,12 @@ class SessionData:
     future: selections for each plot, maybe calculated data
     """
 
-
     def __init__(self):
-        self.recent_files = [] # on the form: [[abspath1, delimiter1], [abspath2, delimiter2], ... , [abspathN, delimiterN]]
-        self.sensory_data = None # SensoryData object (sensory data of self.recent_files[-1])
+        # on the form: [[abspath1, delimiter1], [abspath2, delimiter2], ... ,
+        # [abspathN, delimiterN]]
+        self.recent_files = []
+        # SensoryData object (sensory data of self.recent_files[-1])
+        self.sensory_data = None
         self.view = {}
         self.view["grid"] = False
         self.view["legend"] = True
@@ -60,21 +61,19 @@ class SessionData:
         self.image_save_path = ""
         self.export_active_plots = []
 
-
     def store_session_file(self, filename="session.dat"):
         """
         Save session data
         Note: overwrites file given by filename
         pickle.HIGHEST_PROTOCOL will be used
         """
-        #pdb.set_trace()
+        # pdb.set_trace()
         try:
             f = open(filename, "wb")
             bin.dump(self, f, -1)
             f.close()
-        except:
+        except BaseException:
             print("Could not write file.")
-
 
     def update(self, **kwargs):
 
@@ -86,11 +85,10 @@ class SessionData:
                 if recent[0] != kwargs["new_recent"][0]:
                     temp.append(recent)
             temp.append(kwargs["new_recent"])
-            #print kwargs["new_recent"]
+            # print kwargs["new_recent"]
             if len(temp) > limit:
                 del temp[0]
             self.recent_files = temp
-
 
         if "sensory_data" in kwargs:
             self.sensory_data = kwargs["sensory_data"]
@@ -104,13 +102,10 @@ class SessionData:
         if "export_active_plots" in kwargs:
             self.export_active_plots = kwargs["export_active_plots"]
 
-
-
     def update_view(self, v):
         self.view["grid"] = v["grid"]
         self.view["legend"] = v["legend"]
         self.view["selection"] = v["selection"]
-
 
     def check_recent_files(self):
         temp = []
@@ -118,7 +113,6 @@ class SessionData:
             if os.path.isfile(recent_file[0]):
                 temp.append(recent_file)
         self.recent_files = temp
-
 
 
 def load_session_data(filename="session.dat"):
@@ -133,7 +127,7 @@ def load_session_data(filename="session.dat"):
     if s > 0:
         try:
             f = open(filename, "rb")
-            session = bin.load(f) # class/object is reconstructed and returned
+            session = bin.load(f)  # class/object is reconstructed and returned
             session.check_recent_files()
             f.close()
             return session

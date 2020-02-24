@@ -1,21 +1,24 @@
 #!/usr/bin/env python
 
-import wx, os, sys
+import wx
+import os
+import sys
 
 if wx.Platform == '__WXMSW__':
-    import  wx.lib.iewin as html
+    import wx.lib.iewin as html
 else:
     import wx.html as html
 
 
 class AboutFrame(wx.Frame):
-    def __init__(self, parent,abspath):
+    def __init__(self, parent, abspath):
         """
         The AboutFrame class creates window with information about PanelCheck and
         credits.
         """
-        wx.Frame.__init__(self, parent, -1, "About", (-1,-1), (-1,-1),style=wx.MINIMIZE_BOX|wx.CLOSE_BOX)
-        #self.SetBackgroundColour(wx.NamedColor("BLACK"))
+        wx.Frame.__init__(self, parent, -1, "About", (-1, -1),
+                          (-1, -1), style=wx.MINIMIZE_BOX | wx.CLOSE_BOX)
+        # self.SetBackgroundColour(wx.NamedColor("BLACK"))
 
         #pathname = os.path.dirname(sys.argv[0])
         #self.progPath = os.path.abspath(pathname).decode(sys.getfilesystemencoding())
@@ -23,15 +26,15 @@ class AboutFrame(wx.Frame):
         self.progPath = abspath
         #self.html_panel = wx.Panel(self, id = wx.NewId())
         if wx.Platform == '__WXMSW__':
-            self.html = html.IEHtmlWindow(self, -1, style = wx.NO_FULL_REPAINT_ON_RESIZE)
+            self.html = html.IEHtmlWindow(
+                self, -1, style=wx.NO_FULL_REPAINT_ON_RESIZE)
             self.html.LoadUrl(self.progPath + "/about.html")
         else:
-            self.html = html.HtmlWindow(id=wx.NewId(), name='html', parent=self,
-                pos=(-1,-1),size=(600,500), style=wx.html.HW_SCROLLBAR_AUTO)
+            self.html = html.HtmlWindow(id=wx.NewId(), name='html', parent=self, pos=(
+                -1, -1), size=(600, 500), style=wx.html.HW_SCROLLBAR_AUTO)
             self.html.LoadPage(self.progPath + "/about.html")
 
-
-        self.button_panel = wx.Panel(self, id = wx.NewId())
+        self.button_panel = wx.Panel(self, id=wx.NewId())
 
         #ok = wx.NewId()
         #self.button_ok = wx.Button(self.button_panel, ok, "OK")
@@ -44,17 +47,14 @@ class AboutFrame(wx.Frame):
         #sizer_inner = wx.BoxSizer(wx.HORIZONTAL)
 
         #sizer_inner.Add(self.button_ok, 0,  wx.BOTTOM|wx.RIGHT)
-        #self.button_panel.SetSizer(sizer_inner)
+        # self.button_panel.SetSizer(sizer_inner)
 
         sizer.Add(self.html, 1, wx.GROW)
         #sizer.Add(self.button_panel, 0, wx.EXPAND)
 
-
         self.SetSizer(sizer)
-        self.SetSize((700,666))
+        self.SetSize((700, 666))
         self.Layout()
-
-
 
     def closeFrame(self, event):
         """
@@ -66,11 +66,8 @@ class AboutFrame(wx.Frame):
         """
         self.Close()
 
-
-
     def OnLeftDown(self, evt):
         self.Close()
-
 
 
 class Starter(wx.App):
@@ -84,9 +81,10 @@ class Starter(wx.App):
         frame.Show()
         return 1
 
+
 if __name__ == "__main__":
     import gettext
-    gettext.install("app") # replace with the appropriate catalog name
+    gettext.install("app")  # replace with the appropriate catalog name
 
     app = Starter(0)
     app.MainLoop()

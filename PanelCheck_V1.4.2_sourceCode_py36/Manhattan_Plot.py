@@ -2,9 +2,7 @@
 
 
 from Plot_Tools import *
-
-
-
+import matplotlib as mpl
 
 def ManhattanCalc(X, PCs=14, standardize=False):
     """
@@ -25,10 +23,7 @@ def ManhattanCalc(X, PCs=14, standardize=False):
     @return: Scores (2d numpy array), Loadings (2d numpy array), Explained variable variances (2d numpy array)
     """
 
-
     (rows, cols) = shape(X)
-
-
 
     # E[0]
     E0 = mean_center(X)
@@ -40,7 +35,8 @@ def ManhattanCalc(X, PCs=14, standardize=False):
     # for E[0] the total residual variance is 100%
     tot_residual_variance_0 = 0
 
-    # get variable residual variances for E[0] (used for normalization of residual variable variances of E[i])
+    # get variable residual variances for E[0] (used for normalization of
+    # residual variable variances of E[i])
     variable_residual_variances_0 = zeros((cols), float)
     for var_ind in range(cols):
         variable_residual_variances_0[var_ind] = sum(E0[:, var_ind]**2)
@@ -55,13 +51,12 @@ def ManhattanCalc(X, PCs=14, standardize=False):
     # E
     # E-matrix[1] ... E-matrix[PCs]
 
-
-    Scores, Loadings, E = PCA(X, standardize=standardize, PCs=PCs, E_matrices=True, nipals=True)
-    #print "pca done"
+    Scores, Loadings, E = PCA(
+        X, standardize=standardize, PCs=PCs, E_matrices=True, nipals=True)
+    # print "pca done"
 
     (objects, variables) = shape(E[0])
     actual_PCs = len(E)
-
 
     explained_variable_variances = zeros((actual_PCs, variables), float)
 
@@ -74,14 +69,14 @@ def ManhattanCalc(X, PCs=14, standardize=False):
 
             # calculate residual variable variances for PC[i] and current variable
             # normalize for current variable
-            variable_residual_variances_i[var_ind] = sum(E[i, :, var_ind]**2) / float(variable_residual_variances_0[var_ind])
+            variable_residual_variances_i[var_ind] = sum(
+                E[i, :, var_ind]**2) / float(variable_residual_variances_0[var_ind])
 
         # calculate explained variance for all variables for PC[i]
-        explained_variable_variances[i, :] =  1.0 - variable_residual_variances_i[:]
+        explained_variable_variances[i, :] = 1.0 - \
+            variable_residual_variances_i[:]
 
     return [Scores, Loadings, explained_variable_variances]
-
-
 
 
 def get_leave_out_variables(X):
@@ -99,7 +94,6 @@ def get_leave_out_variables(X):
     # E[0]
     E0 = mean_center(X)
 
-
     # check for variables to be left out:
     leave_out_inds = []
     for var_ind in range(cols):
@@ -107,14 +101,12 @@ def get_leave_out_variables(X):
         if abs(variable_residual_var) < 0.000000001:
             leave_out_inds.append(var_ind)
 
-
-
     # update X
     if len(leave_out_inds) > 0:
         print("leave out:")
         print(leave_out_inds)
 
-        X_ = zeros((rows, cols-len(leave_out_inds)))
+        X_ = zeros((rows, cols - len(leave_out_inds)))
         ind = 0
         for var_ind in range(cols):
             if var_ind not in leave_out_inds:
@@ -123,7 +115,6 @@ def get_leave_out_variables(X):
         X = X_
 
     return leave_out_inds, X
-
 
 
 def get_dataset(s_data, plot_data, active_assessor):
@@ -144,8 +135,10 @@ def get_dataset(s_data, plot_data, active_assessor):
     """
 
     # active_replicates=[s_data.ReplicateList[0]] # with first replicates only
-    return s_data.GetAssessorAveragedDataAs2DARRAY(active_samples=plot_data.activeSamplesList, active_attributes=plot_data.activeAttributesList, active_assessor=active_assessor)
-
+    return s_data.GetAssessorAveragedDataAs2DARRAY(
+        active_samples=plot_data.activeSamplesList,
+        active_attributes=plot_data.activeAttributesList,
+        active_assessor=active_assessor)
 
 
 def get_normalized_color(rgb, color_range=(0.0, 255.0)):
@@ -169,20 +162,20 @@ def get_normalized_color(rgb, color_range=(0.0, 255.0)):
     # scaling to range [0.0, 1.0]
 
     # find min and max
-    ind_1 = 1; ind_2 = 0
+    ind_1 = 1
+    ind_2 = 0
     if color_range[0] > color_range[1]:
-        ind_1 = 0; ind_2 = 1
+        ind_1 = 0
+        ind_2 = 1
 
-
-    #range length (difference):
-    range_length =  (color_range[ind_1]) - (color_range[ind_2])
+    # range length (difference):
+    range_length = (color_range[ind_1]) - (color_range[ind_2])
 
     # scale:
     new_r = rgb[0] / (range_length)
     new_g = rgb[1] / (range_length)
     new_b = rgb[2] / (range_length)
     return (new_r, new_g, new_b)
-
 
 
 def get_plot_data_matrix(c_data, plot_data, projection_type, current_active):
@@ -210,7 +203,8 @@ def get_plot_data_matrix(c_data, plot_data, projection_type, current_active):
 
     if projection_type == "manhattan_ass":
         if len(c_data[current_active]) == 4:
-            return c_data[current_active][2], c_data[current_active][3] # explained_variable_variances for current assessor is returned
+            # explained_variable_variances for current assessor is returned
+            return c_data[current_active][2], c_data[current_active][3]
         else:
             return c_data[current_active][2], plot_data.activeAttributesList
 
@@ -219,18 +213,17 @@ def get_plot_data_matrix(c_data, plot_data, projection_type, current_active):
         # pointer to active assessors list
         active_assessors = plot_data.activeAssessorsList
 
-
-
         # get information about calculated data
-        if not c_data[active_assessors[0]] == None:
+        if not c_data[active_assessors[0]] is None:
             (PCs, num_vars) = shape(c_data[active_assessors[0]][2])
 
         else:
-            #print "c_data["+ active_assessors[0] +"] == None"
-            return None # failed
+            # print "c_data["+ active_assessors[0] +"] == None"
+            return None  # failed
 
         # leave out assessor?:
-        var_inds = []; new_active_ass = []
+        var_inds = []
+        new_active_ass = []
         for ass_ind in range(len(active_assessors)):
             (temp_PCs, num_vars) = shape(c_data[active_assessors[ass_ind]][2])
             if temp_PCs < PCs:
@@ -243,32 +236,38 @@ def get_plot_data_matrix(c_data, plot_data, projection_type, current_active):
                     # index pos of current active variable:
                     active_var_pos = active_att.index(current_active)
                     var_inds.append(active_var_pos)
-                #else: leave out assessor
+                # else: leave out assessor
             else:
                 new_active_ass.append(active_assessors[ass_ind])
                 # index pos of current active variable:
-                active_var_pos = plot_data.activeAttributesList.index(current_active)
+                active_var_pos = plot_data.activeAttributesList.index(
+                    current_active)
                 var_inds.append(active_var_pos)
 
-
-        # create a data matrix with variable variances for current variable and all active assessors
-        all_current_active_variable_variances = zeros((PCs, len(new_active_ass)), float)
+        # create a data matrix with variable variances for current variable and
+        # all active assessors
+        all_current_active_variable_variances = zeros(
+            (PCs, len(new_active_ass)), float)
 
         # fetch data:
-        for ind in range(len(new_active_ass)): # for each assessor
-            all_current_active_variable_variances[0:PCs, ind] = c_data[new_active_ass[ind]][2][0:PCs, var_inds[ind]]
+        for ind in range(len(new_active_ass)):  # for each assessor
+            all_current_active_variable_variances[0:PCs,
+                                                  ind] = c_data[new_active_ass[ind]][2][0:PCs,
+                                                                                        var_inds[ind]]
 
         return all_current_active_variable_variances, new_active_ass
 
-
-
     else:
         print("Projection type not correct")
-        return None # failed
+        return None  # failed
 
 
-
-def get_numerical_data_manhattan(active_assessors, active_attributes, plot_data, s_data, c_data):
+def get_numerical_data_manhattan(
+        active_assessors,
+        active_attributes,
+        plot_data,
+        s_data,
+        c_data):
     """
 
     Create numerical data for grid view.
@@ -296,25 +295,20 @@ def get_numerical_data_manhattan(active_assessors, active_attributes, plot_data,
     # ass_data = c_data['assessor1']
     # ass_data[0] = Scores, ass_data[1] = Loadings, ass_data[2] = explained_variable_variances
 
-
-
-
     numericDataList = []
     emptyline = ['']
     headerline = ['Numerical Manhattan Data']
-    underline =     ['========================']
+    underline = ['========================']
     numericDataList.append(headerline)
     numericDataList.append(underline)
     numericDataList.append(emptyline)
 
-
     if len(active_assessors) == 1:
-
-
 
         headerline = ['Attributes left out:']
         if len(c_data[active_assessors[0]]) == 4:
-            actives = c_data[active_assessors[0]][3]; not_in = []
+            actives = c_data[active_assessors[0]][3]
+            not_in = []
             for att in plot_data.activeAttributesList:
                 if att not in actives:
                     not_in.append(att)
@@ -323,19 +317,19 @@ def get_numerical_data_manhattan(active_assessors, active_attributes, plot_data,
                 numericDataList.append(headerline)
                 numericDataList.append(emptyline)
 
-
-
         headerline = ['Cumulative expl. variable variances:']
         numericDataList.append(headerline)
 
         headerline = ['']
         headerline.extend(active_attributes)
         numericDataList.append(headerline)
-        for PC_i in range(len(c_data[active_assessors[0]][2])): # for each PC
-            dataline = []; pc_str = "PC" + str(PC_i+1)
+        for PC_i in range(len(c_data[active_assessors[0]][2])):  # for each PC
+            dataline = []
+            pc_str = "PC" + str(PC_i + 1)
             dataline.append(pc_str)
             for att_ind in range(len(active_attributes)):
-                dataline.append(num2str(c_data[active_assessors[0]][2][PC_i, att_ind] * 100.0, fmt="%.3f") + "%")
+                dataline.append(num2str(
+                    c_data[active_assessors[0]][2][PC_i, att_ind] * 100.0, fmt="%.3f") + "%")
 
             numericDataList.append(dataline)
 
@@ -345,33 +339,32 @@ def get_numerical_data_manhattan(active_assessors, active_attributes, plot_data,
 
         headerline = ['Scores:']
         numericDataList.append(headerline)
-        for PC_i in range(len(c_data[active_assessors[0]][1])): # for each PC
-            dataline = []; pc_str = "PC" + str(PC_i+1)
+        for PC_i in range(len(c_data[active_assessors[0]][1])):  # for each PC
+            dataline = []
+            pc_str = "PC" + str(PC_i + 1)
             dataline.append(pc_str)
 
             # complete data:
-            #for samp_ind in range(len(plot_data.activeSamplesList) * len(s_data.ReplicateList)):
+            # for samp_ind in range(len(plot_data.activeSamplesList) * len(s_data.ReplicateList)):
             #    dataline.append(c_data[active_assessors[0]][0][samp_ind, PC_i])
-
 
             # averaged data:
             for samp_ind in range(len(plot_data.activeSamplesList)):
-                dataline.append(num2str(c_data[active_assessors[0]][0][samp_ind, PC_i]))
+                dataline.append(
+                    num2str(c_data[active_assessors[0]][0][samp_ind, PC_i]))
 
             if PC_i == 0:
                 headerline = ['']
                 for samp in plot_data.activeSamplesList:
                     # complete data:
-                    #for rep in s_data.ReplicateList:
+                    # for rep in s_data.ReplicateList:
                     #    headerline.append(samp + " - " + rep)
-
 
                     # averaged data:
                     headerline.append(samp)
                 numericDataList.append(headerline)
 
             numericDataList.append(dataline)
-
 
         numericDataList.append(emptyline)
         numericDataList.append(emptyline)
@@ -382,11 +375,13 @@ def get_numerical_data_manhattan(active_assessors, active_attributes, plot_data,
         headerline = ['']
         headerline.extend(active_attributes)
         numericDataList.append(headerline)
-        for PC_i in range(len(c_data[active_assessors[0]][1])): # for each PC
-            dataline = []; pc_str = "PC" + str(PC_i+1)
+        for PC_i in range(len(c_data[active_assessors[0]][1])):  # for each PC
+            dataline = []
+            pc_str = "PC" + str(PC_i + 1)
             dataline.append(pc_str)
             for att_ind in range(len(active_attributes)):
-                dataline.append(num2str(c_data[active_assessors[0]][1][PC_i, att_ind]))
+                dataline.append(
+                    num2str(c_data[active_assessors[0]][1][PC_i, att_ind]))
 
             numericDataList.append(dataline)
 
@@ -404,10 +399,11 @@ def get_numerical_data_manhattan(active_assessors, active_attributes, plot_data,
             if temp_PCs < PCs:
                 PCs = temp_PCs
 
-
-        active_att_ind = plot_data.activeAttributesList.index(active_attributes[0])
-        for PC_i in range(PCs): # for each PC
-            dataline = []; pc_str = "PC" + str(PC_i+1)
+        active_att_ind = plot_data.activeAttributesList.index(
+            active_attributes[0])
+        for PC_i in range(PCs):  # for each PC
+            dataline = []
+            pc_str = "PC" + str(PC_i + 1)
             dataline.append(pc_str)
             for ass_ind in range(len(active_assessors)):
                 if len(c_data[active_assessors[ass_ind]]) == 4:
@@ -415,19 +411,24 @@ def get_numerical_data_manhattan(active_assessors, active_attributes, plot_data,
                         active_att = c_data[active_assessors[ass_ind]][3]
                         # index pos of current active variable:
                         active_att_ind = active_att.index(active_attributes[0])
-                        dataline.append(num2str(c_data[active_assessors[ass_ind]][2][PC_i, active_att_ind] * 100.0, fmt="%.3f") + "%")
+                        dataline.append(num2str(
+                            c_data[active_assessors[ass_ind]][2][PC_i, active_att_ind] * 100.0, fmt="%.3f") + "%")
                 else:
                     # index pos of current active variable:
-                    active_att_ind = plot_data.activeAttributesList.index(active_attributes[0])
-                    dataline.append(num2str(c_data[active_assessors[ass_ind]][2][PC_i, active_att_ind] * 100.0, fmt="%.3f") + "%")
+                    active_att_ind = plot_data.activeAttributesList.index(
+                        active_attributes[0])
+                    dataline.append(num2str(
+                        c_data[active_assessors[ass_ind]][2][PC_i, active_att_ind] * 100.0, fmt="%.3f") + "%")
 
             numericDataList.append(dataline)
     return numericDataList
 
 
-
-
-def get_raw_data_manhattan(active_assessors, active_attributes, plot_data, s_data):
+def get_raw_data_manhattan(
+        active_assessors,
+        active_attributes,
+        plot_data,
+        s_data):
     """
     Create raw data for grid view.
 
@@ -502,11 +503,10 @@ def ManhattanPlotImage(s_data, plot_data, m_data, col_list, cmap=None):
 
     """
 
-
     (rows, cols) = shape(m_data)
 
-    dy = 1.0 # height step size
-    dx = 1.0 # width step size
+    dy = 1.0  # height step size
+    dx = 1.0  # width step size
 
     vertices = []
     facecolors = []
@@ -520,41 +520,91 @@ def ManhattanPlotImage(s_data, plot_data, m_data, col_list, cmap=None):
         y_value -= 1
         for col in range(0, cols):
 
-            x1 = col*dx
-            x2 = x1+dx
+            x1 = col * dx
+            x2 = x1 + dx
 
-            y1 = row*dy
-            y2 = y1+dy
+            y1 = row * dy
+            y2 = y1 + dy
 
             # the four xy points: upper-left upper-right lower-left lower-right
             xy = ((x1, y1), (x2, y1), (x2, y2), (x1, y2))
             vertices.append(xy)
 
-            expl_variance = "%.3f" % (100.0*m_data[y_value][col])
-            pointAndLabelList.append([x1+0.5, y1+0.5, "(PC" + str(y_value+1) + ", " + col_list[col] + ", Explained variance: " + expl_variance + "%)"])
-
+            expl_variance = "%.3f" % (100.0 * m_data[y_value][col])
+            pointAndLabelList.append([x1 +
+                                      0.5, y1 +
+                                      0.5, "(PC" +
+                                      str(y_value +
+                                          1) +
+                                      ", " +
+                                      col_list[col] +
+                                      ", Explained variance: " +
+                                      expl_variance +
+                                      "%)"])
 
             # get color for current quad
-            if cmap == None:
-                _color = get_normalized_color((m_data[y_value][col], m_data[y_value][col], m_data[y_value][col]), color_range=(0.0, 1.0))
+            if cmap is None:
+                _color = get_normalized_color(
+                    (m_data[y_value][col],
+                     m_data[y_value][col],
+                        m_data[y_value][col]),
+                    color_range=(
+                        0.0,
+                        1.0))
             else:
                 _color = cmap(m_data[y_value][col])
 
             facecolors.append(_color)
             edgecolors.append(_color)
 
-
-
     # init of PolyCollection
-    # using PolyCollection and not QuadMesh because PolyCollection supports ScalarMappable (like colormap)
+    # using PolyCollection and not QuadMesh because PolyCollection supports
+    # ScalarMappable (like colormap)
 
-    collection = PolyCollection(vertices, facecolors=facecolors, edgecolors=edgecolors)
+    collection = PolyCollection(
+        vertices,
+        facecolors=facecolors,
+        edgecolors=edgecolors)
 
     plot_data.ax.add_collection(collection)
 
-    return collection, pointAndLabelList # Vector image added successfully
+    return collection, pointAndLabelList  # Vector image added successfully
 
+def reverse_colourmap(cmap, name = 'my_cmap_r'):
+    """
+    In:
+    cmap, name
+    Out:
+    my_cmap_r
 
+    Explanation:
+    t[0] goes from 0 to 1
+    row i:   x  y0  y1 -> t[0] t[1] t[2]
+                   /
+                  /
+    row i+1: x  y0  y1 -> t[n] t[1] t[2]
+
+    so the inverse should do the same:
+    row i+1: x  y1  y0 -> 1-t[0] t[2] t[1]
+                   /
+                  /
+    row i:   x  y1  y0 -> 1-t[n] t[2] t[1]
+    """
+    reverse = []
+    k = []
+
+    for key in cmap._segmentdata:
+        k.append(key)
+        channel = cmap._segmentdata[key]
+        data = []
+
+        for t in channel:
+            data.append((1-t[0],t[2],t[1]))
+        reverse.append(sorted(data))
+
+    LinearL = dict(zip(k,reverse))
+    my_cmap_r = mpl.colors.LinearSegmentedColormap(name, LinearL)
+    return my_cmap_r
 
 def set_manhattan_colorbar(fig, colormap):
     """
@@ -572,15 +622,17 @@ def set_manhattan_colorbar(fig, colormap):
     """
 
     # set color map mappable
+    #import pdb; pdb.set_trace()
     colormap_mappable = ScalarMappable(cmap=colormap)
 
     colormap_mappable.set_array(array([100, 0]))
     #colormap_mappable.set_clim(vmin=(100, 0))
     colorbar = fig.colorbar(colormap_mappable)
     # flip colorbar vertically
-    #colormap_mappable.colorbar[1].invert_yaxis()
+    # colormap_mappable.colorbar[1].invert_yaxis()
 
     colorbar.set_label('Explained Variance [%]')
+    colorbar.ax.invert_yaxis()
     return colorbar
 
 
@@ -608,7 +660,15 @@ def has_error(plot_data):
     return False
 
 
-def ManhattanPlotter(s_data, plot_data, num_subplot=[1,1,1], selection=0,abspath=None):
+def ManhattanPlotter(
+        s_data,
+        plot_data,
+        num_subplot=[
+            1,
+            1,
+            1],
+    selection=0,
+        abspath=None):
     """
 
     Manhattan Plot main method. Returns "filled" PlotData or None type if plotting fails.
@@ -631,19 +691,19 @@ def ManhattanPlotter(s_data, plot_data, num_subplot=[1,1,1], selection=0,abspath
     """
 
     current_active = plot_data.tree_path[0]
-    #print current_active
+    # print current_active
 
     plot_data.selection = selection
     # selection = 0: raw-data
     # selection = 1: standardize
-    if has_error(plot_data): return
+    if has_error(plot_data):
+        return
 
     # PCA mode
     if selection == 0:
         standardize = False
     elif selection == 1:
         standardize = True
-
 
     view_legend = False
     # set plot projection type:
@@ -653,16 +713,17 @@ def ManhattanPlotter(s_data, plot_data, num_subplot=[1,1,1], selection=0,abspath
         plot_type = "manhattan_att"
         view_legend = plot_data.view_legend
     else:
-        show_err_msg('Current active element not accepted: ' + str(current_active))
+        show_err_msg(
+            'Current active element not accepted: ' +
+            str(current_active))
         return
 
     plot_data.view_legend = view_legend
 
-
-
     max_number_of_PCs = plot_data.maxPCs
 
-    c_data = {} # ex: c_data['assessor1'] = [T, P, explained_variable_variances]
+    # ex: c_data['assessor1'] = [T, P, explained_variable_variances]
+    c_data = {}
 
     if len(plot_data.collection_calc_data) > 0:
         c_data = plot_data.collection_calc_data
@@ -671,11 +732,9 @@ def ManhattanPlotter(s_data, plot_data, num_subplot=[1,1,1], selection=0,abspath
         msg = 'The following attributes were left out of the analysis because \nfor one or more assessors the standard deviation is 0: \n\n'
         leave_outs = False
 
-
         for active_assessor in plot_data.activeAssessorsList:
 
             m_data = get_dataset(s_data, plot_data, active_assessor)
-
 
             if standardize:
                 leave_out_inds, X = get_leave_out_variables(m_data)
@@ -688,7 +747,8 @@ def ManhattanPlotter(s_data, plot_data, num_subplot=[1,1,1], selection=0,abspath
                 new_active_att = []
                 for att_ind in range(len(plot_data.activeAttributesList)):
                     if att_ind not in leave_out_inds:
-                        new_active_att.append(plot_data.activeAttributesList[att_ind])
+                        new_active_att.append(
+                            plot_data.activeAttributesList[att_ind])
 
                 msg += 'For ' + active_assessor + ': ('
                 for att_ind in leave_out_inds:
@@ -701,9 +761,9 @@ def ManhattanPlotter(s_data, plot_data, num_subplot=[1,1,1], selection=0,abspath
             else:
                 new_active_att = plot_data.activeAttributesList
 
-
             # ass_data[0] = Scores, ass_data[1] = Loadings, ass_data[2] = explained_variable_variances
-            ass_data = ManhattanCalc(X, PCs=max_number_of_PCs, standardize=standardize)
+            ass_data = ManhattanCalc(
+                X, PCs=max_number_of_PCs, standardize=standardize)
 
             if len(leave_out_inds) > 0:
                 ass_data.append(new_active_att)
@@ -719,73 +779,84 @@ def ManhattanPlotter(s_data, plot_data, num_subplot=[1,1,1], selection=0,abspath
         # store pointer to collection for usage later
         plot_data.collection_calc_data = c_data
 
-
-
-
-
-
-
     # get data-matrix for plotting:
-    plot_data_matrix, active_list = get_plot_data_matrix(c_data, plot_data, plot_type, current_active)
+    plot_data_matrix, active_list = get_plot_data_matrix(
+        c_data, plot_data, plot_type, current_active)
 
     if not isinstance(plot_data_matrix, (ndarray, list)):
         raise(TypeError, "plot_data_matrix is not an array object")
-        #return -1 # TypeError of m_data
+        # return -1 # TypeError of m_data
 
     (rows, cols) = shape(plot_data_matrix)
 
     if rows < 1 or cols < 1:
-        _msg = "Cannot produce plot. All data has been left out of analysis for " + current_active + "."
+        _msg = "Cannot produce plot. All data has been left out of analysis for " + \
+            current_active + "."
         show_info_msg(_msg)
         return
-        #raise ValueError, "incorret dimensions of m_data" # Error in dimensions of m_data
-
-
+        # raise ValueError, "incorret dimensions of m_data" # Error in
+        # dimensions of m_data
 
     # Figure
-    replot = False; subplot = plot_data.overview_plot; scatter_width = 35
-    if plot_data.fig != None: replot = True
-    else: plot_data.fig = Figure(None)
-    if subplot: # is subplot
-        plot_data.ax = plot_data.fig.add_subplot(num_subplot[0], num_subplot[1], num_subplot[2])
+    replot = False
+    subplot = plot_data.overview_plot
+    scatter_width = 35
+    if plot_data.fig is not None:
+        replot = True
+    else:
+        plot_data.fig = Figure(None)
+    if subplot:  # is subplot
+        plot_data.ax = plot_data.fig.add_subplot(
+            num_subplot[0], num_subplot[1], num_subplot[2])
         scatter_width = 15
-    else: plot_data.ax = axes_create(view_legend, plot_data.fig)
-    ax = plot_data.ax; fig = plot_data.fig
-
-
-
+    else:
+        plot_data.ax = axes_create(view_legend, plot_data.fig)
+    ax = plot_data.ax
+    fig = plot_data.fig
 
     # colormap: from Plot_Tools
     cmap = colormaps['manhattan']
 
-
     # Produce image:
     if plot_type == "manhattan_ass":
-        collection, pointAndLabelList = ManhattanPlotImage(s_data, plot_data, plot_data_matrix, active_list, cmap=cmap)
+        collection, pointAndLabelList = ManhattanPlotImage(
+            s_data, plot_data, plot_data_matrix, active_list, cmap=cmap)
 
         if not plot_data.overview_plot:
             # set numerical and raw data:
-            plot_data.numeric_data = get_numerical_data_manhattan([current_active], active_list, plot_data, s_data, c_data)
-            plot_data.raw_data = get_raw_data_manhattan([current_active], active_list, plot_data, s_data)
+            plot_data.numeric_data = get_numerical_data_manhattan(
+                [current_active], active_list, plot_data, s_data, c_data)
+            plot_data.raw_data = get_raw_data_manhattan(
+                [current_active], active_list, plot_data, s_data)
 
     elif plot_type == "manhattan_att":
-        collection, pointAndLabelList = ManhattanPlotImage(s_data, plot_data, plot_data_matrix, active_list, cmap=cmap)
+        collection, pointAndLabelList = ManhattanPlotImage(
+            s_data, plot_data, plot_data_matrix, active_list, cmap=cmap)
 
         if not plot_data.overview_plot:
             # set numerical and raw data:
-            plot_data.numeric_data = get_numerical_data_manhattan(active_list, [current_active], plot_data, s_data, c_data)
-            plot_data.raw_data = get_raw_data_manhattan(active_list, [current_active], plot_data, s_data)
+            plot_data.numeric_data = get_numerical_data_manhattan(
+                active_list, [current_active], plot_data, s_data, c_data)
+            plot_data.raw_data = get_raw_data_manhattan(
+                active_list, [current_active], plot_data, s_data)
 
-        frame_colored = colored_frame(s_data, plot_data, c_data["accepted_active_atts"], current_active)
+        frame_colored = colored_frame(
+            s_data,
+            plot_data,
+            c_data["accepted_active_atts"],
+            current_active)
         if frame_colored:
             significance_legend(plot_data)
 
-    set_plot_adjustments(plot_data, s_data, plot_type, shape(plot_data_matrix), current_active, active_list)
+    set_plot_adjustments(
+        plot_data,
+        s_data,
+        plot_type,
+        shape(plot_data_matrix),
+        current_active,
+        active_list)
 
-
-
-
-    #update plot-data variables:
+    # update plot-data variables:
     plot_data.point_lables = pointAndLabelList
     plot_data.plot_type = plot_type
     plot_data.point_lables_type = 0
@@ -793,8 +864,13 @@ def ManhattanPlotter(s_data, plot_data, num_subplot=[1,1,1], selection=0,abspath
     return plot_data
 
 
-
-def set_plot_adjustments(plot_data, s_data, projection_type, m_data_shape, current_active, active_list):
+def set_plot_adjustments(
+        plot_data,
+        s_data,
+        projection_type,
+        m_data_shape,
+        current_active,
+        active_list):
     """
 
     Sets plot labeling, grid, limits, ticks and colorbar.
@@ -826,38 +902,40 @@ def set_plot_adjustments(plot_data, s_data, projection_type, m_data_shape, curre
     if projection_type == "manhattan_ass":
         p_type_label = "Attribute"
         # string lists for labeling
-        _range = arange(1, cols+1)
+        _range = arange(1, cols + 1)
         _range = []
         for att in active_list:
-            _range.append(s_data.AttributeList.index(att)+1)
+            _range.append(s_data.AttributeList.index(att) + 1)
         x_string_list = [str(element) for element in _range]
-
 
     elif projection_type == "manhattan_att":
         p_type_label = "Assessor"
         # string lists for labeling
-        _range = arange(1, cols+1)
+        _range = arange(1, cols + 1)
         _range = []
         for ass in active_list:
-            _range.append(s_data.AssessorList.index(ass)+1)
+            _range.append(s_data.AssessorList.index(ass) + 1)
         x_string_list = [str(element) for element in _range]
 
-
     # lables/ticks adjustmens
-    _range = arange(1, rows+1)
+    _range = arange(1, rows + 1)
     y_string_list = [str(element) for element in _range]
     y_string_list.reverse()
 
-
     ax.set_xticks(_range)
-
 
     # plot corners: xmin, xmax, ymin, ymax
     limits = [0, cols, 0, rows]
 
     # axes adjustments
     if not plot_data.overview_plot:
-        axes_setup(ax, p_type_label, 'PC', "Manhattan Plot: " + current_active, limits)
+        axes_setup(
+            ax,
+            p_type_label,
+            'PC',
+            "Manhattan Plot: " +
+            current_active,
+            limits)
 
         # horizontal labeling:
         if projection_type == "manhattan_ass":
@@ -870,13 +948,11 @@ def set_plot_adjustments(plot_data, s_data, projection_type, m_data_shape, curre
             if len(plot_data.activeAssessorsList) > 7:
                 set_xlabeling_rotation(ax, 'vertical')
 
-
         # vertical labeling:
         set_ylabeling(ax, y_string_list)
-        _range = arange(0.5, (rows)+0.5, 1)
+        _range = arange(0.5, (rows) + 0.5, 1)
         #_range = arange(1, (rows)+1, 1)
         ax.set_yticks(_range)
-
 
         # colormap: from Plot_Tools
         cmap = colormaps['manhattan']
@@ -885,18 +961,23 @@ def set_plot_adjustments(plot_data, s_data, projection_type, m_data_shape, curre
         colorbar = set_manhattan_colorbar(plot_data.fig, cmap)
 
     else:
-        axes_setup(ax, '', '', "Manhattan Plot: " + current_active, limits, font_size=9)
+        axes_setup(
+            ax,
+            '',
+            '',
+            "Manhattan Plot: " +
+            current_active,
+            limits,
+            font_size=9)
         set_xlabeling(ax, x_string_list, font_size=9)
         set_ylabeling(ax, y_string_list, font_size=9)
-        _range = arange(0.5, (rows)+0.5, 1)
+        _range = arange(0.5, (rows) + 0.5, 1)
         ax.set_yticks(_range)
-
 
     ax.grid(plot_data.view_grid)
 
 
-
-def ManhattanAssOverviewPlotter(s_data, plot_data, selection=0,abspath=None):
+def ManhattanAssOverviewPlotter(s_data, plot_data, selection=0, abspath=None):
     """
     Overview Plot (assessor)
 
@@ -922,25 +1003,37 @@ def ManhattanAssOverviewPlotter(s_data, plot_data, selection=0,abspath=None):
         rotation_list = plot_data.activeAssessorsList[:]
 
     plot_data.fig = Figure(None)
-    plot_data.fig.add_axes([0.45, 0.05, 0.45, 0.9], frameon=False, visible=False)
+    plot_data.fig.add_axes([0.45, 0.05, 0.45, 0.9],
+                           frameon=False, visible=False)
 
     # colormap: from Plot_Tools
     cmap = colormaps['manhattan']
     colorbar = set_manhattan_colorbar(plot_data.fig, cmap)
 
-    res = OverviewPlotter(s_data, plot_data, pydata_list, ManhattanPlotter, rotation_list, special_selection=selection,abspath=abspath)
+    res = OverviewPlotter(
+        s_data,
+        plot_data,
+        pydata_list,
+        ManhattanPlotter,
+        rotation_list,
+        special_selection=selection,
+        abspath=abspath)
 
+    if res is None:
+        return None
 
-    if res == None: return None
-
-    res.fig.subplots_adjust(left=0.05, bottom=0.05, right=0.80, top=0.95, wspace=0.15, hspace=0.3)
-
+    res.fig.subplots_adjust(
+        left=0.05,
+        bottom=0.05,
+        right=0.80,
+        top=0.95,
+        wspace=0.15,
+        hspace=0.3)
 
     return res
 
 
-
-def ManhattanAttOverviewPlotter(s_data, plot_data, selection=0,abspath=None):
+def ManhattanAttOverviewPlotter(s_data, plot_data, selection=0, abspath=None):
     """
     Overview Plot (attributes)
 
@@ -967,29 +1060,45 @@ def ManhattanAttOverviewPlotter(s_data, plot_data, selection=0,abspath=None):
     plot_data.fig = Figure(None)
 
     if plot_data.view_legend:
-        plot_data.fig.add_axes([0.375, 0.05, 0.375, 0.9], frameon=False, visible=False)
+        plot_data.fig.add_axes([0.375, 0.05, 0.375, 0.9],
+                               frameon=False, visible=False)
     else:
-        plot_data.fig.add_axes([0.45, 0.05, 0.45, 0.9], frameon=False, visible=False)
-
+        plot_data.fig.add_axes([0.45, 0.05, 0.45, 0.9],
+                               frameon=False, visible=False)
 
     # colormap: from Plot_Tools
     cmap = colormaps['manhattan']
     colorbar = set_manhattan_colorbar(plot_data.fig, cmap)
 
+    res = OverviewPlotter(
+        s_data,
+        plot_data,
+        pydata_list,
+        ManhattanPlotter,
+        rotation_list,
+        special_selection=selection,
+        abspath=abspath)
 
-    res = OverviewPlotter(s_data, plot_data, pydata_list, ManhattanPlotter, rotation_list, special_selection=selection,abspath=abspath)
-
-    if res == None: return None
-
+    if res is None:
+        return None
 
     #res.fig.add_axes([0.45, 0.05, 0.45, 0.9], frameon=False, visible=False)
 
-
     if plot_data.view_legend:
-        res.fig.subplots_adjust(left=0.05, bottom=0.05, right=0.65, top=0.95, wspace=0.15, hspace=0.3)
+        res.fig.subplots_adjust(
+            left=0.05,
+            bottom=0.05,
+            right=0.65,
+            top=0.95,
+            wspace=0.15,
+            hspace=0.3)
     else:
-        res.fig.subplots_adjust(left=0.05, bottom=0.05, right=0.80, top=0.95, wspace=0.15, hspace=0.3)
-
-
+        res.fig.subplots_adjust(
+            left=0.05,
+            bottom=0.05,
+            right=0.80,
+            top=0.95,
+            wspace=0.15,
+            hspace=0.3)
 
     return res

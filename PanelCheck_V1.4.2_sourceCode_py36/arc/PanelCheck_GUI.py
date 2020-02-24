@@ -1053,7 +1053,7 @@ class Main_Frame(wx.Frame):
         @param event:    An event is a structure holding information about an
         event passed to a callback or member function.
         """
-        filename = self.progPath + u"/help.chm"
+        filename = self.progPath + u"/help.pdf"
         #os.startfile(fil)
         opener ="open" if sys.platform == "darwin" else "xdg-open"
         subprocess.call([opener, filename])

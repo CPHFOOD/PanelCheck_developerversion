@@ -3,7 +3,8 @@
 from Plot_Tools import *
 import pdb
 
-def CorrelationPlotter(s_data, plot_data, num_subplot=[1,1,1], **kwargs):
+
+def CorrelationPlotter(s_data, plot_data, num_subplot=[1, 1, 1], **kwargs):
     """
     This is the correlation plot function. In this plot the values of
     a single assessor are plotted against the average values of the
@@ -57,7 +58,7 @@ def CorrelationPlotter(s_data, plot_data, num_subplot=[1,1,1], **kwargs):
     """
     # First excerpt values from particular assessor (the one that
     # was clicked on)
-    #print 'selected assessor: ', selectedItem[0]
+    # print 'selected assessor: ', selectedItem[0]
     activeAssessorsList = plot_data.activeAssessorsList
     activeAttributesList = plot_data.activeAttributesList
     activeSamplesList = plot_data.activeSamplesList
@@ -73,38 +74,44 @@ def CorrelationPlotter(s_data, plot_data, num_subplot=[1,1,1], **kwargs):
     position = s_data.AttributeList.index(itemID[index_b])
     particularAssessorData = []
 
-    if itemID[index_a] not in activeAssessorsList: #selected assessor not active
+    if itemID[index_a] not in activeAssessorsList:  # selected assessor not active
         dlg = wx.MessageDialog(None, 'The assessor is not active in CheckBox',
-                   'Error Message',
-                   wx.OK | wx.ICON_INFORMATION)
+                               'Error Message',
+                               wx.OK | wx.ICON_INFORMATION)
         dlg.ShowModal()
         dlg.Destroy()
         return
-    if len(activeSamplesList) < 1: #no active samples
+    if len(activeSamplesList) < 1:  # no active samples
         dlg = wx.MessageDialog(None, 'No samples are active in CheckBox',
-                   'Error Message',
-                   wx.OK | wx.ICON_INFORMATION)
+                               'Error Message',
+                               wx.OK | wx.ICON_INFORMATION)
         dlg.ShowModal()
         dlg.Destroy()
         return
 
     colors = colors_hex_list
 
-        # Figure
-    replot = False; subplot = plot_data.overview_plot; scatter_width = 35
-    if plot_data.fig != None: replot = True
-    else: plot_data.fig = Figure(None)
-    if subplot: # is subplot
-        plot_data.ax = plot_data.fig.add_subplot(num_subplot[0], num_subplot[1], num_subplot[2])
+    # Figure
+    replot = False
+    subplot = plot_data.overview_plot
+    scatter_width = 35
+    if plot_data.fig is not None:
+        replot = True
+    else:
+        plot_data.fig = Figure(None)
+    if subplot:  # is subplot
+        plot_data.ax = plot_data.fig.add_subplot(
+            num_subplot[0], num_subplot[1], num_subplot[2])
         scatter_width = 15
     elif len(activeSamplesList) <= len(colors):
         plot_data.ax = axes_create(plot_data.view_legend, plot_data.fig)
     else:
         plot_data.ax = axes_create(0, plot_data.fig)
-    ax = plot_data.ax; fig = plot_data.fig
+    ax = plot_data.ax
+    fig = plot_data.fig
 
-
-    #One element in the pointAndLabelList will always contain 3 items [x, y, label]
+    # One element in the pointAndLabelList will always contain 3 items [x, y,
+    # label]
     pointAndLabelList = []
 
     # Create a list with active (checked in CheckListBox) assessors/attributes
@@ -112,19 +119,18 @@ def CorrelationPlotter(s_data, plot_data, num_subplot=[1,1,1], **kwargs):
     # .keys() and .sort() is not enough, since only alphabetical order
     # is given.
 
-
     # Collect data of selected assessors in one list and construct
     # pointAndLabelList
     for sample in activeSamplesList:
 
         replicateSum = 0
         for replicate in s_data.ReplicateList:
-            value = s_data.SparseMatrix[itemID[index_a], sample, replicate][position]
+            value = s_data.SparseMatrix[itemID[index_a],
+                                        sample, replicate][position]
             replicateSum += float(value)
 
         replicateAverage = replicateSum / len(s_data.ReplicateList)
         particularAssessorData.append(replicateAverage)
-
 
     # Now calculate the average values for the active assessors
     selectedAssessorAverage = []
@@ -136,22 +142,20 @@ def CorrelationPlotter(s_data, plot_data, num_subplot=[1,1,1], **kwargs):
         for replicate in s_data.ReplicateList:
 
             for assessor in activeAssessorsList:
-                value = s_data.SparseMatrix[assessor, sample, replicate][position]
+                value = s_data.SparseMatrix[assessor,
+                                            sample, replicate][position]
                 assessorsReplicateSum += float(value)
 
-        assessorsReplicateAverage = assessorsReplicateSum / (len(s_data.ReplicateList) * len(activeAssessorsList))
+        assessorsReplicateAverage = assessorsReplicateSum / \
+            (len(s_data.ReplicateList) * len(activeAssessorsList))
         selectedAssessorAverage.append(assessorsReplicateAverage)
         i += 1
-
-
 
     # Starting generation of the list that contains the data
     # that is shown in "Show Data"
     emptyLine = ['']
 
-
     rawDataList = raw_data_grid(s_data, plot_data)
-
 
     resultList = []
     sampleValues = ['Sample calculations:']
@@ -176,9 +180,11 @@ def CorrelationPlotter(s_data, plot_data, num_subplot=[1,1,1], **kwargs):
         selectedAssessorValue = particularAssessorData[positionInList]
         panelAverageValue = selectedAssessorAverage[positionInList]
 
-        dataLine= [sample, num2str(selectedAssessorValue, fmt="%.2f"), num2str(panelAverageValue, fmt="%.2f")]
+        dataLine = [
+            sample, num2str(
+                selectedAssessorValue, fmt="%.2f"), num2str(
+                panelAverageValue, fmt="%.2f")]
         resultList.append(dataLine)
-
 
     # Setting max and min values for the axis
     x_start = 0
@@ -192,24 +198,22 @@ def CorrelationPlotter(s_data, plot_data, num_subplot=[1,1,1], **kwargs):
     y_values = [y_start, y_end]
 
     # Font settings
-    font = {'fontname'   : 'Courier',
-        'color'      : 'b',
-        'fontweight' : 'bold',
-        'fontsize'   : 10}
-
+    font = {'fontname': 'Courier',
+            'color': 'b',
+            'fontweight': 'bold',
+            'fontsize': 10}
 
     # The following line makes it possible to open a
     # new window every time an item on the wxTreeCtrl is
     # double-clicked
 
-
     # Settings for the labels in the plot
     myTitle = 'Correlation plot: ' + itemID[index_a] + ', ' + itemID[index_b]
     specificAssessor = itemID[index_a]
 
-
     # This is the line from the origo
-    ax.plot([plot_data.limits[2], plot_data.limits[3]], [plot_data.limits[2], plot_data.limits[3]], '--')
+    ax.plot([plot_data.limits[2], plot_data.limits[3]], [
+            plot_data.limits[2], plot_data.limits[3]], '--')
 
     # Plotting the other assessors values
     for assessor in activeAssessorsList:
@@ -217,38 +221,50 @@ def CorrelationPlotter(s_data, plot_data, num_subplot=[1,1,1], **kwargs):
         for sample in activeSamplesList:
             replicateSum = 0
             for replicate in s_data.ReplicateList:
-                value = s_data.SparseMatrix[assessor, sample, replicate][position]
+                value = s_data.SparseMatrix[assessor,
+                                            sample, replicate][position]
                 replicateSum += float(value)
             replicateAverage = replicateSum / len(s_data.ReplicateList)
             eachAssessorValues.append(replicateAverage)
         label = assessor + ' - ' + sample
-        pointAndLabelList.append([selectedAssessorAverage[activeSamplesList.index(sample)], replicateAverage, label, sample, assessor, itemID[index_b]])
+        pointAndLabelList.append([selectedAssessorAverage[activeSamplesList.index(
+            sample)], replicateAverage, label, sample, assessor, itemID[index_b]])
 
         # use c = 'w' for points with black circle around it
         # use other, f.ex. color = 'w' to avoid circle around point to be plotted
-        #pdb.set_trace()
-        ax.scatter(selectedAssessorAverage, eachAssessorValues, s = scatter_width-5, c = 'gray', marker = 'o')
-
-
-
+        # pdb.set_trace()
+        ax.scatter(
+            selectedAssessorAverage,
+            eachAssessorValues,
+            s=scatter_width - 5,
+            c='gray',
+            marker='o')
 
     # Plotting the values from the specific assessor
     ax.grid(plot_data.view_grid)
 
-
     if len(selectedAssessorAverage) <= len(colors):
         plotList = []
         for i in range(len(selectedAssessorAverage)):
-                #plotList.append(ax.scatter([selectedAssessorAverage[i]], [particularAssessorData[i]], s = scatter_width, color = colors[i], marker = 'o'))
-            ax.scatter([selectedAssessorAverage[i]], [particularAssessorData[i]], s = scatter_width, color = colors[i], marker = 'o')
-            plotList.append(Line2D([],[], color = colors[i], linewidth=4))
+            #plotList.append(ax.scatter([selectedAssessorAverage[i]], [particularAssessorData[i]], s = scatter_width, color = colors[i], marker = 'o'))
+            ax.scatter([selectedAssessorAverage[i]],
+                       [particularAssessorData[i]],
+                       s=scatter_width,
+                       color=colors[i],
+                       marker='o')
+            plotList.append(Line2D([], [], color=colors[i], linewidth=4))
         if plot_data.view_legend:
             fig.legend(plotList, plot_data.activeSamplesList, 'upper right')
     else:
-            ax.scatter(selectedAssessorAverage, particularAssessorData, s = scatter_width, color = 'r', marker = 'o')
+        ax.scatter(
+            selectedAssessorAverage,
+            particularAssessorData,
+            s=scatter_width,
+            color='r',
+            marker='o')
 
     #ax.scatter(selectedAssessorAverage, particularAssessorData, s = scatter_width, color = 'r', marker = 'o')
-    #ipshell()
+    # ipshell()
 
     limits = []
     limits.append(plot_data.limits[2])
@@ -256,26 +272,41 @@ def CorrelationPlotter(s_data, plot_data, num_subplot=[1,1,1], **kwargs):
     limits.append(plot_data.limits[2])
     limits.append(plot_data.limits[3])
 
-    if subplot: axes_setup(ax, '', '', 'Corr. plot: ' + itemID[index_a] + ', ' + itemID[index_b], limits, font_size=10)
-    else: axes_setup(ax, 'Active panel average', itemID[index_a], myTitle, limits)
-        #update plot-data variables:
+    if subplot:
+        axes_setup(
+            ax,
+            '',
+            '',
+            'Corr. plot: ' +
+            itemID[index_a] +
+            ', ' +
+            itemID[index_b],
+            limits,
+            font_size=10)
+    else:
+        axes_setup(
+            ax,
+            'Active panel average',
+            itemID[index_a],
+            myTitle,
+            limits)
+       # update plot-data variables:
     plot_data.point_lables = pointAndLabelList
     plot_data.raw_data = rawDataList
     plot_data.numeric_data = resultList
     plot_data.plot_type = "corr"
     plot_data.point_lables_type = 0
 
-    #Frame draw, for standard Matplotlib frame only use show()
+    # Frame draw, for standard Matplotlib frame only use show()
     return plot_data
 
 
-
-def CorrelationOverviewPlotter(s_data, plot_data,abspath=None, **kwargs):
+def CorrelationOverviewPlotter(s_data, plot_data, abspath=None, **kwargs):
     """
     Overview Plot
     """
 
-    itemID_list = [] # takes part in what to be plotted
+    itemID_list = []  # takes part in what to be plotted
     if plot_data.tree_path[0] in s_data.AssessorList:
         for att in s_data.AttributeList:
             itemID_list.append([plot_data.tree_path[0], att])
@@ -284,4 +315,10 @@ def CorrelationOverviewPlotter(s_data, plot_data,abspath=None, **kwargs):
         for ass in plot_data.activeAssessorsList:
             itemID_list.append([plot_data.tree_path[0], ass])
         rotation_list = plot_data.activeAssessorsList
-    return OverviewPlotter(s_data, plot_data, itemID_list, CorrelationPlotter, rotation_list,abspath=abspath)
+    return OverviewPlotter(
+        s_data,
+        plot_data,
+        itemID_list,
+        CorrelationPlotter,
+        rotation_list,
+        abspath=abspath)

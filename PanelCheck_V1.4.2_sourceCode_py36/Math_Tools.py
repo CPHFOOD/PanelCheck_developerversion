@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+import numpy as np
+import scipy.special as special
 import pdb
 """
 This module lets PanelCheck access many mathematical methods defined by numpy and scipy
@@ -8,7 +10,7 @@ and there are also some custom made specialized methods for use in creating many
 
 # numpy methods available after: from Math_Tools import *
 from numpy import array, ndarray, arange, average, concatenate, floor, ceil, sqrt, diag, dot, take, std, arange, hstack, vstack, \
-     reshape, transpose, trace, mat, shape, zeros, pi, cos, sin, sum
+    reshape, transpose, trace, mat, shape, zeros, pi, cos, sin, sum
 
 # scipy methods available after: from Math_Tools import *
 from scipy.linalg import svd
@@ -17,15 +19,15 @@ from scipy.linalg import svd
 from pca_module import mean_center, standardization, PCA_nipals2, PCA_svd, CorrelationLoadings
 
 
-
-
 #################### PREPROCESSING OF DATA-SETS ####################
 
-def center(X): # alias to mean_center
+def center(X):  # alias to mean_center
     return mean_center(X)
 
-def stand(X): # alias to standardization
+
+def stand(X):  # alias to standardization
     return standardization(X)
+
 
 def normalize(X, norm_value=1.0):
     # new_X will be normalized to range: [0, norm_value]
@@ -41,7 +43,6 @@ def normalize(X, norm_value=1.0):
     return new_X
 
 
-
 def STD(Y, selection):
     """
     This function computes the standard deviation of an array either column-wise
@@ -53,7 +54,6 @@ def STD(Y, selection):
     numberOfObjects, numberOfVariables = shape(X)
     variablesMeans = average(X, 0)
     objectsMeans = average(X, 1)
-
 
     # STD of columns
     if selection == 0:
@@ -67,7 +67,6 @@ def STD(Y, selection):
         X = sum(X, 0)
         X = X / (numberOfObjects - 1)
         X = sqrt(X)
-
 
     # STD of rows
     if selection == 1:
@@ -85,10 +84,6 @@ def STD(Y, selection):
     return X
 
 
-
-
-
-
 #################### UNIVARIATE: ANOVA ####################
 def ANOVA(s_data, plot_data, active_data=None):
     """
@@ -99,30 +94,46 @@ def ANOVA(s_data, plot_data, active_data=None):
     @type active_data: numpy array
 
     """
-    if active_data == None:
-        active_data = s_data.GetActiveData(active_assessors=plot_data.activeAssessorsList, active_attributes=plot_data.activeAttributesList, active_samples=plot_data.activeSamplesList)
+    if active_data is None:
+        active_data = s_data.GetActiveData(
+            active_assessors=plot_data.activeAssessorsList,
+            active_attributes=plot_data.activeAttributesList,
+            active_samples=plot_data.activeSamplesList)
 
     print("Calculate ANOVA")
 
-    preANOVA_matrix = zeros((len(plot_data.activeAssessorsList), len(plot_data.activeAttributesList), len(plot_data.activeSamplesList), len(s_data.ReplicateList)), float)
+    preANOVA_matrix = zeros(
+        (len(
+            plot_data.activeAssessorsList), len(
+            plot_data.activeAttributesList), len(
+                plot_data.activeSamplesList), len(
+                    s_data.ReplicateList)), float)
 
     print(shape(preANOVA_matrix))
     print(len(preANOVA_matrix))
 
-    # step, for one (assessor, attribute)-segment of sample scores for one replicate
+    # step, for one (assessor, attribute)-segment of sample scores for one
+    # replicate
     dx = len(plot_data.activeSamplesList)
 
     for ass_ind in range(len(plot_data.activeAssessorsList)):
         for att_ind in range(len(plot_data.activeAttributesList)):
             for samp_ind in range(len(plot_data.activeSamplesList)):
                 for rep_ind in range(len(s_data.ReplicateList)):
-                    preANOVA_matrix[ass_ind, att_ind, samp_ind, rep_ind] = active_data[ass_ind, samp_ind, rep_ind, att_ind]
-
+                    preANOVA_matrix[ass_ind,
+                                    att_ind,
+                                    samp_ind,
+                                    rep_ind] = active_data[ass_ind,
+                                                           samp_ind,
+                                                           rep_ind,
+                                                           att_ind]
 
     ANOVA_F_list = []
     ANOVA_p_list = []
     ANOVA_MSE_list = []
-    max_F = 0; max_p = 0; max_MSE = 0
+    max_F = 0
+    max_p = 0
+    max_MSE = 0
 
     for ass_ind in range(len(plot_data.activeAssessorsList)):
         ANOVA_F_list.append([])
@@ -130,22 +141,22 @@ def ANOVA(s_data, plot_data, active_data=None):
         ANOVA_MSE_list.append([])
         for att_ind in range(len(plot_data.activeAttributesList)):
             ANOVAresults = f_oneway(preANOVA_matrix[ass_ind, att_ind])
-            if isinstance(ANOVAresults[1], (int , float)): # if p value not '*'
+            if isinstance(ANOVAresults[1], (int, float)):  # if p value not '*'
                 F_val = round(ANOVAresults[0], 2)
                 if max_F < F_val:
                     max_F = F_val
                     p_val = round(ANOVAresults[1], 3)
                 # Determine highest p value for setting limits in the
                 # p*MSE plot
-                #pdb.set_trace()
+                # pdb.set_trace()
                 if max_p < p_val:
                     max_p = p_val
             else:
                 F_val = ANOVAresults[0]
                 p_val = ANOVAresults[1]
             MSE_val = round(ANOVAresults[2], 4)
-                # Determine highest MSE value for setting limits in the
-                # p*MSE plot
+            # Determine highest MSE value for setting limits in the
+            # p*MSE plot
             if max_MSE < MSE_val:
                 max_MSE = MSE_val
                 ANOVA_F_list[ass_ind].append(F_val)
@@ -162,11 +173,15 @@ def ANOVA(s_data, plot_data, active_data=None):
     # 'DF sample' will be no. of samples - 1
     # 'DF error' will be the same as number of samples
     F = 0.01
-    i = 0; max_i = 10000
-    F001_found = False; F005_found = False
+    i = 0
+    max_i = 10000
+    F001_found = False
+    F005_found = False
     while (i < max_i) and not (F001_found and F005_found):
-        if i == max_i-1: # reached max number of iterations:
-            raise(Exception, "ANOVA Error: Too many iteration when scanning for 1% and 5% signifcance levels.")
+        if i == max_i - 1:  # reached max number of iterations:
+            raise(
+                Exception,
+                "ANOVA Error: Too many iteration when scanning for 1% and 5% signifcance levels.")
         # using last ANOVA results array
         pValue = fprob(ANOVAresults[3], ANOVAresults[4], F)
         if not F005_found:
@@ -186,16 +201,17 @@ def ANOVA(s_data, plot_data, active_data=None):
     return ANOVA_F_list, ANOVA_p_list, ANOVA_MSE_list, [F_001, F_005]
 
 
-
-
-
-
-#################### MULTIVARIATE: PRINCIPAL COMPONENT ANALYSIS ####################
+#################### MULTIVARIATE: PRINCIPAL COMPONENT ANALYSIS ##########
 def PCA(X, standardize=False, PCs=10, E_matrices=False, nipals=False):
     #(objects, variables) = shape(X)
 
     if nipals:
-        return PCA_nipals2(X, standardize=standardize, PCs=PCs, E_matrices=E_matrices) # nipals using numpy array (fast for large datasets)
+        # nipals using numpy array (fast for large datasets)
+        return PCA_nipals2(
+            X,
+            standardize=standardize,
+            PCs=PCs,
+            E_matrices=E_matrices)
     else:
         return PCA_svd(X, standardize=standardize)
 
@@ -203,26 +219,21 @@ def PCA(X, standardize=False, PCs=10, E_matrices=False, nipals=False):
     # for usage of PCA with SVD, use:      PCA_svd(X)
 
 
-
 #################### GENERAL TOOLS ####################
 
-def rotate_vec2d(vec, angle): # vector is rotated around origo by the given angle
-    angle_rad = angle * (pi/180.0)
-    vec2 = array([0,0], float)
-    vec2[0] = cos(angle_rad)*vec[0] - sin(angle_rad)*vec[1]
-    vec2[1] = sin(angle_rad)*vec[0] + cos(angle_rad)*vec[1]
+def rotate_vec2d(vec, angle):  # vector is rotated around origo by the given angle
+    angle_rad = angle * (pi / 180.0)
+    vec2 = array([0, 0], float)
+    vec2[0] = cos(angle_rad) * vec[0] - sin(angle_rad) * vec[1]
+    vec2[1] = sin(angle_rad) * vec[0] + cos(angle_rad) * vec[1]
     return vec2
 
 
+def lerp(a, b, t):  # linear interpolation
+    return float(a * (1 - t) + b * t)
 
-def lerp(a, b, t): # linear interpolation
-     return float(a * (1 - t) + b * t)
 
-
-#################### SCIPY CODE (somewhat modified code needed from stats.py) ####################
-
-import scipy.special as special
-import numpy as np
+#################### SCIPY CODE (somewhat modified code needed from stats.
 
 
 fprob = special.fdtrc
@@ -236,7 +247,6 @@ def _chk_asarray(a, axis):
         a = np.asarray(a)
         outaxis = axis
     return a, outaxis
-
 
 
 def ss(a, axis=0):
@@ -253,7 +263,7 @@ def ss(a, axis=0):
     The sum along the given axis for (a*a).
     """
     a, axis = _chk_asarray(a, axis)
-    return np.sum(a*a, axis)
+    return np.sum(a * a, axis)
 
 
 def square_of_sums(a, axis=0):
@@ -263,11 +273,11 @@ result.
 Returns: the square of the sum over axis.
 """
     a, axis = _chk_asarray(a, axis)
-    s = np.sum(a,axis)
+    s = np.sum(a, axis)
     if not np.isscalar(s):
-        return s.astype(float)*s
+        return s.astype(float) * s
     else:
-        return float(s)*s
+        return float(s) * s
 
 
 def f_oneway(ass_arrays):
@@ -279,29 +289,28 @@ Usage:   f_oneway (*args)    where *args is 2 or more arrays, one per
                                   treatment group
 Returns: f-value, probability
 """
-    #na = len(args)            # ANOVA on 'na' groups, each in it's own array
+    # na = len(args)            # ANOVA on 'na' groups, each in it's own array
     #tmp = map(array,args)
     #alldata = concatenate(args)
 
     na = len(ass_arrays)
-    tmp = map(array,ass_arrays)
+    tmp = map(array, ass_arrays)
 
     alldata = np.concatenate(ass_arrays)
 
     bign = len(alldata)
-    sstot = ss(alldata)-(square_of_sums(alldata)/float(bign))
+    sstot = ss(alldata) - (square_of_sums(alldata) / float(bign))
     ssbn = 0
     for a in ass_arrays:
-        ssbn = ssbn + square_of_sums(array(a))/float(len(a))
-    ssbn = ssbn - (square_of_sums(alldata)/float(bign))
-    sswn = sstot-ssbn
-    dfbn = na-1 # DF assessors/sample
-    dfwn = bign - na # DF Error
-    msb = ssbn/float(dfbn) # MSA for assessor/sample
-    msw = sswn/float(dfwn) # MSE for error
-##    print msb, msw
-##    print
-
+        ssbn = ssbn + square_of_sums(array(a)) / float(len(a))
+    ssbn = ssbn - (square_of_sums(alldata) / float(bign))
+    sswn = sstot - ssbn
+    dfbn = na - 1  # DF assessors/sample
+    dfwn = bign - na  # DF Error
+    msb = ssbn / float(dfbn)  # MSA for assessor/sample
+    msw = sswn / float(dfwn)  # MSE for error
+# print msb, msw
+# print
 
     # Everything in the 'if' part is new. The original formula had no 'if'
     # test (everything original is found under 'else'). Had to change this, since 'Division
@@ -309,18 +318,18 @@ Returns: f-value, probability
     if msw < 1e-10:
         f = 1e-10
         prob = 1e-10
-##        print 'F = ', f, '; p = ', prob
-##        print dfbn, dfwn
-##        print
+# print 'F = ', f, '; p = ', prob
+# print dfbn, dfwn
+# print
     else:
-        f = msb/msw # F value
+        f = msb / msw  # F value
         if f < 0:
             f = 0.0
             prob = 1.0
         else:
-            prob = fprob(dfbn,dfwn,f)
-        #print 'F = ', f, '; p = ', prob
-        #print 'msb = ', msb, '; msw = ', msw
-        #print dfbn, dfwn
-        #print
-    return f, prob, msw, dfbn, dfwn#, msb,
+            prob = fprob(dfbn, dfwn, f)
+        # print 'F = ', f, '; p = ', prob
+        # print 'msb = ', msb, '; msw = ', msw
+        # print dfbn, dfwn
+        # print
+    return f, prob, msw, dfbn, dfwn  # , msb,

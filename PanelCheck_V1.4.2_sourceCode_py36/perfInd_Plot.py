@@ -15,12 +15,12 @@ from Plot_Tools import *
 from PanelCheck_Tools import *
 import numpy as np
 #import statTools as st
-import pyper, math
+import pyper
+import math
 
 import scipy.stats as scist
 import random as rnd
 import perfInd_Data as pid
-
 
 
 class PerfIndData:
@@ -47,16 +47,20 @@ class PerfIndData:
             self.prod_coll = res['REP prod coll']
             self.att_coll = res['REP att coll']
 
-
         if comp == "RV":
-            self.sign_val_1 = pid.get_sign_level(pid.RV1_1, numberOfSamples, numberOfAttributes)
-            self.sign_val_5 = pid.get_sign_level(pid.RV1_5, numberOfSamples, numberOfAttributes)
-            self.sign_val_10 = pid.get_sign_level(pid.RV1_10, numberOfSamples, numberOfAttributes)
+            self.sign_val_1 = pid.get_sign_level(
+                pid.RV1_1, numberOfSamples, numberOfAttributes)
+            self.sign_val_5 = pid.get_sign_level(
+                pid.RV1_5, numberOfSamples, numberOfAttributes)
+            self.sign_val_10 = pid.get_sign_level(
+                pid.RV1_10, numberOfSamples, numberOfAttributes)
         else:
-            self.sign_val_1 = pid.get_sign_level(pid.RV2_1, numberOfSamples, numberOfAttributes)
-            self.sign_val_5 = pid.get_sign_level(pid.RV2_5, numberOfSamples, numberOfAttributes)
-            self.sign_val_10 = pid.get_sign_level(pid.RV2_10, numberOfSamples, numberOfAttributes)
-
+            self.sign_val_1 = pid.get_sign_level(
+                pid.RV2_1, numberOfSamples, numberOfAttributes)
+            self.sign_val_5 = pid.get_sign_level(
+                pid.RV2_5, numberOfSamples, numberOfAttributes)
+            self.sign_val_10 = pid.get_sign_level(
+                pid.RV2_10, numberOfSamples, numberOfAttributes)
 
         self.average_prod = np.average(self.prod)
         self.std_prod = np.std(self.prod, ddof=1)
@@ -80,7 +84,6 @@ class PerfIndData:
         conf_dict["slvl5"] = self.sign_val_5
         conf_dict["slvl10"] = self.sign_val_10
 
-
         if vtype == "att":
             conf_dict["values"] = self.att
             conf_dict["average"] = self.average_att
@@ -94,7 +97,12 @@ class PerfIndData:
         return conf_dict
 
 
-def calcAGR(s_data, plot_data, sigLvl=0.05, permutationTestEnabled = False,abspath=None):
+def calcAGR(
+        s_data,
+        plot_data,
+        sigLvl=0.05,
+        permutationTestEnabled=False,
+        abspath=None):
 
     assessorList = plot_data.activeAssessorsList
     attributeList = plot_data.activeAttributesList
@@ -102,7 +110,6 @@ def calcAGR(s_data, plot_data, sigLvl=0.05, permutationTestEnabled = False,abspa
     replicateList = s_data.ReplicateList
     sparseMatrix = s_data.SparseMatrix
     itemID = plot_data.tree_path
-
 
     numberOfAssessors = len(assessorList)
     numberOfAttributes = len(attributeList)
@@ -115,12 +122,11 @@ def calcAGR(s_data, plot_data, sigLvl=0.05, permutationTestEnabled = False,abspa
     numOfPerm = 999
 
     method = plot_data.special_opts["comp"]
-    agr = plot_data.special_opts["agr"] # target level
+    agr = plot_data.special_opts["agr"]  # target level
 
     progress_value = 0
-    progress = Progress(None,abspath=progPath)
+    progress = Progress(None, abspath=progPath)
     progress.set_gauge(value=progress_value, text="Calculating AGR...\n")
-
 
     # Convert attribute names from unicode to latin-1. Unicode makes
     # PypeR or R crash and needs to be converted prior to submittng
@@ -134,9 +140,9 @@ def calcAGR(s_data, plot_data, sigLvl=0.05, permutationTestEnabled = False,abspa
     # removed when function is finished.
     res = {}
 
-#==============================================================================
+# ==============================================================================
 #     AGR computations
-#==============================================================================
+# ==============================================================================
     print('*** AGR ***')
     # First collect all assessor average matrices in one list.
     assAverArrList = []
@@ -164,7 +170,6 @@ def calcAGR(s_data, plot_data, sigLvl=0.05, permutationTestEnabled = False,abspa
         specConsArr = sumArr / len(popList)
         specConsList.append(specConsArr)
 
-
     # Centre individual and consensus arrays in a seperate loop instead of
     # doing this every time before the arrays are submitted to the RV2
     # coefficient. In this way centring is done far less often saving
@@ -185,13 +190,14 @@ def calcAGR(s_data, plot_data, sigLvl=0.05, permutationTestEnabled = False,abspa
         centSpecConsList.append(centSpecConsArr)
 
         # Centred then transposed individual arrays
-        centTransAssArr = np.transpose(st.centre(assAverArrList[assIndex]))#, axis=0)
+        centTransAssArr = np.transpose(
+            st.centre(assAverArrList[assIndex]))  # , axis=0)
         centTransAssAverArrList.append(centTransAssArr)
 
         # Centred then transposed specific consensus arrays
-        centTransSpecConsArr = np.transpose(st.centre(specConsList[assIndex]))#, axis=0)
+        centTransSpecConsArr = np.transpose(
+            st.centre(specConsList[assIndex]))  # , axis=0)
         centTransSpecConsList.append(centTransSpecConsArr)
-
 
     # Compute Rv coefficient between average scores of each assessor and
     # specific  consensus.
@@ -213,29 +219,37 @@ def calcAGR(s_data, plot_data, sigLvl=0.05, permutationTestEnabled = False,abspa
         elif method == 'RV2':
             coeffMat = st.RV2coeff(objectData)
 
-        coeff = coeffMat[0,1]
+        coeff = coeffMat[0, 1]
         objCoeff100 = round(coeff * 100, 1)
         assObjRVcoeffList.append(objCoeff100)
 
         if permutationTestEnabled:
-            pVal = permuationTestRV(objectData, RVtype=method, numPerm=numOfPerm, sigLevel=sigLvl)
+            pVal = permuationTestRV(
+                objectData,
+                RVtype=method,
+                numPerm=numOfPerm,
+                sigLevel=sigLvl)
             assObjRVpValList.append(pVal)
 
         # Compute RV's for variables
-        variableData = [centTransSpecConsList[assIndex], \
-                centTransAssAverArrList[assIndex]]
+        variableData = [centTransSpecConsList[assIndex],
+                        centTransAssAverArrList[assIndex]]
 
         if method == 'RV':
             coeffMat = st.RVcoeff(variableData)
         elif method == 'RV2':
             coeffMat = st.RV2coeff(variableData)
 
-        coeff = coeffMat[0,1]
+        coeff = coeffMat[0, 1]
         varCoeff100 = round(coeff * 100, 1)
         assVarRVcoeffList.append(varCoeff100)
 
         if permutationTestEnabled:
-            pVal = permuationTestRV(variableData, RVtype=method, numPerm=numOfPerm, sigLevel=sigLvl)
+            pVal = permuationTestRV(
+                variableData,
+                RVtype=method,
+                numPerm=numOfPerm,
+                sigLevel=sigLvl)
             assVarRVpValList.append(pVal)
 
         progress_value += step
@@ -255,8 +269,7 @@ def calcAGR(s_data, plot_data, sigLvl=0.05, permutationTestEnabled = False,abspa
     return res
 
 
-
-def calcREP(s_data, plot_data, permutationTestEnabled = False,progPath=None):
+def calcREP(s_data, plot_data, permutationTestEnabled=False, progPath=None):
 
     assessorList = plot_data.activeAssessorsList
     attributeList = plot_data.activeAttributesList
@@ -264,7 +277,6 @@ def calcREP(s_data, plot_data, permutationTestEnabled = False,progPath=None):
     replicateList = s_data.ReplicateList
     sparseMatrix = s_data.SparseMatrix
     itemID = plot_data.tree_path
-
 
     numberOfAssessors = len(assessorList)
     numberOfAttributes = len(attributeList)
@@ -281,12 +293,9 @@ def calcREP(s_data, plot_data, permutationTestEnabled = False,progPath=None):
     if plot_data.special_opts["lvl"] == "same for all":
         repLvl = plot_data.special_opts["agr"]
 
-
     progress_value = 0
-    progress = Progress(None,abspath=progPath)
+    progress = Progress(None, abspath=progPath)
     progress.set_gauge(value=progress_value, text="Calculating REP...\n")
-
-
 
     # Convert attribute names from unicode to latin-1. Unicode makes
     # PypeR or R crash and needs to be converted prior to submittng
@@ -300,9 +309,9 @@ def calcREP(s_data, plot_data, permutationTestEnabled = False,progPath=None):
     # removed when function is finished.
     res = {}
 
-#==============================================================================
+# ==============================================================================
 #     REP computations
-#==============================================================================
+# ==============================================================================
     print('*** REP ***')
     # Collect arrays based on a specific replicate. Do this for each assessor.
     # That means: 1 array for ass1-rep1, 1 array for ass1-rep2, etc.
@@ -335,7 +344,7 @@ def calcREP(s_data, plot_data, permutationTestEnabled = False,progPath=None):
     repObjRVpValList = []
     repVarRVpValList = []
 
-    step =  100 / len(assessorList)
+    step = 100 / len(assessorList)
 
     for ind, name in enumerate(assessorList):
 
@@ -347,7 +356,7 @@ def calcREP(s_data, plot_data, permutationTestEnabled = False,progPath=None):
 
         objCoeffList = []
 
-        for subInd in range(1,len(allAssRepList[ind])):
+        for subInd in range(1, len(allAssRepList[ind])):
             partObjCoeffList = np.diagonal(coeffMat, offset=subInd)
             objCoeffList.extend(partObjCoeffList)
 
@@ -356,7 +365,10 @@ def calcREP(s_data, plot_data, permutationTestEnabled = False,progPath=None):
         repObjCollection.append(objCoeffList)
 
         if permutationTestEnabled:
-            pVal = permuationTestRV(allAssRepList[ind], RVtype=method, numPerm=numOfPerm)
+            pVal = permuationTestRV(
+                allAssRepList[ind],
+                RVtype=method,
+                numPerm=numOfPerm)
             repObjRVpValList.append(pVal)
 
         # Compute REP indices for variables
@@ -369,7 +381,7 @@ def calcREP(s_data, plot_data, permutationTestEnabled = False,progPath=None):
 
         varCoeffList = []
 
-        for subInd in range(1,len(allTransAssRepList[ind])):
+        for subInd in range(1, len(allTransAssRepList[ind])):
             partVarCoeffList = np.diagonal(coeffMat, offset=subInd)
             varCoeffList.extend(partVarCoeffList)
 
@@ -378,7 +390,10 @@ def calcREP(s_data, plot_data, permutationTestEnabled = False,progPath=None):
         repVarCollection.append(varCoeffList)
 
         if permutationTestEnabled:
-            pVal = permuationTestRV(allTransAssRepList[ind], RVtype=method, numPerm=numOfPerm)
+            pVal = permuationTestRV(
+                allTransAssRepList[ind],
+                RVtype=method,
+                numPerm=numOfPerm)
             repVarRVpValList.append(pVal)
 
         progress_value += step
@@ -405,7 +420,7 @@ def calcREP(s_data, plot_data, permutationTestEnabled = False,progPath=None):
     return res
 
 
-def calcDIS(s_data, plot_data,progPath):
+def calcDIS(s_data, plot_data, progPath):
 
     assessorList = plot_data.activeAssessorsList
     attributeList = plot_data.activeAttributesList
@@ -414,9 +429,8 @@ def calcDIS(s_data, plot_data,progPath):
     sparseMatrix = s_data.SparseMatrix
     itemID = plot_data.tree_path
 
-
     progress_value = 0
-    progress = Progress(None,abspath=progPath)
+    progress = Progress(None, abspath=progPath)
     progress.set_gauge(value=progress_value, text="Calculating DIS...\n")
 
     i = 1
@@ -424,19 +438,19 @@ def calcDIS(s_data, plot_data,progPath):
     for a in s_data.AssessorList:
         if a in assessorList:
             assIndList.append(i)
-        i+=1
+        i += 1
     i = 1
     sampIndList = []
     for s in s_data.SampleList:
         if s in sampleList:
             sampIndList.append(i)
-        i+=1
+        i += 1
     i = 1
     repIndList = []
     for r in s_data.ReplicateList:
         if r in replicateList:
             repIndList.append(i)
-        i+=1
+        i += 1
 
     numberOfAssessors = len(assessorList)
     numberOfAttributes = len(attributeList)
@@ -446,14 +460,12 @@ def calcDIS(s_data, plot_data,progPath):
     lables = s_data.LabelList
     sensory = s_data
 
-
     method = plot_data.special_opts["comp"]
     dis = plot_data.special_opts["dis"]
     if plot_data.special_opts["lvl"] == "same for all":
         dis = plot_data.special_opts["agr"]
 
-    current_abspath = os.path.dirname( os.path.realpath( __file__ ) )
-
+    current_abspath = os.path.dirname(os.path.realpath(__file__))
 
     # Convert attribute names from unicode to latin-1. Unicode makes
     # PypeR or R crash and needs to be converted prior to submittng
@@ -467,9 +479,9 @@ def calcDIS(s_data, plot_data,progPath):
     # removed when function is finished.
     res = {}
 
-#==============================================================================
+# ==============================================================================
 #     DIS computations
-#==============================================================================
+# ==============================================================================
     # STEP 1: Computations using Per Brockhoffs senseMixed R code
     # which is a two way ANOVA with assessors as random main effect
     print('*** DIS ***')
@@ -487,7 +499,6 @@ def calcDIS(s_data, plot_data,progPath):
     print(new_path)
     r('dir <-"' + new_path + '/R_scripts"')
 
-
     #r = pyper.R(RCMD="C:/Program Files/R/R-2.3.1/bin/R")
     #r('dir <-"C:/PanelCheck/installers/PI code/PI"')
     r('setwd(dir)')
@@ -499,7 +510,6 @@ def calcDIS(s_data, plot_data,progPath):
     # based on the scores from the whole panel
     allPanelSignList = []
     specRawDataList = []
-
 
     step = 100 / len(assessorList)
 
@@ -517,7 +527,7 @@ def calcDIS(s_data, plot_data,progPath):
         for ass in assessorList:
 
             if exclAss == ass:
-                assInd+=1
+                assInd += 1
                 continue
 
             sampInd = 0
@@ -531,7 +541,11 @@ def calcDIS(s_data, plot_data,progPath):
                     # Create key that is used to extract intensity scores. Keys
                     # and data are appended to the lists.
                     k = (ass, samp, rep)
-                    keysList.append(np.array((assIndList[assInd], sampIndList[sampInd], repIndList[repInd])))
+                    keysList.append(
+                        np.array(
+                            (assIndList[assInd],
+                             sampIndList[sampInd],
+                                repIndList[repInd])))
 
                     # Convert data from strings (as provided in sparse matrix)
                     # to floats so that compuations can be done.
@@ -541,9 +555,9 @@ def calcDIS(s_data, plot_data,progPath):
                         floatItem = float(item)
                         dataFloatList.append(floatItem)
                     dataList.append(dataFloatList)
-                    repInd+=1
-                sampInd+=1
-            assInd+=1
+                    repInd += 1
+                sampInd += 1
+            assInd += 1
 
         # Convert lists to arrays.
         keysArr = np.array(keysList)
@@ -593,10 +607,11 @@ def calcDIS(s_data, plot_data,progPath):
         #per4 = per[3]
 
         # Extract 2-way ANOVA p-values for product effect
-        pVals = per2[6,:]
+        pVals = per2[6, :]
         pValsPanel.append(pVals[:])
 
-        # Count how many attributes the panels finds to be significant at 5% level.
+        # Count how many attributes the panels finds to be significant at 5%
+        # level.
         signList = []
         for item in pVals:
             print(item)
@@ -609,7 +624,6 @@ def calcDIS(s_data, plot_data,progPath):
 
         progress_value += step
         progress.set_gauge(value=progress_value)
-
 
     # STEP 1.2:
     # This is where the 2-way ANOAV is computed for the whole panel on data
@@ -630,10 +644,9 @@ def calcDIS(s_data, plot_data,progPath):
     perAll = r['res']
     perAll2 = perAll[1]
 
-
     # Extract 2-way ANOVA p-values for product effect
-    pValsAll = perAll2[6,:]
-    #pValsPanelAll.append(pValsAll[:])
+    pValsAll = perAll2[6, :]
+    # pValsPanelAll.append(pValsAll[:])
 
     # Count how many attributes the panels finds to be significant at 5% level.
     signListAll = []
@@ -644,7 +657,6 @@ def calcDIS(s_data, plot_data,progPath):
 
     print('all:', len(signListAll))
     print('---------')
-
 
     # STEP 2:
     # From here the assessor-wise one-way ANOVA is run.
@@ -658,20 +670,19 @@ def calcDIS(s_data, plot_data,progPath):
     # Construct string for exec command, such that it can be used in the
     # f_oneway function
     strComm = 'scist.f_oneway('
-    for ind,samp in enumerate(sampleList):
+    for ind, samp in enumerate(sampleList):
 
-        #partStr = 'groups[{0}]'.format(ind) # for Python 2.7
-        partStr = 'groups[%d]' %ind
+        # partStr = 'groups[{0}]'.format(ind) # for Python 2.7
+        partStr = 'groups[%d]' % ind
 
         if ind == 0:
             strComm = strComm + partStr
 
-        elif ind == len(sampleList)-1:
+        elif ind == len(sampleList) - 1:
             strComm = strComm + ',' + partStr + ')'
 
         else:
             strComm = strComm + ',' + partStr
-
 
     strComm = 'oneway = ' + strComm
 
@@ -687,7 +698,7 @@ def calcDIS(s_data, plot_data,progPath):
 
         for attInd, att in enumerate(attributeList):
 
-            attributeData = allAssList[assInd][:,attInd]
+            attributeData = allAssList[assInd][:, attInd]
             groups = np.split(attributeData, len(sampleList))
             exec(strComm)
 
@@ -698,7 +709,7 @@ def calcDIS(s_data, plot_data,progPath):
 
         DISCountList.append(len(assDISList))
         DISInd = float(len(assDISList)) / \
-                float(len(allPanelSignList[assInd])) * 100
+            float(len(allPanelSignList[assInd])) * 100
         DISList.append(round(DISInd, 1))
 
         pValsAss.append(pValsAssSubList)
@@ -716,7 +727,6 @@ def calcDIS(s_data, plot_data,progPath):
         perc = float(DISCountList[ind]) / float(len(attributeList)) * 100
         DISList2.append(round(perc, 1))
 
-
     res['DIS count ind'] = DISCountList
     res['DIS count all_ex1'] = DISCountListPanel
     res['DIS'] = DISList
@@ -728,43 +738,67 @@ def calcDIS(s_data, plot_data,progPath):
     return res
 
 
-def set_sign_level_numeric_data(sign_type, plot_data, samples_count, attributes_count):
+def set_sign_level_numeric_data(
+        sign_type,
+        plot_data,
+        samples_count,
+        attributes_count):
     data = pid.get_sign_level_data(sign_type)
-    if data == None: show_err_msg("No data set for type: " + sign_type); return
+    if data is None:
+        show_err_msg("No data set for type: " + sign_type)
+        return
     val = pid.get_sign_level(sign_type, samples_count, attributes_count)
-    if val == None: show_err_msg("Number of samples or number of attributes is not within acctable range [3, 50]."); return
+    if val is None:
+        show_err_msg(
+            "Number of samples or number of attributes is not within acctable range [3, 50].")
+        return
 
-    key = (samples_count-1, attributes_count-1)
-    plot_data.numeric_data_config[key] = {"back_color": '#ffaa00'} # orange
+    key = (samples_count - 1, attributes_count - 1)
+    plot_data.numeric_data_config[key] = {"back_color": '#ffaa00'}  # orange
 
     results = []
-    dataline = []; dataline.append(''); dataline.append(''); dataline.append("Number of attributes"); results.append(dataline);
-    dataline = []; dataline.append(''); dataline.append('');
+    dataline = []
+    dataline.append('')
+    dataline.append('')
+    dataline.append("Number of attributes")
+    results.append(dataline)
+    dataline = []
+    dataline.append('')
+    dataline.append('')
     for i in range(pid.MIN_COUNT_ATTRIBUTES, pid.MAX_COUNT_ATTRIBUTES + 1):
-        key = (1, i-1)
-        plot_data.numeric_data_config[key] = {"back_color": '#eeeeee'} # grey
+        key = (1, i - 1)
+        plot_data.numeric_data_config[key] = {"back_color": '#eeeeee'}  # grey
         dataline.append(i)
     results.append(dataline)
 
     i = pid.MIN_COUNT_SAMPLES
     for row in data:
-        key = (i-1, 1)
-        plot_data.numeric_data_config[key] = {"back_color": '#eeeeee'} # grey
+        key = (i - 1, 1)
+        plot_data.numeric_data_config[key] = {"back_color": '#eeeeee'}  # grey
 
         dataline = []
         if i == 3:
-            dataline.append("Number of samples"); dataline.append(i)
+            dataline.append("Number of samples")
+            dataline.append(i)
         else:
-            dataline.append(''); dataline.append(i)
+            dataline.append('')
+            dataline.append(i)
         dataline.extend(row)
         results.append(dataline)
-        i+=1
+        i += 1
     plot_data.numeric_data = results
     return plot_data
 
 
-
-def perfindPlotter(s_data, plot_data, num_subplot=[1,1,1],abspath=None, **kwargs):
+def perfindPlotter(
+        s_data,
+        plot_data,
+        num_subplot=[
+            1,
+            1,
+            1],
+    abspath=None,
+        **kwargs):
     """
     This function computes performance indices for assessors from a sensory
     panel.
@@ -782,7 +816,6 @@ def perfindPlotter(s_data, plot_data, num_subplot=[1,1,1],abspath=None, **kwargs
     numberOfSamples = len(sampleList)
     numberOfReplicates = len(s_data.ReplicateList)
 
-
     agr_lvl = plot_data.special_opts["agr"]
     rep_lvl = plot_data.special_opts["rep"]
     dis_lvl = plot_data.special_opts["dis"]
@@ -799,115 +832,243 @@ def perfindPlotter(s_data, plot_data, num_subplot=[1,1,1],abspath=None, **kwargs
     plot_data.special_opts["plot_frame"] = True
     resultList = []
 
-
     recalc = plot_data.special_opts["recalc"]
 
     plot_data.numeric_data_config = {}
 
-
-
-    sign_val_1 = pid.get_sign_level(pid.RV1_1, numberOfSamples, numberOfAttributes)
-    if sign_val_1 == None:
-        show_err_msg("Number of samples or number of attributes is not within acctable range [3, 50]."); return
-
-
+    sign_val_1 = pid.get_sign_level(
+        pid.RV1_1, numberOfSamples, numberOfAttributes)
+    if sign_val_1 is None:
+        show_err_msg(
+            "Number of samples or number of attributes is not within acctable range [3, 50].")
+        return
 
     # calculate and setup numeric data
     if plotType == u'AGR prod':
         if recalc or not plot_data.collection_calc_data.__contains__("AGR"):
-            res = calcAGR(s_data, plot_data,abspath=abspath)
+            res = calcAGR(s_data, plot_data, abspath=abspath)
             plot_data.collection_calc_data["AGR"] = res
         else:
             res = plot_data.collection_calc_data["AGR"]
 
-
         curr_lvl = agr_lvl
-        agr = PerfIndData(res, "agr", comp, numberOfSamples, numberOfAttributes)
+        agr = PerfIndData(
+            res,
+            "agr",
+            comp,
+            numberOfSamples,
+            numberOfAttributes)
         conf_dict = agr.get_config("prod", assessorList, plotType, curr_lvl)
 
+        dataline = []
+        dataline.append('Assessors')
+        dataline.extend(assessorList)
+        resultList.append(dataline)
+        dataline = []
+        dataline.append('AGR prod')
+        dataline.extend(agr.prod)
+        resultList.append(dataline)
+        dataline = []
+        dataline.append('AGR average')
+        dataline.extend(agr.average)
+        resultList.append(dataline)
+        dataline = []
+        dataline.append('Upper STD')
+        dataline.append(agr.std_prod_upper)
+        resultList.append(dataline)
+        dataline = []
+        dataline.append('Lower STD')
+        dataline.append(agr.std_prod_lower)
+        resultList.append(dataline)
 
-        dataline = []; dataline.append('Assessors'); dataline.extend(assessorList); resultList.append(dataline)
-        dataline = []; dataline.append('AGR prod'); dataline.extend(agr.prod); resultList.append(dataline)
-        dataline = []; dataline.append('AGR average'); dataline.extend(agr.average); resultList.append(dataline)
-        dataline = []; dataline.append('Upper STD'); dataline.append(agr.std_prod_upper); resultList.append(dataline)
-        dataline = []; dataline.append('Lower STD'); dataline.append(agr.std_prod_lower); resultList.append(dataline)
-
-        dataline = []; resultList.append(dataline)
-        dataline = []; dataline.append('Method'); dataline.append(comp); resultList.append(dataline)
-        dataline = []; dataline.append('1% sign. level'); dataline.append(agr.sign_val_1); resultList.append(dataline)
-        dataline = []; dataline.append('5% sign. level'); dataline.append(agr.sign_val_5); resultList.append(dataline)
-        dataline = []; dataline.append('10% sign. level'); dataline.append(agr.sign_val_10); resultList.append(dataline)
-        dataline = []; dataline.append('Target level'); dataline.append(curr_lvl); resultList.append(dataline)
+        dataline = []
+        resultList.append(dataline)
+        dataline = []
+        dataline.append('Method')
+        dataline.append(comp)
+        resultList.append(dataline)
+        dataline = []
+        dataline.append('1% sign. level')
+        dataline.append(agr.sign_val_1)
+        resultList.append(dataline)
+        dataline = []
+        dataline.append('5% sign. level')
+        dataline.append(agr.sign_val_5)
+        resultList.append(dataline)
+        dataline = []
+        dataline.append('10% sign. level')
+        dataline.append(agr.sign_val_10)
+        resultList.append(dataline)
+        dataline = []
+        dataline.append('Target level')
+        dataline.append(curr_lvl)
+        resultList.append(dataline)
         plot_data.numeric_data = resultList
 
         # make plot
-        makePlot(plot_data, num_subplot, conf_dict, target_lvl, sign_lvl_1, sign_lvl_5, sign_lvl_10)
+        makePlot(
+            plot_data,
+            num_subplot,
+            conf_dict,
+            target_lvl,
+            sign_lvl_1,
+            sign_lvl_5,
+            sign_lvl_10)
 
     elif plotType == u'AGR att':
         if recalc or not plot_data.collection_calc_data.__contains__("AGR"):
-            res = calcAGR(s_data, plot_data,abspath=abspath)
+            res = calcAGR(s_data, plot_data, abspath=abspath)
             plot_data.collection_calc_data["AGR"] = res
         else:
             res = plot_data.collection_calc_data["AGR"]
 
         curr_lvl = agr_lvl
-        agr = PerfIndData(res, "agr", comp, numberOfSamples, numberOfAttributes)
+        agr = PerfIndData(
+            res,
+            "agr",
+            comp,
+            numberOfSamples,
+            numberOfAttributes)
         conf_dict = agr.get_config("att", assessorList, plotType, curr_lvl)
 
-        dataline = []; dataline.append('Assessors'); dataline.extend(assessorList); resultList.append(dataline)
-        dataline = []; dataline.append('AGR att'); dataline.extend(agr.att); resultList.append(dataline)
-        dataline = []; dataline.append('AGR average'); dataline.extend(agr.average); resultList.append(dataline)
-        dataline = []; dataline.append('Upper STD'); dataline.append(agr.std_prod_upper); resultList.append(dataline)
-        dataline = []; dataline.append('Lower STD'); dataline.append(agr.std_prod_lower); resultList.append(dataline)
+        dataline = []
+        dataline.append('Assessors')
+        dataline.extend(assessorList)
+        resultList.append(dataline)
+        dataline = []
+        dataline.append('AGR att')
+        dataline.extend(agr.att)
+        resultList.append(dataline)
+        dataline = []
+        dataline.append('AGR average')
+        dataline.extend(agr.average)
+        resultList.append(dataline)
+        dataline = []
+        dataline.append('Upper STD')
+        dataline.append(agr.std_prod_upper)
+        resultList.append(dataline)
+        dataline = []
+        dataline.append('Lower STD')
+        dataline.append(agr.std_prod_lower)
+        resultList.append(dataline)
 
-
-
-        dataline = []; resultList.append(dataline)
-        dataline = []; dataline.append('Method'); dataline.append(comp); resultList.append(dataline)
-        dataline = []; dataline.append('1% sign. level'); dataline.append(agr.sign_val_1); resultList.append(dataline)
-        dataline = []; dataline.append('5% sign. level'); dataline.append(agr.sign_val_5); resultList.append(dataline)
-        dataline = []; dataline.append('10% sign. level'); dataline.append(agr.sign_val_10); resultList.append(dataline)
-        dataline = []; dataline.append('Target level'); dataline.append(curr_lvl); resultList.append(dataline)
+        dataline = []
+        resultList.append(dataline)
+        dataline = []
+        dataline.append('Method')
+        dataline.append(comp)
+        resultList.append(dataline)
+        dataline = []
+        dataline.append('1% sign. level')
+        dataline.append(agr.sign_val_1)
+        resultList.append(dataline)
+        dataline = []
+        dataline.append('5% sign. level')
+        dataline.append(agr.sign_val_5)
+        resultList.append(dataline)
+        dataline = []
+        dataline.append('10% sign. level')
+        dataline.append(agr.sign_val_10)
+        resultList.append(dataline)
+        dataline = []
+        dataline.append('Target level')
+        dataline.append(curr_lvl)
+        resultList.append(dataline)
         plot_data.numeric_data = resultList
 
-
         # make plot
-        makePlot(plot_data, num_subplot, conf_dict, target_lvl, sign_lvl_1, sign_lvl_5, sign_lvl_10)
-
+        makePlot(
+            plot_data,
+            num_subplot,
+            conf_dict,
+            target_lvl,
+            sign_lvl_1,
+            sign_lvl_5,
+            sign_lvl_10)
 
     elif plotType == u'p values for AGR and REP':
         if numberOfReplicates == 1:
-            show_err_msg("Number of replicates must be 2 or more."); return
-        res_agr = calcAGR(s_data, plot_data, permutationTestEnabled = True,abspath=abspath)
-        res_rep = calcREP(s_data, plot_data, permutationTestEnabled = True,abspath=abspath)
+            show_err_msg("Number of replicates must be 2 or more.")
+            return
+        res_agr = calcAGR(
+            s_data,
+            plot_data,
+            permutationTestEnabled=True,
+            abspath=abspath)
+        res_rep = calcREP(
+            s_data,
+            plot_data,
+            permutationTestEnabled=True,
+            abspath=abspath)
 
         curr_lvl = agr_lvl
-        agr = PerfIndData(res_agr, "agr", comp, numberOfSamples, numberOfAttributes)
-        rep = PerfIndData(res_rep, "rep", comp, numberOfSamples, numberOfAttributes)
+        agr = PerfIndData(
+            res_agr,
+            "agr",
+            comp,
+            numberOfSamples,
+            numberOfAttributes)
+        rep = PerfIndData(
+            res_rep,
+            "rep",
+            comp,
+            numberOfSamples,
+            numberOfAttributes)
         conf_dict = agr.get_config("att", assessorList, plotType, curr_lvl)
 
-        dataline = []; dataline.append('Assessors'); dataline.extend(assessorList); resultList.append(dataline)
-        dataline = []; dataline.append('AGR prod p'); dataline.extend(agr.prod_p); resultList.append(dataline)
-        dataline = []; dataline.append('AGR att p'); dataline.extend(agr.att_p); resultList.append(dataline)
-        dataline = []; dataline.append('REP prod p'); dataline.extend(rep.prod_p); resultList.append(dataline)
-        dataline = []; dataline.append('REP att p'); dataline.extend(rep.att_p); resultList.append(dataline)
+        dataline = []
+        dataline.append('Assessors')
+        dataline.extend(assessorList)
+        resultList.append(dataline)
+        dataline = []
+        dataline.append('AGR prod p')
+        dataline.extend(agr.prod_p)
+        resultList.append(dataline)
+        dataline = []
+        dataline.append('AGR att p')
+        dataline.extend(agr.att_p)
+        resultList.append(dataline)
+        dataline = []
+        dataline.append('REP prod p')
+        dataline.extend(rep.prod_p)
+        resultList.append(dataline)
+        dataline = []
+        dataline.append('REP att p')
+        dataline.extend(rep.att_p)
+        resultList.append(dataline)
 
-        dataline = []; resultList.append(dataline)
-        dataline = []; dataline.append('Method'); dataline.append(comp); resultList.append(dataline)
-        dataline = []; dataline.append('1% sign. level'); dataline.append(rep.sign_val_1); resultList.append(dataline)
-        dataline = []; dataline.append('5% sign. level'); dataline.append(rep.sign_val_5); resultList.append(dataline)
-        dataline = []; dataline.append('10% sign. level'); dataline.append(rep.sign_val_10); resultList.append(dataline)
-        dataline = []; dataline.append('Target level'); dataline.append(curr_lvl); resultList.append(dataline)
+        dataline = []
+        resultList.append(dataline)
+        dataline = []
+        dataline.append('Method')
+        dataline.append(comp)
+        resultList.append(dataline)
+        dataline = []
+        dataline.append('1% sign. level')
+        dataline.append(rep.sign_val_1)
+        resultList.append(dataline)
+        dataline = []
+        dataline.append('5% sign. level')
+        dataline.append(rep.sign_val_5)
+        resultList.append(dataline)
+        dataline = []
+        dataline.append('10% sign. level')
+        dataline.append(rep.sign_val_10)
+        resultList.append(dataline)
+        dataline = []
+        dataline.append('Target level')
+        dataline.append(curr_lvl)
+        resultList.append(dataline)
         plot_data.numeric_data = resultList
 
         # make plot
         #makePlot(plot_data, num_subplot, conf_dict)
         plot_data.special_opts["plot_frame"] = False
 
-
     elif plotType == u'REP prod':
         if numberOfReplicates == 1:
-            show_err_msg("Number of replicates must be 2 or more."); return
+            show_err_msg("Number of replicates must be 2 or more.")
+            return
         if recalc or not plot_data.collection_calc_data.__contains__("REP"):
             res_rep = calcREP(s_data, plot_data)
             plot_data.collection_calc_data["REP"] = res_rep
@@ -915,31 +1076,73 @@ def perfindPlotter(s_data, plot_data, num_subplot=[1,1,1],abspath=None, **kwargs
             res_rep = plot_data.collection_calc_data["REP"]
 
         curr_lvl = rep_lvl
-        rep = PerfIndData(res_rep, "rep", comp, numberOfSamples, numberOfAttributes)
+        rep = PerfIndData(
+            res_rep,
+            "rep",
+            comp,
+            numberOfSamples,
+            numberOfAttributes)
         conf_dict = rep.get_config("prod", assessorList, plotType, curr_lvl)
 
-        dataline = []; dataline.append('Assessors'); dataline.extend(assessorList); resultList.append(dataline)
-        dataline = []; dataline.append('REP prod'); dataline.extend(rep.prod); resultList.append(dataline)
-        dataline = []; dataline.append('REP att'); dataline.extend(rep.att); resultList.append(dataline)
-        dataline = []; dataline.append('Upper STD'); dataline.append(rep.std_prod_upper); resultList.append(dataline)
-        dataline = []; dataline.append('Lower STD'); dataline.append(rep.std_prod_lower); resultList.append(dataline)
+        dataline = []
+        dataline.append('Assessors')
+        dataline.extend(assessorList)
+        resultList.append(dataline)
+        dataline = []
+        dataline.append('REP prod')
+        dataline.extend(rep.prod)
+        resultList.append(dataline)
+        dataline = []
+        dataline.append('REP att')
+        dataline.extend(rep.att)
+        resultList.append(dataline)
+        dataline = []
+        dataline.append('Upper STD')
+        dataline.append(rep.std_prod_upper)
+        resultList.append(dataline)
+        dataline = []
+        dataline.append('Lower STD')
+        dataline.append(rep.std_prod_lower)
+        resultList.append(dataline)
 
-        dataline = []; resultList.append(dataline)
-        dataline = []; dataline.append('Method'); dataline.append(comp); resultList.append(dataline)
-        dataline = []; dataline.append('1% sign. level'); dataline.append(rep.sign_val_1); resultList.append(dataline)
-        dataline = []; dataline.append('5% sign. level'); dataline.append(rep.sign_val_5); resultList.append(dataline)
-        dataline = []; dataline.append('10% sign. level'); dataline.append(rep.sign_val_10); resultList.append(dataline)
-        dataline = []; dataline.append('Target level'); dataline.append(curr_lvl); resultList.append(dataline)
+        dataline = []
+        resultList.append(dataline)
+        dataline = []
+        dataline.append('Method')
+        dataline.append(comp)
+        resultList.append(dataline)
+        dataline = []
+        dataline.append('1% sign. level')
+        dataline.append(rep.sign_val_1)
+        resultList.append(dataline)
+        dataline = []
+        dataline.append('5% sign. level')
+        dataline.append(rep.sign_val_5)
+        resultList.append(dataline)
+        dataline = []
+        dataline.append('10% sign. level')
+        dataline.append(rep.sign_val_10)
+        resultList.append(dataline)
+        dataline = []
+        dataline.append('Target level')
+        dataline.append(curr_lvl)
+        resultList.append(dataline)
         plot_data.numeric_data = resultList
 
-
         # make plot
-        makePlot(plot_data, num_subplot, conf_dict, target_lvl, sign_lvl_1, sign_lvl_5, sign_lvl_10)
-
+        makePlot(
+            plot_data,
+            num_subplot,
+            conf_dict,
+            target_lvl,
+            sign_lvl_1,
+            sign_lvl_5,
+            sign_lvl_10)
 
     elif plotType == u'REP att':
         if numberOfReplicates == 1:
-            show_err_msg("Number of replicates must be 2 or more."); return
+            show_err_msg("Number of replicates must be 2 or more.")
+            return
         if recalc or not plot_data.collection_calc_data.__contains__("REP"):
             res_rep = calcREP(s_data, plot_data)
             plot_data.collection_calc_data["REP"] = res_rep
@@ -947,48 +1150,103 @@ def perfindPlotter(s_data, plot_data, num_subplot=[1,1,1],abspath=None, **kwargs
             res_rep = plot_data.collection_calc_data["REP"]
 
         curr_lvl = rep_lvl
-        rep = PerfIndData(res_rep, "rep", comp, numberOfSamples, numberOfAttributes)
+        rep = PerfIndData(
+            res_rep,
+            "rep",
+            comp,
+            numberOfSamples,
+            numberOfAttributes)
         conf_dict = rep.get_config("att", assessorList, plotType, curr_lvl)
 
-        dataline = []; dataline.append('Assessors'); dataline.extend(assessorList); resultList.append(dataline)
-        dataline = []; dataline.append('REP prod'); dataline.extend(rep.prod); resultList.append(dataline)
-        dataline = []; dataline.append('REP att'); dataline.extend(rep.att); resultList.append(dataline)
-        dataline = []; dataline.append('Upper STD'); dataline.append(rep.std_att_upper); resultList.append(dataline)
-        dataline = []; dataline.append('Lower STD'); dataline.append(rep.std_att_lower); resultList.append(dataline)
+        dataline = []
+        dataline.append('Assessors')
+        dataline.extend(assessorList)
+        resultList.append(dataline)
+        dataline = []
+        dataline.append('REP prod')
+        dataline.extend(rep.prod)
+        resultList.append(dataline)
+        dataline = []
+        dataline.append('REP att')
+        dataline.extend(rep.att)
+        resultList.append(dataline)
+        dataline = []
+        dataline.append('Upper STD')
+        dataline.append(rep.std_att_upper)
+        resultList.append(dataline)
+        dataline = []
+        dataline.append('Lower STD')
+        dataline.append(rep.std_att_lower)
+        resultList.append(dataline)
 
-        dataline = []; resultList.append(dataline)
-        dataline = []; dataline.append('Method'); dataline.append(comp); resultList.append(dataline)
-        dataline = []; dataline.append('1% sign. level'); dataline.append(rep.sign_val_1); resultList.append(dataline)
-        dataline = []; dataline.append('5% sign. level'); dataline.append(rep.sign_val_5); resultList.append(dataline)
-        dataline = []; dataline.append('10% sign. level'); dataline.append(rep.sign_val_10); resultList.append(dataline)
-        dataline = []; dataline.append('Target level'); dataline.append(curr_lvl); resultList.append(dataline)
+        dataline = []
+        resultList.append(dataline)
+        dataline = []
+        dataline.append('Method')
+        dataline.append(comp)
+        resultList.append(dataline)
+        dataline = []
+        dataline.append('1% sign. level')
+        dataline.append(rep.sign_val_1)
+        resultList.append(dataline)
+        dataline = []
+        dataline.append('5% sign. level')
+        dataline.append(rep.sign_val_5)
+        resultList.append(dataline)
+        dataline = []
+        dataline.append('10% sign. level')
+        dataline.append(rep.sign_val_10)
+        resultList.append(dataline)
+        dataline = []
+        dataline.append('Target level')
+        dataline.append(curr_lvl)
+        resultList.append(dataline)
         plot_data.numeric_data = resultList
 
-
         # make plot
-        makePlot(plot_data, num_subplot, conf_dict, target_lvl, sign_lvl_1, sign_lvl_5, sign_lvl_10)
+        makePlot(
+            plot_data,
+            num_subplot,
+            conf_dict,
+            target_lvl,
+            sign_lvl_1,
+            sign_lvl_5,
+            sign_lvl_10)
 
     elif plotType == u'DIS total':
         if numberOfReplicates == 1:
-            show_err_msg("Number of replicates must be 2 or more."); return
+            show_err_msg("Number of replicates must be 2 or more.")
+            return
         if recalc or not plot_data.collection_calc_data.__contains__("DIS"):
-            res_dis = calcDIS(s_data, plot_data,progPath = abspath)
+            res_dis = calcDIS(s_data, plot_data, progPath=abspath)
             plot_data.collection_calc_data["DIS"] = res_dis
         else:
             res_dis = plot_data.collection_calc_data["DIS"]
 
-
         curr_lvl = dis_lvl
-        dataline = []; dataline.append('DIS count ind'); dataline.extend(res_dis['DIS count ind']); resultList.append(dataline)
-        dataline = []; dataline.append('DIS count all_ex1'); dataline.extend(res_dis['DIS count all_ex1'])
-        dataline = []; dataline.append('DIS'); dataline.extend(res_dis['DIS']); resultList.append(dataline)
-        dataline = []; dataline.append('DIS2'); dataline.extend(res_dis['DIS2']); resultList.append(dataline)
-        dataline = []; dataline.append('DIS sign all panel'); dataline.append(res_dis['DIS sign all panel']); resultList.append(dataline)
+        dataline = []
+        dataline.append('DIS count ind')
+        dataline.extend(res_dis['DIS count ind'])
+        resultList.append(dataline)
+        dataline = []
+        dataline.append('DIS count all_ex1')
+        dataline.extend(res_dis['DIS count all_ex1'])
+        dataline = []
+        dataline.append('DIS')
+        dataline.extend(res_dis['DIS'])
+        resultList.append(dataline)
+        dataline = []
+        dataline.append('DIS2')
+        dataline.extend(res_dis['DIS2'])
+        resultList.append(dataline)
+        dataline = []
+        dataline.append('DIS sign all panel')
+        dataline.append(res_dis['DIS sign all panel'])
+        resultList.append(dataline)
         plot_data.numeric_data = resultList
 
-
         conf_dict = {}
-        conf_dict["elements"] = assessorList #res_dis['DIS count ind']
+        conf_dict["elements"] = assessorList  # res_dis['DIS count ind']
         conf_dict["values1"] = res_dis['DIS']
         #conf_dict["values2"] = res_dis['DIS2']
         conf_dict["title"] = plotType
@@ -1001,123 +1259,239 @@ def perfindPlotter(s_data, plot_data, num_subplot=[1,1,1],abspath=None, **kwargs
 
     elif plotType == u"DIS panel-1":
         if numberOfReplicates == 1:
-            show_err_msg("Number of replicates must be 2 or more."); return
+            show_err_msg("Number of replicates must be 2 or more.")
+            return
         if recalc or not plot_data.collection_calc_data.__contains__("DIS"):
-            res_dis = calcDIS(s_data, plot_data,progPath = abspath)
+            res_dis = calcDIS(s_data, plot_data, progPath=abspath)
             plot_data.collection_calc_data["DIS"] = res_dis
         else:
             res_dis = plot_data.collection_calc_data["DIS"]
 
         curr_lvl = dis_lvl
-        dataline = []; dataline.append('DIS count ind'); dataline.extend(res_dis['DIS count ind']); resultList.append(dataline)
-        dataline = []; dataline.append('DIS count all_ex1'); dataline.extend(res_dis['DIS count all_ex1'])
-        dataline = []; dataline.append('DIS'); dataline.extend(res_dis['DIS']); resultList.append(dataline)
-        dataline = []; dataline.append('DIS2'); dataline.extend(res_dis['DIS2']); resultList.append(dataline)
-        dataline = []; dataline.append('DIS sign all panel'); dataline.append(res_dis['DIS sign all panel']); resultList.append(dataline)
+        dataline = []
+        dataline.append('DIS count ind')
+        dataline.extend(res_dis['DIS count ind'])
+        resultList.append(dataline)
+        dataline = []
+        dataline.append('DIS count all_ex1')
+        dataline.extend(res_dis['DIS count all_ex1'])
+        dataline = []
+        dataline.append('DIS')
+        dataline.extend(res_dis['DIS'])
+        resultList.append(dataline)
+        dataline = []
+        dataline.append('DIS2')
+        dataline.extend(res_dis['DIS2'])
+        resultList.append(dataline)
+        dataline = []
+        dataline.append('DIS sign all panel')
+        dataline.append(res_dis['DIS sign all panel'])
+        resultList.append(dataline)
         plot_data.numeric_data = resultList
 
         conf_dict = {}
-        conf_dict["elements"] = assessorList #res_dis['DIS count ind']
+        conf_dict["elements"] = assessorList  # res_dis['DIS count ind']
         conf_dict["values1"] = res_dis['DIS2']
         #conf_dict["values2"] = res_dis['DIS']
         conf_dict["title"] = plotType
         conf_dict["vType"] = plotType
         conf_dict["target"] = curr_lvl
 
-
         # make plot
         makePlotDIS(plot_data, num_subplot, conf_dict, target_lvl)
         #plot_data.special_opts["plot_frame"] = False
 
-
     elif plotType == u'RV for 1% sign. level':
         plot_data.special_opts["plot_frame"] = False
-        return set_sign_level_numeric_data(pid.RV1_1, plot_data, numberOfSamples, numberOfAttributes)
+        return set_sign_level_numeric_data(
+            pid.RV1_1, plot_data, numberOfSamples, numberOfAttributes)
 
     elif plotType == u'RV for 5% sign. level':
         plot_data.special_opts["plot_frame"] = False
-        return set_sign_level_numeric_data(pid.RV1_5, plot_data, numberOfSamples, numberOfAttributes)
+        return set_sign_level_numeric_data(
+            pid.RV1_5, plot_data, numberOfSamples, numberOfAttributes)
 
     elif plotType == u'RV for 10% sign. level':
         plot_data.special_opts["plot_frame"] = False
-        return set_sign_level_numeric_data(pid.RV1_10, plot_data, numberOfSamples, numberOfAttributes)
+        return set_sign_level_numeric_data(
+            pid.RV1_10, plot_data, numberOfSamples, numberOfAttributes)
 
     elif plotType == u'RV2 for 1% sign. level':
         plot_data.special_opts["plot_frame"] = False
-        return set_sign_level_numeric_data(pid.RV2_1, plot_data, numberOfSamples, numberOfAttributes)
+        return set_sign_level_numeric_data(
+            pid.RV2_1, plot_data, numberOfSamples, numberOfAttributes)
 
     elif plotType == u'RV2 for 5% sign. level':
         plot_data.special_opts["plot_frame"] = False
-        return set_sign_level_numeric_data(pid.RV2_5, plot_data, numberOfSamples, numberOfAttributes)
+        return set_sign_level_numeric_data(
+            pid.RV2_5, plot_data, numberOfSamples, numberOfAttributes)
 
     elif plotType == u'RV2 for 10% sign. level':
         plot_data.special_opts["plot_frame"] = False
-        return set_sign_level_numeric_data(pid.RV2_10, plot_data, numberOfSamples, numberOfAttributes)
+        return set_sign_level_numeric_data(
+            pid.RV2_10, plot_data, numberOfSamples, numberOfAttributes)
 
     elif plotType == u'Indices table':
         plot_data.special_opts["plot_frame"] = False
         if numberOfReplicates == 1:
-            if recalc or not plot_data.collection_calc_data.__contains__("AGR"):
-                res_agr = calcAGR(s_data, plot_data,abspath=abspath)
+            if recalc or not plot_data.collection_calc_data.__contains__(
+                    "AGR"):
+                res_agr = calcAGR(s_data, plot_data, abspath=abspath)
                 plot_data.numeric_data_config["AGR"] = res_agr
             else:
                 res_agr = plot_data.collection_calc_data["AGR"]
 
             curr_lvl = agr_lvl
-            agr = PerfIndData(res_agr, "agr", comp, numberOfSamples, numberOfAttributes)
-            dataline = []; dataline.append('Assessors'); dataline.extend(assessorList); dataline.append("Average"); dataline.append("STD"); resultList.append(dataline)
+            agr = PerfIndData(
+                res_agr,
+                "agr",
+                comp,
+                numberOfSamples,
+                numberOfAttributes)
+            dataline = []
+            dataline.append('Assessors')
+            dataline.extend(assessorList)
+            dataline.append("Average")
+            dataline.append("STD")
+            resultList.append(dataline)
 
-            dataline = []; dataline.append('AGR prod'); dataline.extend(agr.prod); dataline.append(round(agr.average_prod, 2)); dataline.append(round(agr.std_prod, 2)); resultList.append(dataline)
-            dataline = []; dataline.append('AGR att'); dataline.extend(agr.att); dataline.append(round(agr.average_att, 2)); dataline.append(round(agr.std_att, 2)); resultList.append(dataline)
-            dataline = []; dataline.append(''); resultList.append(dataline)
+            dataline = []
+            dataline.append('AGR prod')
+            dataline.extend(agr.prod)
+            dataline.append(round(agr.average_prod, 2))
+            dataline.append(round(agr.std_prod, 2))
+            resultList.append(dataline)
+            dataline = []
+            dataline.append('AGR att')
+            dataline.extend(agr.att)
+            dataline.append(round(agr.average_att, 2))
+            dataline.append(round(agr.std_att, 2))
+            resultList.append(dataline)
+            dataline = []
+            dataline.append('')
+            resultList.append(dataline)
 
-            dataline = []; dataline.append("Total # of attr"); resultList.append(dataline)
-            dataline = []; dataline.append(numberOfAttributes); resultList.append(dataline)
+            dataline = []
+            dataline.append("Total # of attr")
+            resultList.append(dataline)
+            dataline = []
+            dataline.append(numberOfAttributes)
+            resultList.append(dataline)
 
         else:
-            if recalc or not plot_data.collection_calc_data.__contains__("AGR"):
-                res_agr = calcAGR(s_data, plot_data,abspath=abspath)
+            if recalc or not plot_data.collection_calc_data.__contains__(
+                    "AGR"):
+                res_agr = calcAGR(s_data, plot_data, abspath=abspath)
                 plot_data.numeric_data_config["AGR"] = res_agr
             else:
                 res_agr = plot_data.collection_calc_data["AGR"]
 
-            if recalc or not plot_data.collection_calc_data.__contains__("REP"):
+            if recalc or not plot_data.collection_calc_data.__contains__(
+                    "REP"):
                 res_rep = calcREP(s_data, plot_data)
                 plot_data.collection_calc_data["REP"] = res_rep
             else:
                 res_rep = plot_data.collection_calc_data["REP"]
 
-            if recalc or not plot_data.collection_calc_data.__contains__("DIS"):
-                res_dis = calcDIS(s_data, plot_data, progPath = abspath)
+            if recalc or not plot_data.collection_calc_data.__contains__(
+                    "DIS"):
+                res_dis = calcDIS(s_data, plot_data, progPath=abspath)
                 plot_data.collection_calc_data["DIS"] = res_dis
             else:
                 res_dis = plot_data.collection_calc_data["DIS"]
 
             curr_lvl = agr_lvl
-            agr = PerfIndData(res_agr, "agr", comp, numberOfSamples, numberOfAttributes)
-            rep = PerfIndData(res_rep, "rep", comp, numberOfSamples, numberOfAttributes)
+            agr = PerfIndData(
+                res_agr,
+                "agr",
+                comp,
+                numberOfSamples,
+                numberOfAttributes)
+            rep = PerfIndData(
+                res_rep,
+                "rep",
+                comp,
+                numberOfSamples,
+                numberOfAttributes)
 
-            dataline = []; dataline.append('Assessors'); dataline.extend(assessorList); dataline.append("Average"); dataline.append("STD"); resultList.append(dataline)
+            dataline = []
+            dataline.append('Assessors')
+            dataline.extend(assessorList)
+            dataline.append("Average")
+            dataline.append("STD")
+            resultList.append(dataline)
 
-            dataline = []; dataline.append('AGR prod'); dataline.extend(agr.prod); dataline.append(round(agr.average_prod, 2)); dataline.append(round(agr.std_prod, 2)); resultList.append(dataline)
-            dataline = []; dataline.append('AGR att'); dataline.extend(agr.att); dataline.append(round(agr.average_att, 2)); dataline.append(round(agr.std_att, 2)); resultList.append(dataline)
-            dataline = []; dataline.append(''); resultList.append(dataline)
-            dataline = []; dataline.append('REP prod'); dataline.extend(rep.prod); dataline.append(round(rep.average_prod, 2)); dataline.append(round(rep.std_prod, 2)); resultList.append(dataline)
-            dataline = []; dataline.append('REP att'); dataline.extend(rep.att); dataline.append(round(rep.average_att, 2)); dataline.append(round(rep.std_att, 2)); resultList.append(dataline)
-            dataline = []; dataline.append(''); resultList.append(dataline)
+            dataline = []
+            dataline.append('AGR prod')
+            dataline.extend(agr.prod)
+            dataline.append(round(agr.average_prod, 2))
+            dataline.append(round(agr.std_prod, 2))
+            resultList.append(dataline)
+            dataline = []
+            dataline.append('AGR att')
+            dataline.extend(agr.att)
+            dataline.append(round(agr.average_att, 2))
+            dataline.append(round(agr.std_att, 2))
+            resultList.append(dataline)
+            dataline = []
+            dataline.append('')
+            resultList.append(dataline)
+            dataline = []
+            dataline.append('REP prod')
+            dataline.extend(rep.prod)
+            dataline.append(round(rep.average_prod, 2))
+            dataline.append(round(rep.std_prod, 2))
+            resultList.append(dataline)
+            dataline = []
+            dataline.append('REP att')
+            dataline.extend(rep.att)
+            dataline.append(round(rep.average_att, 2))
+            dataline.append(round(rep.std_att, 2))
+            resultList.append(dataline)
+            dataline = []
+            dataline.append('')
+            resultList.append(dataline)
 
             curr_lvl = dis_lvl
-            dataline = []; dataline.append('DIS total'); dataline.extend(res_dis['DIS2']); resultList.append(dataline)
-            dataline = []; dataline.append('DIS panel-1'); dataline.extend(res_dis['DIS']); resultList.append(dataline)
-            dataline = []; dataline.append(''); resultList.append(dataline)
-            dataline = []; dataline.append(''); resultList.append(dataline)
-            dataline = []; dataline.append(''); resultList.append(dataline)
+            dataline = []
+            dataline.append('DIS total')
+            dataline.extend(res_dis['DIS2'])
+            resultList.append(dataline)
+            dataline = []
+            dataline.append('DIS panel-1')
+            dataline.extend(res_dis['DIS'])
+            resultList.append(dataline)
+            dataline = []
+            dataline.append('')
+            resultList.append(dataline)
+            dataline = []
+            dataline.append('')
+            resultList.append(dataline)
+            dataline = []
+            dataline.append('')
+            resultList.append(dataline)
 
-            dataline = []; dataline.append('Assessors'); dataline.extend(assessorList); dataline.append("# sign attr panel"); dataline.append("Total # of attr"); resultList.append(dataline)
-            dataline = []; dataline.append('# sign attr individ'); dataline.extend(res_dis['DIS count ind']); resultList.append(dataline)
-            dataline = []; dataline.append('# sign attr panel ex individ'); dataline.extend(res_dis['DIS count all_ex1']); dataline.append(res_dis['DIS sign all panel']); dataline.append(numberOfAttributes); resultList.append(dataline)
+            dataline = []
+            dataline.append('Assessors')
+            dataline.extend(assessorList)
+            dataline.append("# sign attr panel")
+            dataline.append("Total # of attr")
+            resultList.append(dataline)
+            dataline = []
+            dataline.append('# sign attr individ')
+            dataline.extend(res_dis['DIS count ind'])
+            resultList.append(dataline)
+            dataline = []
+            dataline.append('# sign attr panel ex individ')
+            dataline.extend(res_dis['DIS count all_ex1'])
+            dataline.append(res_dis['DIS sign all panel'])
+            dataline.append(numberOfAttributes)
+            resultList.append(dataline)
 
-            #dataline = []; dataline.append('DIS sign all panel'); dataline.append(res_dis['DIS sign all panel']); resultList.append(dataline) dataline.append(length(attributeList));
+            # dataline = []; dataline.append('DIS sign all panel');
+            # dataline.append(res_dis['DIS sign all panel']);
+            # resultList.append(dataline)
+            # dataline.append(length(attributeList));
             print(res_dis.keys())
             print('active attributes list: ', len(attributeList))
 
@@ -1127,28 +1501,33 @@ def perfindPlotter(s_data, plot_data, num_subplot=[1,1,1],abspath=None, **kwargs
     return plot_data
 
 
-
 def makePlot(plot_data, num_subplot, conf_dict, target_on, s1, s5, s10):
 
-    elements = conf_dict["elements"] # attributes|assessors
-    y_values = conf_dict["values"] # agr|rep
-    value_type = conf_dict["vtype"] # agr|rep
-    title = conf_dict["title"] # att|prod
-
+    elements = conf_dict["elements"]  # attributes|assessors
+    y_values = conf_dict["values"]  # agr|rep
+    value_type = conf_dict["vtype"]  # agr|rep
+    title = conf_dict["title"]  # att|prod
 
     print("making perf ind plot...")
 
     # Figure
-    replot = True; subplot = plot_data.overview_plot; scatter_width = 35
-    if plot_data.fig != None: replot = True
-    else: plot_data.fig = Figure(None)
-    if subplot: # is subplot
-        plot_data.ax = plot_data.fig.add_subplot(num_subplot[0], num_subplot[1], num_subplot[2])
+    replot = True
+    subplot = plot_data.overview_plot
+    scatter_width = 35
+    if plot_data.fig is not None:
+        replot = True
+    else:
+        plot_data.fig = Figure(None)
+    if subplot:  # is subplot
+        plot_data.ax = plot_data.fig.add_subplot(
+            num_subplot[0], num_subplot[1], num_subplot[2])
         scatter_width = 15
-    else: plot_data.ax = axes_create(plot_data.view_legend, plot_data.fig)
-    ax = plot_data.ax; fig = plot_data.fig
+    else:
+        plot_data.ax = axes_create(plot_data.view_legend, plot_data.fig)
+    ax = plot_data.ax
+    fig = plot_data.fig
 
-    limits = [1, len(elements)+1, 0, 100]
+    limits = [1, len(elements) + 1, 0, 100]
     if not subplot:
         axes_setup(ax, '', '', title, limits)
         set_xlabeling(ax, elements)
@@ -1156,7 +1535,6 @@ def makePlot(plot_data, num_subplot, conf_dict, target_on, s1, s5, s10):
             set_xlabeling_rotation(ax, 'vertical')
     else:
         axes_setup(ax, '', '', title, limits, font_size=10)
-
 
     ax.grid(plot_data.view_grid)
 
@@ -1172,9 +1550,9 @@ def makePlot(plot_data, num_subplot, conf_dict, target_on, s1, s5, s10):
     lower_std = []
     x_values = []
     x_values_elements = []
-    for i in range(1, len(y_values)+1):
+    for i in range(1, len(y_values) + 1):
         x_values_elements.append(i)
-    for i in range(0, len(elements)+2):
+    for i in range(0, len(elements) + 2):
         slvl1.append(conf_dict["slvl1"])
         slvl5.append(conf_dict["slvl5"])
         slvl10.append(conf_dict["slvl10"])
@@ -1184,48 +1562,101 @@ def makePlot(plot_data, num_subplot, conf_dict, target_on, s1, s5, s10):
         lower_std.append(conf_dict["lower_std"])
         x_values.append(i)
 
-
-
-    colors = ['#0037CC', '#FF8A00', '#FFD800', '#999999', '#29CC29', '#000000', '#000000', '#000000']
+    colors = [
+        '#0037CC',
+        '#FF8A00',
+        '#FFD800',
+        '#999999',
+        '#29CC29',
+        '#000000',
+        '#000000',
+        '#000000']
     linestyles = ['-', '--', '--', '--', '-', '-', ':', ':']
 
     ind = 0
     print(x_values, y_values)
-    lines.append(ax.plot(x_values_elements, y_values, color=colors[ind], linestyle=linestyles[ind], linewidth=2))
+    lines.append(
+        ax.plot(
+            x_values_elements,
+            y_values,
+            color=colors[ind],
+            linestyle=linestyles[ind],
+            linewidth=2))
     lables.append(value_type)
     ind += 1
 
     if s1:
-        lines.append(ax.plot(x_values, slvl1, color=colors[ind], linestyle=linestyles[ind]))
+        lines.append(
+            ax.plot(
+                x_values,
+                slvl1,
+                color=colors[ind],
+                linestyle=linestyles[ind]))
         lables.append("1% sign. level")
     ind += 1
     if s5:
-        lines.append(ax.plot(x_values, slvl5, color=colors[ind], linestyle=linestyles[ind]))
+        lines.append(
+            ax.plot(
+                x_values,
+                slvl5,
+                color=colors[ind],
+                linestyle=linestyles[ind]))
         lables.append("5% sign. level")
     ind += 1
     if s10:
-        lines.append(ax.plot(x_values, slvl10, color=colors[ind], linestyle=linestyles[ind]))
+        lines.append(
+            ax.plot(
+                x_values,
+                slvl10,
+                color=colors[ind],
+                linestyle=linestyles[ind]))
         lables.append("10% sign. level")
     ind += 1
     if target_on:
-        lines.append(ax.plot(x_values, target_lvl, color=colors[ind], linestyle=linestyles[ind], linewidth=2))
+        lines.append(
+            ax.plot(
+                x_values,
+                target_lvl,
+                color=colors[ind],
+                linestyle=linestyles[ind],
+                linewidth=2))
         lables.append("Target level")
     ind += 1
-    lines.append(ax.plot(x_values, aver, color=colors[ind], linestyle=linestyles[ind])); ind += 1
+    lines.append(
+        ax.plot(
+            x_values,
+            aver,
+            color=colors[ind],
+            linestyle=linestyles[ind]))
+    ind += 1
     lables.append("Average")
 
-    lines.append(ax.plot(x_values, upper_std, color=colors[ind], linestyle=linestyles[ind])); ind += 1
+    lines.append(
+        ax.plot(
+            x_values,
+            upper_std,
+            color=colors[ind],
+            linestyle=linestyles[ind]))
+    ind += 1
     lables.append("Upper STD")
 
-    lines.append(ax.plot(x_values, lower_std, color=colors[ind], linestyle=linestyles[ind])); ind += 1
+    lines.append(
+        ax.plot(
+            x_values,
+            lower_std,
+            color=colors[ind],
+            linestyle=linestyles[ind]))
+    ind += 1
     lables.append("Lower STD")
 
     pointAndLabelList = []
     for i in range(len(y_values)):
-        pointAndLabelList.append([i+1, y_values[i], elements[i], 1])
-        ax.scatter([i+1], [y_values[i]], s = scatter_width, color = '#0037CC', marker = 's')
-
-
+        pointAndLabelList.append([i + 1, y_values[i], elements[i], 1])
+        ax.scatter([i + 1],
+                   [y_values[i]],
+                   s=scatter_width,
+                   color='#0037CC',
+                   marker='s')
 
     if not subplot:
         figlegend = fig.legend(lines, lables, 'upper right')
@@ -1233,15 +1664,15 @@ def makePlot(plot_data, num_subplot, conf_dict, target_on, s1, s5, s10):
         lables[0] = "prod/att"
         figlegend = fig.legend(lines, lables, 'upper right')
 
-    min1 = min(min(y_values), min(y_values))-10
-    max1 = max(max(y_values), max(y_values))+10
-    if min1 > 0: min1 = 0
-    if max1 < 110: max1 = 110
-    ax.set_ylim([min1,max1])
+    min1 = min(min(y_values), min(y_values)) - 10
+    max1 = max(max(y_values), max(y_values)) + 10
+    if min1 > 0:
+        min1 = 0
+    if max1 < 110:
+        max1 = 110
+    ax.set_ylim([min1, max1])
 
-
-
-    #update plot-data variables:
+    # update plot-data variables:
     plot_data.point_lables = pointAndLabelList
     plot_data.point_lables_type = 0
 
@@ -1250,9 +1681,8 @@ def makePlotDIS(plot_data, num_subplot, conf_dict, target_on):
 
     y_values1 = conf_dict["values1"]
     #y_values2 = conf_dict["values2"]
-    title = conf_dict["title"] # att|prod
-    vType = conf_dict["vType"] # att|prod
-
+    title = conf_dict["title"]  # att|prod
+    vType = conf_dict["vType"]  # att|prod
 
     elements = []
     for e in conf_dict["elements"]:
@@ -1261,16 +1691,23 @@ def makePlotDIS(plot_data, num_subplot, conf_dict, target_on):
     print("making perf ind DIS plot...")
 
     # Figure
-    replot = True; subplot = plot_data.overview_plot; scatter_width = 35
-    if plot_data.fig != None: replot = True
-    else: plot_data.fig = Figure(None)
-    if subplot: # is subplot
-        plot_data.ax = plot_data.fig.add_subplot(num_subplot[0], num_subplot[1], num_subplot[2])
+    replot = True
+    subplot = plot_data.overview_plot
+    scatter_width = 35
+    if plot_data.fig is not None:
+        replot = True
+    else:
+        plot_data.fig = Figure(None)
+    if subplot:  # is subplot
+        plot_data.ax = plot_data.fig.add_subplot(
+            num_subplot[0], num_subplot[1], num_subplot[2])
         scatter_width = 15
-    else: plot_data.ax = axes_create(plot_data.view_legend, plot_data.fig)
-    ax = plot_data.ax; fig = plot_data.fig
+    else:
+        plot_data.ax = axes_create(plot_data.view_legend, plot_data.fig)
+    ax = plot_data.ax
+    fig = plot_data.fig
 
-    limits = [1, len(elements)+1, 0, 100]
+    limits = [1, len(elements) + 1, 0, 100]
     if not subplot:
         axes_setup(ax, '', '', title, limits)
         set_xlabeling(ax, elements)
@@ -1278,7 +1715,6 @@ def makePlotDIS(plot_data, num_subplot, conf_dict, target_on):
             set_xlabeling_rotation(ax, 'vertical')
     else:
         axes_setup(ax, '', '', title, limits, font_size=10)
-
 
     ax.grid(plot_data.view_grid)
 
@@ -1292,30 +1728,56 @@ def makePlotDIS(plot_data, num_subplot, conf_dict, target_on):
     for i in range(1, len(y_values1) + 1):
         x_values_elements.append(i)
 
-    for i in range(0, len(elements)+2):
+    for i in range(0, len(elements) + 2):
         target_lvl.append(conf_dict["target"])
         x_values.append(i)
 
-    colors = ['#FF8A00', '#29CC29', '#FFD800', '#999999', '#29CC29', '#000000', '#000000', '#000000']
+    colors = [
+        '#FF8A00',
+        '#29CC29',
+        '#FFD800',
+        '#999999',
+        '#29CC29',
+        '#000000',
+        '#000000',
+        '#000000']
     linestyles = ['-', '-', '--', '-', '-', ':', ':']
 
     ind = 0
-    print(x_values, y_values1) #print y_values2
-    lines.append(ax.plot(x_values_elements, y_values1, color=colors[ind], linestyle=linestyles[ind], linewidth=2)); ind += 1
+    print(x_values, y_values1)  # print y_values2
+    lines.append(
+        ax.plot(
+            x_values_elements,
+            y_values1,
+            color=colors[ind],
+            linestyle=linestyles[ind],
+            linewidth=2))
+    ind += 1
     #lines.append(ax.plot(x_values_elements, y_values2, color=colors[ind], linestyle=linestyles[ind], linewidth=2)); ind += 1
     lables.append('DIS')
     if target_on:
-        lines.append(ax.plot(x_values, target_lvl, color=colors[ind], linestyle=linestyles[ind], linewidth=2))
+        lines.append(
+            ax.plot(
+                x_values,
+                target_lvl,
+                color=colors[ind],
+                linestyle=linestyles[ind],
+                linewidth=2))
         lables.append("Target level")
     ind += 1
 
     pointAndLabelList = []
     for i in range(len(y_values1)):
-        pointAndLabelList.append([i+1, y_values1[i], str(elements[i]), 1])
-        ax.scatter([i+1], [y_values1[i]], s = scatter_width, color = '#FF8A00', marker = 's')
-    #for i in range(len(y_values2)):
+        pointAndLabelList.append([i + 1, y_values1[i], str(elements[i]), 1])
+        ax.scatter([i + 1],
+                   [y_values1[i]],
+                   s=scatter_width,
+                   color='#FF8A00',
+                   marker='s')
+    # for i in range(len(y_values2)):
     #    pointAndLabelList.append([i+1, y_values2[i], elements[i], 1])
-    #    ax.scatter([i+1], [y_values2[i]], s = scatter_width, color = '#0037CC', marker = 's')
+    # ax.scatter([i+1], [y_values2[i]], s = scatter_width, color = '#0037CC',
+    # marker = 's')
 
     if not subplot:
         figlegend = fig.legend(lines, lables, 'upper right')
@@ -1323,13 +1785,15 @@ def makePlotDIS(plot_data, num_subplot, conf_dict, target_on):
         figlegend = fig.legend(lines, lables, 'lower right')
     #ax.set_ylim([min(min(y_values1), min(y_values1))-10,max(max(y_values1), max(y_values1))+10])
 
-    min1 = min(min(y_values1), min(y_values1))-10
-    max1 = max(max(y_values1), max(y_values1))+10
-    if min1 > 0: min1 = 0
-    if max1 < 110: max1 = 110
-    ax.set_ylim([min1,max1])
+    min1 = min(min(y_values1), min(y_values1)) - 10
+    max1 = max(max(y_values1), max(y_values1)) + 10
+    if min1 > 0:
+        min1 = 0
+    if max1 < 110:
+        max1 = 110
+    ax.set_ylim([min1, max1])
 
-    #update plot-data variables:
+    # update plot-data variables:
     plot_data.point_lables = pointAndLabelList
     plot_data.point_lables_type = 0
 
@@ -1360,7 +1824,7 @@ def permuationTestRV(arrList, RVtype='RV2', numPerm=999, sigLevel=0.05):
         else:
             for arrInd, arr in enumerate(arrListCopy):
                 firstArr = arrListCopy[0]
-                nextArr = arrListCopy[arrInd+1]
+                nextArr = arrListCopy[arrInd + 1]
                 dataList = [firstArr, nextArr]
                 dataPairsList.append(dataList)
 
@@ -1379,7 +1843,7 @@ def permuationTestRV(arrList, RVtype='RV2', numPerm=999, sigLevel=0.05):
             coeffMat = st.RVcoeff(arrCombList)
         elif RVtype == 'RV2':
             coeffMat = st.RV2coeff(arrCombList)
-        value = coeffMat[0,1]
+        value = coeffMat[0, 1]
 
         # Check array dimensions for one of the arrays. It doesn't matter which one,
         # since we are interested only in number of rows. Number of columns in
@@ -1399,7 +1863,7 @@ def permuationTestRV(arrList, RVtype='RV2', numPerm=999, sigLevel=0.05):
             permArray = np.zeros((rows, cols))
 
             for num in range(rows):
-                permArray[num,:] = arrCombList[1][rowOrder[num],:]
+                permArray[num, :] = arrCombList[1][rowOrder[num], :]
 
             data = [arrList[0], permArray]
 
@@ -1407,7 +1871,7 @@ def permuationTestRV(arrList, RVtype='RV2', numPerm=999, sigLevel=0.05):
                 coeffMat = st.RVcoeff(data)
             elif RVtype == 'RV2':
                 coeffMat = st.RV2coeff(data)
-            permCoeffList.append(coeffMat[0,1])
+            permCoeffList.append(coeffMat[0, 1])
 
         # Now sort the list Rv coefficients from permuatation. This is done, such that
         # one can find significance values.
@@ -1416,15 +1880,16 @@ def permuationTestRV(arrList, RVtype='RV2', numPerm=999, sigLevel=0.05):
         # Compute the position permuted RV at the required signficance level.
         # if permuted RV (at requiered sign level) > RV ==> RV not significant
         # if permuted RV (at requiered sign level) < RV ==> RV significant
-        sigPos = int(round((numPerm + 1) * (1-sigLevel)))
+        sigPos = int(round((numPerm + 1) * (1 - sigLevel)))
 
         sig = permCoeffList[sigPos]
 
-        #print '{0} = '.format(RVtype), value # for Python 2.7
-        #print 'permuted {0} at {1}%: '.format(RVtype,str(int(sigLevel * 100))), sig # for Python 2.7
+        # print '{0} = '.format(RVtype), value # for Python 2.7
+        # print 'permuted {0} at {1}%: '.format(RVtype,str(int(sigLevel *
+        # 100))), sig # for Python 2.7
 
         print('%s = ' % RVtype, value)
-        #print 'permuted %s at s% ' % (RVtype, str(sigLevel * 100)), sig
+        # print 'permuted %s at s% ' % (RVtype, str(sigLevel * 100)), sig
         print('permuted', RVtype, 'at', str(sigLevel * 100), sig)
 
         # Compute permutated p value
@@ -1446,7 +1911,7 @@ def permuationTestRV(arrList, RVtype='RV2', numPerm=999, sigLevel=0.05):
         #pValList.append(round(p, 3))
 
     return pValList
-    #return [pValList, sig]
+    # return [pValList, sig]
 
 
 # Function for cross validation of AGR_prod
@@ -1459,8 +1924,7 @@ def cv_AGR_prod(s_data, plot_data, dbclkAss):
     sMat = s_data.SparseMatrix
     rvType = plot_data.special_opts["comp"]
 
-
-    print( 'cv of AGR prod')
+    print('cv of AGR prod')
     print('--------------')
     print(actAssList)
     print(actSampList)
@@ -1468,7 +1932,6 @@ def cv_AGR_prod(s_data, plot_data, dbclkAss):
     print(dbclkAss)
     print(rvType)
     print()
-
 
     # First get average matrix for the double-clicked assessor
     specArrSP, specArr = s_data.GetAssessorAverageData(dbclkAss)
@@ -1507,7 +1970,7 @@ def cv_AGR_prod(s_data, plot_data, dbclkAss):
     elif rvType == 'RV2':
         coeffMat = st.RV2coeff(data)
 
-    refValue = round(coeffMat[0,1] * 100, 1)
+    refValue = round(coeffMat[0, 1] * 100, 1)
     print(refValue)
 
     # Then compute RV or RV2 for each time one sample is left out.
@@ -1525,9 +1988,9 @@ def cv_AGR_prod(s_data, plot_data, dbclkAss):
         dropSampList.append(subList)
 
         if rvType == 'RV':
-            subValue = st.RVcoeff(subList)[0,1]
+            subValue = st.RVcoeff(subList)[0, 1]
         elif rvType == 'RV2':
-            subValue = st.RV2coeff(subList)[0,1]
+            subValue = st.RV2coeff(subList)[0, 1]
 
         sampValueList.append(round(subValue * 100, 1))
 
@@ -1537,12 +2000,18 @@ def cv_AGR_prod(s_data, plot_data, dbclkAss):
     elements = actSampList
     titleString = 'AGR prod cross validation: Assessor ' + dbclkAss + ': '
     plotTypeLabel = 'AGR prod'
-    makeCvAgrPlot(plot_data, [1,1,1], sampValueList, refValue, elements, titleString, dbclkAss, plotTypeLabel)
-
+    makeCvAgrPlot(plot_data,
+                  [1,
+                   1,
+                   1],
+                  sampValueList,
+                  refValue,
+                  elements,
+                  titleString,
+                  dbclkAss,
+                  plotTypeLabel)
 
     return refValue, sampValueList
-
-
 
 
 # Function for cross validation of AGR_att
@@ -1555,7 +2024,6 @@ def cv_AGR_att(s_data, plot_data, dbclkAss):
     sMat = s_data.SparseMatrix
     rvType = plot_data.special_opts["comp"]
 
-
     print('cv of AGR att')
     print('--------------')
     print(actAssList)
@@ -1564,8 +2032,6 @@ def cv_AGR_att(s_data, plot_data, dbclkAss):
     print(dbclkAss)
     print(rvType)
     print()
-
-
 
     # First get average matrix for the double-clicked assessor
     specArrSP, specArr = s_data.GetAssessorAverageData(dbclkAss)
@@ -1606,7 +2072,7 @@ def cv_AGR_att(s_data, plot_data, dbclkAss):
     elif rvType == 'RV2':
         coeffMat = st.RV2coeff(data)
 
-    refValue = round(coeffMat[0,1] * 100, 1)
+    refValue = round(coeffMat[0, 1] * 100, 1)
     print(refValue)
 
     # Then compute RV or RV2 for each time one sample is left out.
@@ -1624,9 +2090,9 @@ def cv_AGR_att(s_data, plot_data, dbclkAss):
         dropAttList.append(subList)
 
         if rvType == 'RV':
-            subValue = st.RVcoeff(subList)[0,1]
+            subValue = st.RVcoeff(subList)[0, 1]
         elif rvType == 'RV2':
-            subValue = st.RV2coeff(subList)[0,1]
+            subValue = st.RV2coeff(subList)[0, 1]
 
         sampValueList.append(round(subValue * 100, 1))
 
@@ -1637,12 +2103,18 @@ def cv_AGR_att(s_data, plot_data, dbclkAss):
     elements = actAttList
     titleString = 'AGR att cross validation: Assessor ' + dbclkAss
     plotTypeLabel = 'AGR att'
-    makeCvAgrPlot(plot_data, [1,1,1], sampValueList, refValue, elements, titleString, dbclkAss, plotTypeLabel)
+    makeCvAgrPlot(plot_data,
+                  [1,
+                   1,
+                   1],
+                  sampValueList,
+                  refValue,
+                  elements,
+                  titleString,
+                  dbclkAss,
+                  plotTypeLabel)
 
     return refValue, sampValueList
-
-
-
 
 
 # Function for cross validation of REP_prod
@@ -1655,7 +2127,6 @@ def cv_REP_prod(s_data, plot_data, dbclkAss):
     sMat = s_data.SparseMatrix
     rvType = plot_data.special_opts["comp"]
 
-
     print('cv of REP prod')
     print('--------------')
     print(actAssList)
@@ -1665,8 +2136,8 @@ def cv_REP_prod(s_data, plot_data, dbclkAss):
     print(rvType)
     print()
 
-
-    if len(repList) <= 1: return
+    if len(repList) <= 1:
+        return
 
     # Collect replicate arrays for double-clicked assessor
     repArrList = []
@@ -1679,7 +2150,6 @@ def cv_REP_prod(s_data, plot_data, dbclkAss):
         repArrSP, repArr = s_data.GetAssessorReplicateData(dbclkAss, repInd)
         repArrList.append(repArr)
 
-
     # Now compute RV or RV2 between all replicate matrices. Three different
     # cases need to be considered.
     # Case 1: data has only one replicate
@@ -1691,10 +2161,11 @@ def cv_REP_prod(s_data, plot_data, dbclkAss):
     for arr in repArrList:
         c_arr = st.centre(arr)
         tr_c_arr = np.transpose(c_arr)
-        #iterList.append(tr_c_arr)
+        # iterList.append(tr_c_arr)
         iterList.append(c_arr)
 
-    # Construct a list with all possible pairwise combinations arrays in repArrList
+    # Construct a list with all possible pairwise combinations arrays in
+    # repArrList
     combList = list(combinations(iterList, 2))
     combNameList = list(combinations(repList, 2))
 
@@ -1710,14 +2181,13 @@ def cv_REP_prod(s_data, plot_data, dbclkAss):
     # Now run RV2 computations for all possible pair-wise combinations
     for pairInd, pair in enumerate(combList):
 
-
         # *************** INFLUENCE REP prod ***************
         if rvType == 'RV':
             coeffMat = st.RVcoeff(pair)
         elif rvType == 'RV2':
             coeffMat = st.RV2coeff(pair)
 
-        refValue = round(coeffMat[0,1] * 100, 1)
+        refValue = round(coeffMat[0, 1] * 100, 1)
 
         dropSampList = []
         sampValueList = []
@@ -1733,14 +2203,13 @@ def cv_REP_prod(s_data, plot_data, dbclkAss):
             dropSampList.append(subList)
 
             if rvType == 'RV':
-                subValue = st.RVcoeff(subList)[0,1]
+                subValue = st.RVcoeff(subList)[0, 1]
             elif rvType == 'RV2':
-                subValue = st.RV2coeff(subList)[0,1]
+                subValue = st.RV2coeff(subList)[0, 1]
 
             sampValueList.append(round(subValue * 100, 1))
 
         results[combNameList[pairInd]] = [refValue, sampValueList]
-
 
         elements = actSampList
         # TODO (Henning): Active attributes in case of ONE plot?
@@ -1748,10 +2217,21 @@ def cv_REP_prod(s_data, plot_data, dbclkAss):
             elements = actSampList
 
         titleString = 'REP prod cross validation: Assessor ' + dbclkAss + \
-                ' - rep ' + combNameList[pairInd][0] + \
-                ' vs rep ' + combNameList[pairInd][1]
+            ' - rep ' + combNameList[pairInd][0] + \
+            ' vs rep ' + combNameList[pairInd][1]
         plotTypeLabel = 'REP prod'
-        makeCvRepPlot(plot_data, [num_edge,num_edge,num], sampValueList, refValue, elements, pair, pairInd, titleString, dbclkAss, plotTypeLabel)
+        makeCvRepPlot(plot_data,
+                      [num_edge,
+                       num_edge,
+                       num],
+                      sampValueList,
+                      refValue,
+                      elements,
+                      pair,
+                      pairInd,
+                      titleString,
+                      dbclkAss,
+                      plotTypeLabel)
         num += 1
 
     return results
@@ -1767,7 +2247,6 @@ def cv_REP_att(s_data, plot_data, dbclkAss):
     sMat = s_data.SparseMatrix
     rvType = plot_data.special_opts["comp"]
 
-
     print('cv of REP att')
     print('--------------')
     print(actAssList)
@@ -1777,9 +2256,8 @@ def cv_REP_att(s_data, plot_data, dbclkAss):
     print(rvType)
     print()
 
-
-
-    if len(repList) <= 1: return
+    if len(repList) <= 1:
+        return
 
     # Collect replicate arrays for double-clicked assessor
     repArrList = []
@@ -1791,8 +2269,6 @@ def cv_REP_att(s_data, plot_data, dbclkAss):
         # First get average matrix for the double-clicked assessor
         repArrSP, repArr = s_data.GetAssessorReplicateData(dbclkAss, repInd)
         repArrList.append(repArr)
-
-
 
     # Now compute RV or RV2 between all replicate matrices. Three different
     # cases need to be considered.
@@ -1807,7 +2283,8 @@ def cv_REP_att(s_data, plot_data, dbclkAss):
         tr_c_arr = np.transpose(c_arr)
         iterList.append(tr_c_arr)
 
-    # Construct a list with all possible pairwise combinations arrays in repArrList
+    # Construct a list with all possible pairwise combinations arrays in
+    # repArrList
     combList = list(combinations(iterList, 2))
     combNameList = list(combinations(repList, 2))
 
@@ -1820,10 +2297,8 @@ def cv_REP_att(s_data, plot_data, dbclkAss):
         num = 1
     num_edge = int(ceil(sqrt(num_plots)))
 
-
     # Now run RV2 computations for all possible pair-wise combinations
     for pairInd, pair in enumerate(combList):
-
 
         # *************** INFLUENCE REP att ***************
         if rvType == 'RV':
@@ -1831,7 +2306,7 @@ def cv_REP_att(s_data, plot_data, dbclkAss):
         elif rvType == 'RV2':
             coeffMat = st.RV2coeff(pair)
 
-        refValue = round(coeffMat[0,1] * 100, 1)
+        refValue = round(coeffMat[0, 1] * 100, 1)
 
         dropSampList = []
         sampValueList = []
@@ -1847,46 +2322,68 @@ def cv_REP_att(s_data, plot_data, dbclkAss):
             dropSampList.append(subList)
 
             if rvType == 'RV':
-                subValue = st.RVcoeff(subList)[0,1]
+                subValue = st.RVcoeff(subList)[0, 1]
             elif rvType == 'RV2':
-                subValue = st.RV2coeff(subList)[0,1]
+                subValue = st.RV2coeff(subList)[0, 1]
 
             sampValueList.append(round(subValue * 100, 1))
 
         results[combNameList[pairInd]] = [refValue, sampValueList]
-
 
         elements = actAttList
         titleString = 'REP att cross validation: Assessor ' + dbclkAss + \
             ' - rep ' + combNameList[pairInd][0] + \
             ' vs rep ' + combNameList[pairInd][1]
         plotTypeLabel = "Rep att"
-        makeCvRepPlot(plot_data, [num_edge,num_edge,num], sampValueList, refValue, elements, pair, pairInd, titleString, dbclkAss, plotTypeLabel)
+        makeCvRepPlot(plot_data,
+                      [num_edge,
+                       num_edge,
+                       num],
+                      sampValueList,
+                      refValue,
+                      elements,
+                      pair,
+                      pairInd,
+                      titleString,
+                      dbclkAss,
+                      plotTypeLabel)
         num += 1
-
 
     return results
 
 
-
-def makeCvAgrPlot(plot_data, num_subplot, sampValueList, refValue, elements, titleString, dbclkAss, plotTypeLabel):
+def makeCvAgrPlot(
+        plot_data,
+        num_subplot,
+        sampValueList,
+        refValue,
+        elements,
+        titleString,
+        dbclkAss,
+        plotTypeLabel):
 
     print("making perf ind cv plot...")
 
     print("---  STEP 1  ---")
 
     # Figure
-    replot = True; subplot = True; scatter_width = 35
-    if plot_data.fig != None: replot = True
-    else: plot_data.fig = Figure(None)
-    if subplot: # is subplot
-        plot_data.ax = plot_data.fig.add_subplot(num_subplot[0], num_subplot[1], num_subplot[2])
+    replot = True
+    subplot = True
+    scatter_width = 35
+    if plot_data.fig is not None:
+        replot = True
+    else:
+        plot_data.fig = Figure(None)
+    if subplot:  # is subplot
+        plot_data.ax = plot_data.fig.add_subplot(
+            num_subplot[0], num_subplot[1], num_subplot[2])
         scatter_width = 15
-    else: plot_data.ax = axes_create(plot_data.view_legend, plot_data.fig)
-    ax = plot_data.ax; fig = plot_data.fig
+    else:
+        plot_data.ax = axes_create(plot_data.view_legend, plot_data.fig)
+    ax = plot_data.ax
+    fig = plot_data.fig
 
     print("---  STEP 2  ---")
-
 
     #left = range(len(plot_data.activeSamplesList))
     left = range(len(sampValueList))
@@ -1899,69 +2396,81 @@ def makeCvAgrPlot(plot_data, num_subplot, sampValueList, refValue, elements, tit
 
     print("---  STEP 3  ---")
 
-
-    font = {'fontname'   : 'Arial Narrow',
-            'color'      : 'black',
-            'fontweight' : 'normal',
-            'fontsize'   : 10}
+    font = {'fontname': 'Arial Narrow',
+            'color': 'black',
+            'fontweight': 'normal',
+            'fontsize': 10}
 
     print("---  STEP 4  ---")
 
     # Plot horizontal line indicating original index without leaving out
     # objects.
     plotValue = refValue
-    ax.plot([-1,xlimit],[plotValue,plotValue], 'r--', label='all samples included')
-    ax.set_xlim(0,xlimit-1)
+    ax.plot([-1, xlimit], [plotValue, plotValue],
+            'r--', label='all samples included')
+    ax.set_xlim(0, xlimit - 1)
     xticksStr = []
     xticks = []
-    for tick in range(1,len(plot_data.activeAttributesList)+1):
+    for tick in range(1, len(plot_data.activeAttributesList) + 1):
         xticksStr.append(str(tick))
-        xticks.append(tick-0.5)
+        xticks.append(tick - 0.5)
     ax.set_xticks(xticks)
     ax.set_xticklabels(elements, font, rotation=0, ha='center')
     ax.set_ylabel(plotTypeLabel, font)
     ax.set_title(titleString, font)
 
 
-
-def makeCvRepPlot(plot_data, num_subplot, sampValueList, refValue, elements, pair, pairInd, titleString, dbclkAss, plotTypeLabel):
+def makeCvRepPlot(
+        plot_data,
+        num_subplot,
+        sampValueList,
+        refValue,
+        elements,
+        pair,
+        pairInd,
+        titleString,
+        dbclkAss,
+        plotTypeLabel):
 
     print("making perf ind cv plot...")
 
-
-
     # Figure
-    replot = True; subplot = True; scatter_width = 35
-    if plot_data.fig != None: replot = True
-    else: plot_data.fig = Figure(None)
-    if subplot: # is subplot
-        plot_data.ax = plot_data.fig.add_subplot(num_subplot[0], num_subplot[1], num_subplot[2])
+    replot = True
+    subplot = True
+    scatter_width = 35
+    if plot_data.fig is not None:
+        replot = True
+    else:
+        plot_data.fig = Figure(None)
+    if subplot:  # is subplot
+        plot_data.ax = plot_data.fig.add_subplot(
+            num_subplot[0], num_subplot[1], num_subplot[2])
         scatter_width = 15
-    else: plot_data.ax = axes_create(plot_data.view_legend, plot_data.fig)
-    ax = plot_data.ax; fig = plot_data.fig
-
-
-
+    else:
+        plot_data.ax = axes_create(plot_data.view_legend, plot_data.fig)
+    ax = plot_data.ax
+    fig = plot_data.fig
 
     left = range(np.shape(pair[0])[0])
     xlimit = left[-1] + 2
     ax.bar(left, sampValueList, color='g')
 
-    font = {'fontname'   : 'Arial Narrow',
-            'color'      : 'black',
-            'fontweight' : 'normal',
-            'fontsize'   : 10}
+    font = {'fontname': 'Arial Narrow',
+            'color': 'black',
+            'fontweight': 'normal',
+            'fontsize': 10}
 
     # Plot horizontal line indicating original index without leaving out
     # objects.
     plotValue = refValue
-    ax.plot([-1,xlimit],[plotValue,plotValue], 'r--', label='all samples included')
-    ax.set_xlim(0,xlimit-1)
+    ax.plot([-1, xlimit], [plotValue, plotValue],
+            'r--', label='all samples included')
+    ax.set_xlim(0, xlimit - 1)
     xticksStr = []
     xticks = []
-    for tick in range(1,np.shape(pair[0])[0]+1):
+    for tick in range(1, np.shape(pair[0])[0] + 1):
         xticksStr.append(str(tick))
-        xticks.append(tick-0.5)
+        xticks.append(tick - 0.5)
     ax.set_xticks(xticks)
     ax.set_xticklabels(elements, font, rotation=0, ha='center')
     ax.set_ylabel(plotTypeLabel, font)
@@ -1972,49 +2481,60 @@ def makeCvRepPlot(plot_data, num_subplot, sampValueList, refValue, elements, pai
     print(elements)
     print()
 
-def makeCvRepPlot2(plot_data, num_subplot, sampValueList, refValue, elements, titleString, dbclkAss, plotTypeLabel):
+
+def makeCvRepPlot2(
+        plot_data,
+        num_subplot,
+        sampValueList,
+        refValue,
+        elements,
+        titleString,
+        dbclkAss,
+        plotTypeLabel):
 
     print("making perf ind cv plot...")
 
-
-
     # Figure
-    replot = True; subplot = True; scatter_width = 35
-    if plot_data.fig != None: replot = True
-    else: plot_data.fig = Figure(None)
-    if subplot: # is subplot
-        plot_data.ax = plot_data.fig.add_subplot(num_subplot[0], num_subplot[1], num_subplot[2])
+    replot = True
+    subplot = True
+    scatter_width = 35
+    if plot_data.fig is not None:
+        replot = True
+    else:
+        plot_data.fig = Figure(None)
+    if subplot:  # is subplot
+        plot_data.ax = plot_data.fig.add_subplot(
+            num_subplot[0], num_subplot[1], num_subplot[2])
         scatter_width = 15
-    else: plot_data.ax = axes_create(plot_data.view_legend, plot_data.fig)
-    ax = plot_data.ax; fig = plot_data.fig
-
-
-
+    else:
+        plot_data.ax = axes_create(plot_data.view_legend, plot_data.fig)
+    ax = plot_data.ax
+    fig = plot_data.fig
 
     left = range(np.shape(pair[0])[0])
     xlimit = left[-1] + 2
     ax.bar(left, sampValueList, color='g')
 
-    font = {'fontname'   : 'Arial Narrow',
-            'color'      : 'black',
-            'fontweight' : 'normal',
-            'fontsize'   : 10}
+    font = {'fontname': 'Arial Narrow',
+            'color': 'black',
+            'fontweight': 'normal',
+            'fontsize': 10}
 
     # Plot horizontal line indicating original index without leaving out
     # objects.
     plotValue = refValue
-    ax.plot([-1,xlimit],[plotValue,plotValue], 'r--', label='all samples included')
-    ax.set_xlim(0,xlimit-1)
+    ax.plot([-1, xlimit], [plotValue, plotValue],
+            'r--', label='all samples included')
+    ax.set_xlim(0, xlimit - 1)
     xticksStr = []
     xticks = []
-    for tick in range(1,np.shape(pair[0])[0]+1):
+    for tick in range(1, np.shape(pair[0])[0] + 1):
         xticksStr.append(str(tick))
-        xticks.append(tick-0.5)
+        xticks.append(tick - 0.5)
     ax.set_xticks(xticks)
     ax.set_xticklabels(elements, font, rotation=0, ha='center')
     ax.set_ylabel(plotTypeLabel, font)
     ax.set_title(titleString, font)
-
 
 
 def combinations(iterable, r):
@@ -2033,8 +2553,8 @@ def combinations(iterable, r):
         else:
             return
         indices[i] += 1
-        for j in range(i+1, r):
-            indices[j] = indices[j-1] + 1
+        for j in range(i + 1, r):
+            indices[j] = indices[j - 1] + 1
         yield tuple(pool[i] for i in indices)
 
 
@@ -2261,11 +2781,10 @@ def resultsTable(resultsDict):
     """
 
 
-def perfind_OverviewPlotter(s_data, plot_data, abspath,**kwargs):
+def perfind_OverviewPlotter(s_data, plot_data, abspath, **kwargs):
     """
     Overview Plot
     """
-
 
     numberOfReplicates = len(s_data.ReplicateList)
 
@@ -2278,7 +2797,13 @@ def perfind_OverviewPlotter(s_data, plot_data, abspath,**kwargs):
         tree_paths.append([u'AGR prod'])
         tree_paths.append([u'AGR att'])
         plot_data.special_opts["recalc"] = False
-        return OverviewPlotter(s_data, plot_data, tree_paths, perfindPlotter, rotation_list,abspath=abspath)
+        return OverviewPlotter(
+            s_data,
+            plot_data,
+            tree_paths,
+            perfindPlotter,
+            rotation_list,
+            abspath=abspath)
 
     else:
 
@@ -2301,4 +2826,10 @@ def perfind_OverviewPlotter(s_data, plot_data, abspath,**kwargs):
         #rotation_list.append(u'DIS panel-1')
         #rotation_list.append(u'p values for AGR and REP')
         plot_data.special_opts["recalc"] = False
-        return OverviewPlotter(s_data, plot_data, tree_paths, perfindPlotter, rotation_list,abspath=abspath)
+        return OverviewPlotter(
+            s_data,
+            plot_data,
+            tree_paths,
+            perfindPlotter,
+            rotation_list,
+            abspath=abspath)
