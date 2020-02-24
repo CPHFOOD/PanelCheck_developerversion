@@ -227,8 +227,11 @@ def CorrelationPlotter(s_data, plot_data, num_subplot=[1, 1, 1], **kwargs):
             replicateAverage = replicateSum / len(s_data.ReplicateList)
             eachAssessorValues.append(replicateAverage)
         label = assessor + ' - ' + sample
-        pointAndLabelList.append([selectedAssessorAverage[activeSamplesList.index(
-            sample)], replicateAverage, label, sample, assessor, itemID[index_b]])
+        pointAndLabelList.append([
+            selectedAssessorAverage
+            [activeSamplesList.index(sample)],
+            replicateAverage, label, sample, assessor,
+            itemID[index_b]])
 
         # use c = 'w' for points with black circle around it
         # use other, f.ex. color = 'w' to avoid circle around point to be plotted

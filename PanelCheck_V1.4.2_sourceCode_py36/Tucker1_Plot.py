@@ -171,6 +171,7 @@ def Tucker1PCA(Tucker1Matrix, selection):
     explVar = list(explVar)
     return scores, loadings, explVar
 
+
 def Tucker1Plotter(
     s_data, plot_data, num_subplot=[
         1, 1, 1], selection=[
@@ -292,9 +293,9 @@ def Tucker1Plotter(
 
     newActiveAttributesList_old = []
     calculated = False
-    #print(plot_data.Scores)
-    #print(type(plot_data.Scores))
-    #if not (plot_data.Scores is None):
+    # print(plot_data.Scores)
+    # print(type(plot_data.Scores))
+    # if not (plot_data.Scores is None):
 #        calculated = True
 #    print(PCAmodeSelected)
 
@@ -410,7 +411,8 @@ def Tucker1Plotter(
     # Start of generating the resultList for case that standardization
     # is NOT activated (this before PCA analysis, because Tucker1Matrix
     # will be changed/standardized in PCA class)
-    import pdb; pdb.set_trace()
+    import pdb
+    pdb.set_trace()
     if selection[0] == 0:
         resultList1 = []
         emptyLine = ['']
@@ -599,10 +601,11 @@ def Tucker1Plotter(
                     ax.text(textXCoord[0], textYCoord[0],
                             activeSamplesList[sample],
                             font)
-                    pointAndLabelList.append([scoresXCoordinates[sample],
-                                              scoresYCoordinates[sample],
-                                              "Common Scores: " + activeSamplesList[sample],
-                                              [activeSamplesList[sample]]])
+                    pointAndLabelList.append(
+                        [scoresXCoordinates[sample],
+                         scoresYCoordinates[sample],
+                         "Common Scores: " + activeSamplesList[sample],
+                         [activeSamplesList[sample]]])
 
                 numerical_data_add_scores(
                     scores,
@@ -698,15 +701,19 @@ def Tucker1Plotter(
                     # Find out where in the activeAssessorList the selected assessor is.
                     # Depending on the position the correlation loadings will be
                     # picked.
-                    specificPositionAssessor = activeAssessorsList.index(itemID[0])
+                    specificPositionAssessor = activeAssessorsList.index(
+                        itemID
+                        [0])
 
                     lowerLimit = specificPositionAssessor * \
                         len(activeAttributesList)
                     upperLimit = (
                         specificPositionAssessor * len(activeAttributesList)) + len(activeAttributesList)
 
-                    specificAssessorXCoordinates = corrLoadings[pc_x][lowerLimit:upperLimit]
-                    specificAssessorYCoordinates = corrLoadings[pc_y][lowerLimit:upperLimit]
+                    specificAssessorXCoordinates = corrLoadings[pc_x][
+                        lowerLimit: upperLimit]
+                    specificAssessorYCoordinates = corrLoadings[pc_y][
+                        lowerLimit: upperLimit]
 
                     # Plot one correlation loading pair (PC1, PC2) at a time. In this
                     # way those pairs with (0,0) can be left out. (0,0) should actually
@@ -760,7 +767,8 @@ def Tucker1Plotter(
         # Find out where in the activeAttributeList the selected attribute is.
         # Depending on the position the correlation loadings will
         # be picked.
-        import pdb; pdb.set_trace()
+        import pdb
+        pdb.set_trace()
         specificPositionAttribute = activeAttributesList.index(itemID[0])
 
         # specificAttributeSequence contains the correct positions of the
@@ -926,7 +934,10 @@ def Tucker1Plotter(
         yCorrs = corrLoadings[pc_y]
         for i in range(len(xCorrs)):
             pointAndLabelList.append(
-                [xCorrs[i], yCorrs[i], matrixHeaderLine[i + 1], pointAndLabelSelection[i]])
+                [xCorrs[i],
+                 yCorrs[i],
+                 matrixHeaderLine[i + 1],
+                 pointAndLabelSelection[i]])
 
         headerLine = ['CORRELATION LOADINGS:']
         resultList.append(headerLine)
@@ -975,7 +986,8 @@ def Tucker1Plotter(
         plot_data.selection = PCAmodeSelected
 
 # Frame draw, for standard Matplotlib frame only use show()
-    import pdb; pdb.set_trace()
+    import pdb
+    pdb.set_trace()
     return plot_data
 
 

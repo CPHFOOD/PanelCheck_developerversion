@@ -626,8 +626,11 @@ class PlotFrame(wx.Frame):
             if self.dclick_data is not None:
                 if self.plot_type == "pmse":
                     plotter = self.get_plot_method("corr")
-                    tree_path = [self.plot_data.activeAssessorsList[self.dclick_data[0]],
-                                 self.plot_data.activeAttributesList[self.dclick_data[1]]]
+                    tree_path = [
+                        self.plot_data.activeAssessorsList
+                        [self.dclick_data[0]],
+                        self.plot_data.activeAttributesList
+                        [self.dclick_data[1]]]
                     plot_data = PlotData(
                         self.active_ass,
                         self.active_att,
@@ -1213,7 +1216,7 @@ class PlotFrame(wx.Frame):
         if not self.summaryFrameShowing or self.summary_changed:
             self.summFrame = SummaryFrame(
                 self, self.get_summary_text(
-                    self.plot_type),abspath=self.ProgPathAbs)
+                    self.plot_type), abspath=self.ProgPathAbs)
             self.summary_changed = False
         else:
             self.summFrame.Raise()
@@ -1303,7 +1306,8 @@ class PlotFrame(wx.Frame):
         if not self.gridFrameShowingRawData or self.raw_data_changed:
             _title = self.fig_title["fig"] + ": " + \
                 self.fig_title["plot"] + " (" + self.s_data.abspath + ")"
-            self.gridFrame_raw = GridFrame(self, _title, self.rawData,abspath=self.ProgPathAbs)
+            self.gridFrame_raw = GridFrame(
+                self, _title, self.rawData, abspath=self.ProgPathAbs)
             self.gridFrame_raw.grid.set_color_on_pos(
                 self.plot_data.raw_data_mv_pos)
             print(self.plot_data.raw_data_mv_pos)
@@ -1334,7 +1338,9 @@ class PlotFrame(wx.Frame):
                 _title = self.fig_title["fig"] + ": " + \
                     self.fig_title["plot"] + " (" + self.s_data.abspath + ")"
                 self.gridFrame_num = GridFrame(
-                    self, _title, self.results, config=self.plot_data.numeric_data_config,abspath=self.ProgPathAbs)
+                    self, _title, self.results,
+                    config=self.plot_data.numeric_data_config,
+                    abspath=self.ProgPathAbs)
                 self.num_res_changed = False
         else:
             self.gridFrame_num.Raise()
@@ -2177,8 +2183,8 @@ class NavigationToolbar2Wx(NavigationToolbar2, wx.ToolBar):
     def OnMouseMove(self, evt):
         if evt.Dragging() and evt.LeftIsDown():
             rect = wx.RectPP(self.startPos, evt.GetPosition())
-            dc   = wx.ClientDC(self)
-            odc  = wx.DCOverlay(self.overlay, dc)
+            dc = wx.ClientDC(self)
+            odc = wx.DCOverlay(self.overlay, dc)
             odc.Clear()
 
             dc.SetPen(wx.Pen("black", 2))
@@ -2216,9 +2222,9 @@ class SimpleFigLegend(Figure):
 
         self.HEIGHT = self._approx_text_height()
         self.legendPatch = Rectangle(
-            xy=(self.xPos, self.yPos), width=0.5, height=self.HEIGHT * len(self.texts),
-            facecolor='w', edgecolor='k',
-        )
+            xy=(self.xPos, self.yPos),
+            width=0.5, height=self.HEIGHT * len(self.texts),
+            facecolor='w', edgecolor='k',)
         self._set_artist_props(self.legendPatch)
 
         # self.legendPatch.set_bounds(l,b,w,h)

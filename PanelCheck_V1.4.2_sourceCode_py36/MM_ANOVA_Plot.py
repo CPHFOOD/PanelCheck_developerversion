@@ -659,7 +659,10 @@ def MixModel_ANOVA_LSD_Plotter_2way1rep(
                     color=colors[c_index])
             #x_samples.append(j+0.225+extra_space); y_samples.append(averages_matrix[i,j])
             plot_data.lsd_points[j].append(
-                ax.plot([j + 0.225 + extra_space], [averages_matrix[i, j]], 'k'))
+                ax.plot(
+                    [j + 0.225 + extra_space],
+                    [averages_matrix[i, j]],
+                    'k'))
             # plot_data.lsd_ypoints[j].append(averages_matrix[i,j])
             pt = ((j + 0.225 + extra_space, averages_matrix[i, j]))
             vertices.append(pt)
@@ -688,12 +691,16 @@ def MixModel_ANOVA_LSD_Plotter_2way1rep(
     for i in range(len(activeAttributesList)):
         max_aver = max_aver_list[i]
         lsd_color = lsd_colors[res[1][1][i]]
-        plot_data.lsd_lines.append(ax.plot(
-            [i + 0.5, i + 0.5], [max_aver, max_aver - lsd_matr[i]], lsd_color, linewidth=3))
+        plot_data.lsd_lines.append(
+            ax.plot(
+                [i + 0.5, i + 0.5],
+                [max_aver, max_aver - lsd_matr[i]],
+                lsd_color, linewidth=3))
         pt = (i + 0.5, i + 0.5), (max_aver, max_aver - lsd_matr[i])
         vertices.append(pt)
         set_points_in_range(
-            ax, [max_aver, max_aver - lsd_matr[i]], i + 1, plot_data.lsd_points)
+            ax, [max_aver, max_aver - lsd_matr[i]],
+            i + 1, plot_data.lsd_points)
     # lc2 = LineCollection(vertices, colors='#FF0000', linewidths=3)
     # plot_data.ax.add_collection(lc2)
     upperlim = max(max_aver_list) + \
@@ -1150,7 +1157,10 @@ def MixModel_ANOVA_LSD_Plotter_2way(
                     color=colors[c_index])
             #x_samples.append(j+0.225+extra_space); y_samples.append(averages_matrix[i,j])
             plot_data.lsd_points[j].append(
-                ax.plot([j + 0.225 + extra_space], [averages_matrix[i, j]], 'k'))
+                ax.plot(
+                    [j + 0.225 + extra_space],
+                    [averages_matrix[i, j]],
+                    'k'))
             # plot_data.lsd_ypoints[j].append(averages_matrix[i,j])
             pt = ((j + 0.225 + extra_space, averages_matrix[i, j]))
             vertices.append(pt)
@@ -1179,12 +1189,16 @@ def MixModel_ANOVA_LSD_Plotter_2way(
     for i in range(len(activeAttributesList)):
         max_aver = max_aver_list[i]
         lsd_color = lsd_colors[res[2][5][i]]
-        plot_data.lsd_lines.append(ax.plot(
-            [i + 0.5, i + 0.5], [max_aver, max_aver - lsd_matr[i]], lsd_color, linewidth=3))
+        plot_data.lsd_lines.append(
+            ax.plot(
+                [i + 0.5, i + 0.5],
+                [max_aver, max_aver - lsd_matr[i]],
+                lsd_color, linewidth=3))
         pt = (i + 0.5, i + 0.5), (max_aver, max_aver - lsd_matr[i])
         vertices.append(pt)
         set_points_in_range(
-            ax, [max_aver, max_aver - lsd_matr[i]], i + 1, plot_data.lsd_points)
+            ax, [max_aver, max_aver - lsd_matr[i]],
+            i + 1, plot_data.lsd_points)
     # lc2 = LineCollection(vertices, colors='#FF0000', linewidths=3)
     # plot_data.ax.add_collection(lc2)
     upperlim = max(max_aver_list) + \
@@ -1650,7 +1664,10 @@ def MixModel_ANOVA_LSD_Plotter_3way(
                     color=colors[c_index])
             #x_samples.append(j+0.225+extra_space); y_samples.append(averages_matrix[i,j])
             plot_data.lsd_points[j].append(
-                ax.plot([j + 0.225 + extra_space], [averages_matrix[i, j]], 'k'))
+                ax.plot(
+                    [j + 0.225 + extra_space],
+                    [averages_matrix[i, j]],
+                    'k'))
             # plot_data.lsd_ypoints[j].append(averages_matrix[i,j])
             pt = ((j + 0.225 + extra_space, averages_matrix[i, j]))
             vertices.append(pt)
@@ -1679,12 +1696,16 @@ def MixModel_ANOVA_LSD_Plotter_3way(
     for i in range(len(activeAttributesList)):
         max_aver = max_aver_list[i]
         lsd_color = lsd_colors[res[2][0][i]]
-        plot_data.lsd_lines.append(ax.plot(
-            [i + 0.5, i + 0.5], [max_aver, max_aver - lsd_matr[i]], lsd_color, linewidth=3))
+        plot_data.lsd_lines.append(
+            ax.plot(
+                [i + 0.5, i + 0.5],
+                [max_aver, max_aver - lsd_matr[i]],
+                lsd_color, linewidth=3))
         pt = (i + 0.5, i + 0.5), (max_aver, max_aver - lsd_matr[i])
         vertices.append(pt)
         set_points_in_range(
-            ax, [max_aver, max_aver - lsd_matr[i]], i + 1, plot_data.lsd_points)
+            ax, [max_aver, max_aver - lsd_matr[i]],
+            i + 1, plot_data.lsd_points)
     # lc2 = LineCollection(vertices, colors='#FF0000', linewidths=3)
     # plot_data.ax.add_collection(lc2)
     upperlim = max(max_aver_list) + \

@@ -745,6 +745,7 @@ class Main_Frame(wx.Frame):
 
 # ---Menu-Actions---#FFFFFF#FF8040-----------------------------------------------
 
+
     def OnMain_FrameClose(self, event):
         self.OnClosing(event)
 
@@ -2948,7 +2949,8 @@ class Main_Frame(wx.Frame):
                 overview_plot = True
             elif pydata[0] in _types:
                 res = MixModel_ANOVA_Plotter_2way1rep(
-                    self.s_data, self.mm_anova1_plot_data, abspath=self.ProgPathAbs)
+                    self.s_data, self.mm_anova1_plot_data,
+                    abspath=self.ProgPathAbs)
             elif pydata[0] in lsd_types:
                 res = MixModel_ANOVA_LSD_Plotter_2way1rep(
                     self.s_data, self.mm_anova1_plot_data, abspath=self.ProgPathAbs)
@@ -2996,10 +2998,12 @@ class Main_Frame(wx.Frame):
                 overview_plot = True
             elif pydata[0] in _types:
                 res = MixModel_ANOVA_Plotter_2way(
-                    self.s_data, self.mm_anova2_plot_data, abspath=self.ProgPathAbs)
+                    self.s_data, self.mm_anova2_plot_data,
+                    abspath=self.ProgPathAbs)
             elif pydata[0] in lsd_types:
                 res = MixModel_ANOVA_LSD_Plotter_2way(
-                    self.s_data, self.mm_anova2_plot_data, abspath=self.ProgPathAbs)
+                    self.s_data, self.mm_anova2_plot_data,
+                    abspath=self.ProgPathAbs)
 
         elif tab_panel == self.mm_anova_panel3:
             plot_title = "3-way ANOVA Plot"
@@ -3044,10 +3048,12 @@ class Main_Frame(wx.Frame):
                 overview_plot = True
             elif pydata[0] in _types:
                 res = MixModel_ANOVA_Plotter_3way(
-                    self.s_data, self.mm_anova3_plot_data, abspath=self.ProgPathAbs)
+                    self.s_data, self.mm_anova3_plot_data,
+                    abspath=self.ProgPathAbs)
             elif pydata[0] in lsd_types:
                 res = MixModel_ANOVA_LSD_Plotter_3way(
-                    self.s_data, self.mm_anova3_plot_data, abspath=self.ProgPathAbs)
+                    self.s_data, self.mm_anova3_plot_data,
+                    abspath=self.ProgPathAbs)
 
         elif tab_panel == self.manh_panel:
             plot_title = "Manhattan Plot"

@@ -318,8 +318,9 @@ def pmsePlotter(s_data, plot_data, num_subplot=[1, 1, 1], **kwargs):
         max_y_scale = 1.05  # This was used before: max_p + 0.05 * max_p
         if subplot:
             axes_setup(
-                ax, '', '', myTitle, [
-                    min_x_scale, max_x_scale, min_y_scale, max_y_scale], font_size=10)
+                ax, '', '', myTitle,
+                [min_x_scale, max_x_scale, min_y_scale, max_y_scale],
+                font_size=10)
         else:
             axes_setup(
                 ax, 'MSE', 'p value', myTitle, [
@@ -335,7 +336,11 @@ def pmsePlotter(s_data, plot_data, num_subplot=[1, 1, 1], **kwargs):
                         #plotList.append(Patch(facecolor = colors[c_index]))
                         #plotList.append(Rectangle(xy=(0,0), width=1, height=1, facecolor=colors[c_index]))
                         plotList.append(
-                            Line2D([], [], color=colors[(ass, "rep")][0], linewidth=5))
+                            Line2D(
+                                [],
+                                [],
+                                color=colors[(ass, "rep")][0],
+                                linewidth=5))
                         #c_index += 1
 
                     fig.legend(plotList, activeAssessorsList, 'upper right')
@@ -356,7 +361,12 @@ def pmsePlotter(s_data, plot_data, num_subplot=[1, 1, 1], **kwargs):
                         #plotList.append(Patch(facecolor = colors[c_index]))
                         #plotList.append(Rectangle(xy=(0,0), width=1, height=1, facecolor=colors[c_index]))
                         plotList.append(
-                            Line2D([], [], color=colors[(attribute, "rep")][0], linewidth=5))
+                            Line2D(
+                                [],
+                                [],
+                                color=colors
+                                [(attribute, "rep")][0],
+                                linewidth=5))
                         c_index += 1
                         if c_index >= len(activeAssessorsList):
                             c_index = 0

@@ -155,9 +155,10 @@ class Summary(wx.Dialog):
         self.sizer_summary = wx.BoxSizer(wx.VERTICAL)
         box_inner3a = wx.BoxSizer(wx.HORIZONTAL)
 
-        self.textScaleLimInfo = wx.StaticText(id=wx.NewId(),
-                                              label=u'Scale limits for this data set:',
-                                              name=u'textScaleLimInfo', parent=self.panel3, size=(-1, -1))
+        self.textScaleLimInfo = wx.StaticText(
+            id=wx.NewId(),
+            label=u'Scale limits for this data set:', name=u'textScaleLimInfo',
+            parent=self.panel3, size=(-1, -1))
 
         self.textLabelLims = wx.StaticText(
             id=wx.NewId(),
@@ -172,12 +173,14 @@ class Summary(wx.Dialog):
             value=u'')
 
         self.textMin = wx.StaticText(
-            id=wx.NewId(), label=u'Min. :', name=u'textMin', parent=self.panel3, size=(
-                66, -1))
+            id=wx.NewId(),
+            label=u'Min. :', name=u'textMin', parent=self.panel3,
+            size=(66, -1))
 
         self.textMax = wx.StaticText(
-            id=wx.NewId(), label=u'Max. :', name=u'textMax', parent=self.panel3, size=(
-                66, -1))
+            id=wx.NewId(),
+            label=u'Max. :', name=u'textMax', parent=self.panel3,
+            size=(66, -1))
 
         self.textMinInput = wx.TextCtrl(
             id=wx.NewId(), parent=self.panel3, value=u'   ', size=(66, -1))
@@ -308,23 +311,29 @@ class Summary(wx.Dialog):
             dlg.Destroy()
             return False
         elif self.ass_index in self.out_columns:
-            dlg = wx.MessageDialog(self, 'You have uncheked column: ' +
-                                   str(self.lables[self.ass_index]) +
-                                   '. The column has been assigned as the Assessors-column.\nRe-select that column if you wish to use it as the Assessors-column.', 'Error Message', wx.OK | wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(
+                self, 'You have uncheked column: ' +
+                str(self.lables[self.ass_index]) +
+                '. The column has been assigned as the Assessors-column.\nRe-select that column if you wish to use it as the Assessors-column.',
+                'Error Message', wx.OK | wx.ICON_INFORMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
         elif self.samp_index in self.out_columns:
-            dlg = wx.MessageDialog(self, 'You have uncheked column: ' +
-                                   str(self.lables[self.samp_index]) +
-                                   '. The column has been assigned as the Samples-column.\nRe-select that column if you wish to use it as the Samples-column.', 'Error Message', wx.OK | wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(
+                self, 'You have uncheked column: ' +
+                str(self.lables[self.samp_index]) +
+                '. The column has been assigned as the Samples-column.\nRe-select that column if you wish to use it as the Samples-column.',
+                'Error Message', wx.OK | wx.ICON_INFORMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
         elif self.rep_index in self.out_columns:
-            dlg = wx.MessageDialog(self, 'You have uncheked column: ' +
-                                   str(self.lables[self.rep_index]) +
-                                   '. The column has been assigned as the Replicates-column.\nRe-select that column if you wish to use it as the Replicates-column.', 'Error Message', wx.OK | wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(
+                self, 'You have uncheked column: ' +
+                str(self.lables[self.rep_index]) +
+                '. The column has been assigned as the Replicates-column.\nRe-select that column if you wish to use it as the Replicates-column.',
+                'Error Message', wx.OK | wx.ICON_INFORMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False

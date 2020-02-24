@@ -31,17 +31,13 @@ class TestPanelCheck(unittest.TestCase):
 
         for i in range(len(res)):
             for j in range(len(res[0])):
-                self.failUnlessAlmostEqual(e_variable_variances[i,
-                                                                j],
-                                           res[i,
-                                               j],
-                                           accuracy_high,
-                                           'wrong value in explained_variable_variances[%i,%i] (Manhattan Calculation) (correct: %f, incorrect: %f)' % (i,
-                                                                                                                                                        j,
-                                                                                                                                                        res[i,
-                                                                                                                                                            j],
-                                                                                                                                                        e_variable_variances[i,
-                                                                                                                                                                             j]))
+                self.failUnlessAlmostEqual(
+                    e_variable_variances[i, j],
+                    res[i, j],
+                    accuracy_high,
+                    'wrong value in explained_variable_variances[%i,%i] (Manhattan Calculation) (correct: %f, incorrect: %f)'
+                    % (i, j, res[i, j],
+                       e_variable_variances[i, j]))
 
     def testManhattanCalc6PCs1b(self):
 
@@ -61,17 +57,13 @@ class TestPanelCheck(unittest.TestCase):
 
         for i in range(len(res)):
             for j in range(len(res[0])):
-                self.failUnlessAlmostEqual(e_variable_variances[i,
-                                                                j],
-                                           res[i,
-                                               j],
-                                           accuracy_high,
-                                           'wrong value in explained_variable_variances[%i,%i] (Manhattan Calculation) (correct: %f, incorrect: %f)' % (i,
-                                                                                                                                                        j,
-                                                                                                                                                        res[i,
-                                                                                                                                                            j],
-                                                                                                                                                        e_variable_variances[i,
-                                                                                                                                                                             j]))
+                self.failUnlessAlmostEqual(
+                    e_variable_variances[i, j],
+                    res[i, j],
+                    accuracy_high,
+                    'wrong value in explained_variable_variances[%i,%i] (Manhattan Calculation) (correct: %f, incorrect: %f)'
+                    % (i, j, res[i, j],
+                       e_variable_variances[i, j]))
 
     def testManhattanCalc6PCs2a(self):
 
@@ -88,17 +80,13 @@ class TestPanelCheck(unittest.TestCase):
 
         for i in range(len(res)):
             for j in range(len(res[0])):
-                self.failUnlessAlmostEqual(scores[i,
-                                                  j],
-                                           res[i,
-                                               j],
-                                           accuracy_high,
-                                           'wrong value in scores[%i,%i] (Manhattan Calculation) (correct: %f, incorrect: %f)' % (i,
-                                                                                                                                  j,
-                                                                                                                                  res[i,
-                                                                                                                                      j],
-                                                                                                                                  scores[i,
-                                                                                                                                         j]))
+                self.failUnlessAlmostEqual(
+                    scores[i, j],
+                    res[i, j],
+                    accuracy_high,
+                    'wrong value in scores[%i,%i] (Manhattan Calculation) (correct: %f, incorrect: %f)'
+                    % (i, j, res[i, j],
+                       scores[i, j]))
 
     def testManhattanCalc6PCs2b(self):
 
@@ -115,17 +103,13 @@ class TestPanelCheck(unittest.TestCase):
 
         for i in range(len(res)):
             for j in range(len(res[0])):
-                self.failUnlessAlmostEqual(scores[i,
-                                                  j],
-                                           res[i,
-                                               j],
-                                           accuracy_high,
-                                           'wrong value in scores[%i,%i] (Manhattan Calculation) (correct: %f, incorrect: %f)' % (i,
-                                                                                                                                  j,
-                                                                                                                                  res[i,
-                                                                                                                                      j],
-                                                                                                                                  scores[i,
-                                                                                                                                         j]))
+                self.failUnlessAlmostEqual(
+                    scores[i, j],
+                    res[i, j],
+                    accuracy_high,
+                    'wrong value in scores[%i,%i] (Manhattan Calculation) (correct: %f, incorrect: %f)'
+                    % (i, j, res[i, j],
+                       scores[i, j]))
 
     def testManhattanCalc6PCs3a(self):
 
@@ -142,17 +126,13 @@ class TestPanelCheck(unittest.TestCase):
 
         for i in range(len(res)):
             for j in range(len(res[0])):
-                self.failUnlessAlmostEqual(loadings[i,
-                                                    j],
-                                           res[i,
-                                               j],
-                                           accuracy_high,
-                                           'wrong value in loadings[%i,%i] (Manhattan Calculation) (correct: %f, incorrect: %f)' % (i,
-                                                                                                                                    j,
-                                                                                                                                    res[i,
-                                                                                                                                        j],
-                                                                                                                                    loadings[i,
-                                                                                                                                             j]))
+                self.failUnlessAlmostEqual(
+                    loadings[i, j],
+                    res[i, j],
+                    accuracy_high,
+                    'wrong value in loadings[%i,%i] (Manhattan Calculation) (correct: %f, incorrect: %f)'
+                    % (i, j, res[i, j],
+                       loadings[i, j]))
 
     def testManhattanCalc6PCs3b(self):
 
@@ -169,17 +149,13 @@ class TestPanelCheck(unittest.TestCase):
 
         for i in range(len(res)):
             for j in range(len(res[0])):
-                self.failUnlessAlmostEqual(loadings[i,
-                                                    j],
-                                           res[i,
-                                               j],
-                                           accuracy_high,
-                                           'wrong value in loadings[%i,%i] (Manhattan Calculation) (correct: %f, incorrect: %f)' % (i,
-                                                                                                                                    j,
-                                                                                                                                    res[i,
-                                                                                                                                        j],
-                                                                                                                                    loadings[i,
-                                                                                                                                             j]))
+                self.failUnlessAlmostEqual(
+                    loadings[i, j],
+                    res[i, j],
+                    accuracy_high,
+                    'wrong value in loadings[%i,%i] (Manhattan Calculation) (correct: %f, incorrect: %f)'
+                    % (i, j, res[i, j],
+                       loadings[i, j]))
 
     def testManhattanCalc6PCs4(self):
 
@@ -199,17 +175,13 @@ class TestPanelCheck(unittest.TestCase):
 
         for i in range(len(res)):
             for j in range(len(res[0])):
-                self.failUnlessAlmostEqual(e_variable_variances[i,
-                                                                j],
-                                           res[i,
-                                               j],
-                                           accuracy_high,
-                                           'wrong value in explained_variable_variances[%i,%i] (Manhattan Calculation) (correct: %f, incorrect: %f)' % (i,
-                                                                                                                                                        j,
-                                                                                                                                                        res[i,
-                                                                                                                                                            j],
-                                                                                                                                                        e_variable_variances[i,
-                                                                                                                                                                             j]))
+                self.failUnlessAlmostEqual(
+                    e_variable_variances[i, j],
+                    res[i, j],
+                    accuracy_high,
+                    'wrong value in explained_variable_variances[%i,%i] (Manhattan Calculation) (correct: %f, incorrect: %f)'
+                    % (i, j, res[i, j],
+                       e_variable_variances[i, j]))
 
     def testManhattanCalc6PCs5(self):
 
@@ -229,17 +201,13 @@ class TestPanelCheck(unittest.TestCase):
 
         for i in range(len(res)):
             for j in range(len(res[0])):
-                self.failUnlessAlmostEqual(e_variable_variances[i,
-                                                                j],
-                                           res[i,
-                                               j],
-                                           accuracy_high,
-                                           'wrong value in explained_variable_variances[%i,%i] (Manhattan Calculation) (correct: %f, incorrect: %f)' % (i,
-                                                                                                                                                        j,
-                                                                                                                                                        res[i,
-                                                                                                                                                            j],
-                                                                                                                                                        e_variable_variances[i,
-                                                                                                                                                                             j]))
+                self.failUnlessAlmostEqual(
+                    e_variable_variances[i, j],
+                    res[i, j],
+                    accuracy_high,
+                    'wrong value in explained_variable_variances[%i,%i] (Manhattan Calculation) (correct: %f, incorrect: %f)'
+                    % (i, j, res[i, j],
+                       e_variable_variances[i, j]))
 
 
 if __name__ == '__main__':

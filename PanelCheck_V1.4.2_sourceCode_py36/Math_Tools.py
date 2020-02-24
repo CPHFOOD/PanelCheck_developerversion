@@ -233,7 +233,7 @@ def lerp(a, b, t):  # linear interpolation
     return float(a * (1 - t) + b * t)
 
 
-#################### SCIPY CODE (somewhat modified code needed from stats.
+# SCIPY CODE (somewhat modified code needed from stats.
 
 
 fprob = special.fdtrc

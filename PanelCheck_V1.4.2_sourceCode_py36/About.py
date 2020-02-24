@@ -30,8 +30,11 @@ class AboutFrame(wx.Frame):
                 self, -1, style=wx.NO_FULL_REPAINT_ON_RESIZE)
             self.html.LoadUrl(self.progPath + "/about.html")
         else:
-            self.html = html.HtmlWindow(id=wx.NewId(), name='html', parent=self, pos=(
-                -1, -1), size=(600, 500), style=wx.html.HW_SCROLLBAR_AUTO)
+            self.html = html.HtmlWindow(
+                id=wx.NewId(),
+                name='html', parent=self, pos=(-1, -1),
+                size=(600, 500),
+                style=wx.html.HW_SCROLLBAR_AUTO)
             self.html.LoadPage(self.progPath + "/about.html")
 
         self.button_panel = wx.Panel(self, id=wx.NewId())

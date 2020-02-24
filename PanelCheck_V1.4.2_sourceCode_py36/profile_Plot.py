@@ -120,7 +120,9 @@ def profileCalc(
         for ass_ind in range(len(active_assessors)):
             # average of replicates
             average_ass_matrix = s_data.GetAssAverageMatrix(
-                active_assessors[ass_ind], [attribute], active_samples)  # only for one attribute
+                active_assessors[ass_ind],
+                [attribute],
+                active_samples)  # only for one attribute
             # print average_ass_matrix
             # here average_ass_matrix will be of size: len(active_samples) x 1
             assessors_scores[ass_ind, :] = average_ass_matrix[:, 0]
@@ -294,12 +296,14 @@ def profilePlotter(s_data, plot_data, num_subplot=[1, 1, 1], **kwargs):
     if samples_averages_on:
         for assessor in range(len(plot_data.activeAssessorsList)):
             _numericData = []
-            plotList.append(ax.plot(_range + 0.5,
-                                    assessors_scores[assessor],
-                                    colors[(plot_data.activeAssessorsList[assessor],
-                                            "rep")][0],
-                                    label=plot_data.activeAssessorsList[assessor],
-                                    linewidth=1))
+            plotList.append(
+                ax.plot(
+                    _range + 0.5, assessors_scores[assessor],
+                    colors
+                    [(plot_data.activeAssessorsList[assessor],
+                      "rep")][0],
+                    label=plot_data.activeAssessorsList[assessor],
+                    linewidth=1))
             _numericData.append(plot_data.activeAssessorsList[assessor])
             _legend_texts.append(plot_data.activeAssessorsList[assessor])
             for x in assessors_scores[assessor]:
@@ -316,17 +320,21 @@ def profilePlotter(s_data, plot_data, num_subplot=[1, 1, 1], **kwargs):
                 ls_ind = rep_ind
                 if ls_ind > len(linestyles) - 1:
                     ls_ind = 0
-                plotList.append(ax.plot(_range + 0.5,
-                                        assessors_scores[ind],
-                                        colors[(plot_data.activeAssessorsList[ass_ind],
-                                                "rep")][0],
-                                        linestyle=linestyles[ls_ind],
-                                        label=plot_data.activeAssessorsList[ass_ind],
-                                        linewidth=1))
+                plotList.append(
+                    ax.plot(
+                        _range + 0.5, assessors_scores[ind],
+                        colors
+                        [(plot_data.activeAssessorsList[ass_ind],
+                          "rep")][0],
+                        linestyle=linestyles[ls_ind],
+                        label=plot_data.activeAssessorsList[ass_ind],
+                        linewidth=1))
                 _numericData.append(
-                    plot_data.activeAssessorsList[ass_ind] + " Rep " + str(rep_ind + 1))
+                    plot_data.activeAssessorsList[ass_ind] + " Rep " +
+                    str(rep_ind + 1))
                 _legend_texts.append(
-                    plot_data.activeAssessorsList[ass_ind] + " " + str(rep_ind + 1))
+                    plot_data.activeAssessorsList[ass_ind] + " " +
+                    str(rep_ind + 1))
                 for x in assessors_scores[ind]:
                     _numericData.append(num2str(x, fmt="%.2f"))
                 resultList.append(_numericData)

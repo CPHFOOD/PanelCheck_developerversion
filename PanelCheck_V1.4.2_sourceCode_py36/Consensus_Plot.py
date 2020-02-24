@@ -150,7 +150,8 @@ def PCA_plotter(
                     for attribute in s_data.AttributeList:
                         if attribute in activeAttributesList:
                             newFloatRow.append(
-                                floatRow[s_data.AttributeList.index(attribute)])
+                                floatRow
+                                [s_data.AttributeList.index(attribute)])
 
                     oneAssessorList.append(newFloatRow)
 
@@ -490,10 +491,11 @@ def PCA_plotter(
                 textYCoord[0],
                 activeSamplesList[sample],
                 font)
-            pointAndLabelList.append([scoresXCoordinates[sample],
-                                      scoresYCoordinates[sample],
-                                      "PCA Scores: " + activeSamplesList[sample],
-                                      [activeSamplesList[sample]]])
+            pointAndLabelList.append(
+                [scoresXCoordinates[sample],
+                 scoresYCoordinates[sample],
+                 "PCA Scores: " + activeSamplesList[sample],
+                 [activeSamplesList[sample]]])
 
     # for choice: PCA Loadings
     # ************************
@@ -850,9 +852,10 @@ def PCA_plotter(
             textYCoord = scaled_scores_y[sample]
 
             ax.text(textXCoord, textYCoord, activeSamplesList[sample], font1)
-            pointAndLabelList.append([scaled_scores_x[sample],
-                                      scaled_scores_y[sample],
-                                      "Scaled PCA Scores: " + activeSamplesList[sample]])
+            pointAndLabelList.append(
+                [scaled_scores_x[sample],
+                 scaled_scores_y[sample],
+                 "Scaled PCA Scores: " + activeSamplesList[sample]])
 
             scaled_scores_x_list.append(num2str(scaled_scores_x[sample]))
             scaled_scores_y_list.append(num2str(scaled_scores_y[sample]))
@@ -1464,7 +1467,8 @@ def average_data(s_data, plot_data, selection=0):
                     for attribute in s_data.AttributeList:
                         if attribute in activeAttributesList:
                             newFloatRow.append(
-                                floatRow[s_data.AttributeList.index(attribute)])
+                                floatRow
+                                [s_data.AttributeList.index(attribute)])
 
                     oneAssessorList.append(newFloatRow)
 
@@ -2197,10 +2201,11 @@ def STATIS_PCA_Plotter(
                 textYCoord[0],
                 activeSamplesList[sample],
                 font)
-            pointAndLabelList.append([scoresXCoordinates[sample],
-                                      scoresYCoordinates[sample],
-                                      "PCA Scores: " + activeSamplesList[sample],
-                                      [activeSamplesList[sample]]])
+            pointAndLabelList.append(
+                [scoresXCoordinates[sample],
+                 scoresYCoordinates[sample],
+                 "PCA Scores: " + activeSamplesList[sample],
+                 [activeSamplesList[sample]]])
 
     # for choice: PCA Loadings
     # ************************
@@ -2548,9 +2553,10 @@ def STATIS_PCA_Plotter(
             textYCoord = scaled_scores_y[sample]
 
             ax.text(textXCoord, textYCoord, activeSamplesList[sample], font1)
-            pointAndLabelList.append([scaled_scores_x[sample],
-                                      scaled_scores_y[sample],
-                                      "Scaled PCA Scores: " + activeSamplesList[sample]])
+            pointAndLabelList.append(
+                [scaled_scores_x[sample],
+                 scaled_scores_y[sample],
+                 "Scaled PCA Scores: " + activeSamplesList[sample]])
 
             scaled_scores_x_list.append(num2str(scaled_scores_x[sample]))
             scaled_scores_y_list.append(num2str(scaled_scores_y[sample]))

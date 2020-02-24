@@ -146,10 +146,16 @@ class SensoryData:
         [x_min, x_max, y_min, y_max]
         """
         self.min_max_values = [-1, 1, -1, 1]
-        self.min_max_values[2] = float(self.SparseMatrix[(
-            self.AssessorList[0], self.SampleList[0], self.ReplicateList[0])][0])
-        self.min_max_values[3] = float(self.SparseMatrix[(
-            self.AssessorList[0], self.SampleList[0], self.ReplicateList[0])][0])
+        self.min_max_values[2] = float(
+            self.SparseMatrix
+            [(self.AssessorList[0],
+              self.SampleList[0],
+              self.ReplicateList[0])][0])
+        self.min_max_values[3] = float(
+            self.SparseMatrix
+            [(self.AssessorList[0],
+              self.SampleList[0],
+              self.ReplicateList[0])][0])
         for ass in self.AssessorList:
             for samp in self.SampleList:
                 for rep in self.ReplicateList:

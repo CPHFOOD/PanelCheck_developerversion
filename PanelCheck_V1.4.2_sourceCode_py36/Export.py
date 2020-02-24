@@ -360,10 +360,13 @@ class Export_Images_Dialog(wx.Dialog):
         if saving_ppt_file:
             self.SetTitle("Make PowerPoint File:")
             self.radio1 = wx.RadioButton(
-                self._panel, -1, "Make images in:", style=wx.RB_GROUP, pos=wx.Point(4, 320), size=(120, -1))
+                self._panel, -1, "Make images in:", style=wx.RB_GROUP,
+                pos=wx.Point(4, 320),
+                size=(120, -1))
             self.radio1.SetToolTipString(u'Make images in selected folder')
             self.radio2 = wx.RadioButton(
-                self._panel, -1, "Use images in:", pos=wx.Point(130, 320), size=(-1, -1))
+                self._panel, -1, "Use images in:", pos=wx.Point(130, 320),
+                size=(-1, -1))
             self.radio2.SetToolTipString(
                 u'Images will not be made, but images found in selected folder will be used instead')
             browse_images = wx.NewId()
@@ -1322,8 +1325,8 @@ class ExportImages:
         # Tucker-1 Standardize Plots
         if self.plots[plot_ind] in self.active_plots:
             if self.plot_ok(['Common Scores'], Tucker1Plotter, selection=1):
-                filename = outputdir + "/" + \
-                    self.int2str(plot_ind) + "_tucker1_standard_common_scores" + ext
+                filename = outputdir + "/" + self.int2str(
+                    plot_ind) + "_tucker1_standard_common_scores" + ext
                 self.save_image_file(self.canvas, filename, dpi=dpi)
                 if self.no_to_all:
                     progress.Destroy()
@@ -1364,8 +1367,8 @@ class ExportImages:
             type_ind = 1
             for type in _list:
                 if self.plot_ok([type], PCA_plotter, selection=0):
-                    filename = outputdir + "/" + \
-                        self.int2str(plot_ind) + "_consensus_original" + str(type_ind) + ext
+                    filename = outputdir + "/" + self.int2str(
+                        plot_ind) + "_consensus_original" + str(type_ind) + ext
                     self.save_image_file(self.canvas, filename, dpi=dpi)
                     if self.no_to_all:
                         progress.Destroy()
@@ -1388,8 +1391,8 @@ class ExportImages:
             type_ind = 1
             for type in _list:
                 if self.plot_ok([type], PCA_plotter, selection=1):
-                    filename = outputdir + "/" + \
-                        self.int2str(plot_ind) + "_consensus_standardized" + str(type_ind) + ext
+                    filename = outputdir + "/" + self.int2str(
+                        plot_ind) + "_consensus_standardized" + str(type_ind) + ext
                     self.save_image_file(self.canvas, filename, dpi=dpi)
                     if self.no_to_all:
                         progress.Destroy()
@@ -1413,8 +1416,8 @@ class ExportImages:
             type_ind = 1
             for type in _list:
                 if self.plot_ok([type], STATIS_PCA_Plotter, selection):
-                    filename = outputdir + "/" + \
-                        self.int2str(plot_ind) + "_statis" + str(type_ind) + "_cov" + ext
+                    filename = outputdir + "/" + self.int2str(
+                        plot_ind) + "_statis" + str(type_ind) + "_cov" + ext
                     self.save_image_file(self.canvas, filename, dpi=dpi)
                     if self.no_to_all:
                         progress.Destroy()
@@ -1453,8 +1456,8 @@ class ExportImages:
                 else:
                     plotter = STATIS_AssWeight_Plotter
                 if self.plot_ok([type], plotter, selection):
-                    filename = outputdir + "/" + \
-                        self.int2str(plot_ind) + "_statis" + str(type_ind) + "_corr" + ext
+                    filename = outputdir + "/" + self.int2str(
+                        plot_ind) + "_statis" + str(type_ind) + "_corr" + ext
                     self.save_image_file(self.canvas, filename, dpi=dpi)
                     if self.no_to_all:
                         progress.Destroy()
@@ -1470,8 +1473,8 @@ class ExportImages:
             type_ind = 1
             for ass in self.active_ass:
                 if self.plot_ok([ass], ManhattanPlotter, selection=0):
-                    filename = outputdir + "/" + \
-                        self.int2str(plot_ind) + "_manhattan_original" + str(type_ind) + ext
+                    filename = outputdir + "/" + self.int2str(
+                        plot_ind) + "_manhattan_original" + str(type_ind) + ext
                     self.save_image_file(self.canvas, filename, dpi=dpi)
                     if self.no_to_all:
                         progress.Destroy()
@@ -1487,8 +1490,8 @@ class ExportImages:
             type_ind = 1
             for ass in self.active_ass:
                 if self.plot_ok([ass], ManhattanPlotter, selection=1):
-                    filename = outputdir + "/" + \
-                        self.int2str(plot_ind) + "_manhattan_standardized" + str(type_ind) + ext
+                    filename = outputdir + "/" + self.int2str(
+                        plot_ind) + "_manhattan_standardized" + str(type_ind) + ext
                     self.save_image_file(self.canvas, filename, dpi=dpi)
                     if self.no_to_all:
                         progress.Destroy()
@@ -1505,8 +1508,8 @@ class ExportImages:
             _types = ['F1', 'F2']
             for _type in _types:
                 if self.plot_ok([_type], MixModel_ANOVA_Plotter_2way1rep):
-                    filename = outputdir + "/" + \
-                        self.int2str(plot_ind) + "_mm_anova_f_" + str(_nr) + ext
+                    filename = outputdir + "/" + self.int2str(
+                        plot_ind) + "_mm_anova_f_" + str(_nr) + ext
                     _nr += 1
                     self.save_image_file(self.canvas, filename, dpi=dpi)
                     if self.no_to_all:
@@ -1516,8 +1519,8 @@ class ExportImages:
             _nr = 1
             for _type in lsd_types:
                 if self.plot_ok([_type], MixModel_ANOVA_LSD_Plotter_2way1rep):
-                    filename = outputdir + "/" + \
-                        self.int2str(plot_ind) + "_mm_anova_lsd_" + str(_nr) + ext
+                    filename = outputdir + "/" + self.int2str(
+                        plot_ind) + "_mm_anova_lsd_" + str(_nr) + ext
                     _nr += 1
                     self.save_image_file(self.canvas, filename, dpi=dpi)
                     if self.no_to_all:
@@ -1534,8 +1537,8 @@ class ExportImages:
             _types = ['F1', 'F2', 'F3']
             for _type in _types:
                 if self.plot_ok([_type], MixModel_ANOVA_Plotter_2way):
-                    filename = outputdir + "/" + \
-                        self.int2str(plot_ind) + "_mm_anova_f_" + str(_nr) + ext
+                    filename = outputdir + "/" + self.int2str(
+                        plot_ind) + "_mm_anova_f_" + str(_nr) + ext
                     _nr += 1
                     self.save_image_file(self.canvas, filename, dpi=dpi)
                     if self.no_to_all:
@@ -1545,8 +1548,8 @@ class ExportImages:
             _nr = 1
             for _type in lsd_types:
                 if self.plot_ok([_type], MixModel_ANOVA_LSD_Plotter_2way):
-                    filename = outputdir + "/" + \
-                        self.int2str(plot_ind) + "_mm_anova_lsd_" + str(_nr) + ext
+                    filename = outputdir + "/" + self.int2str(
+                        plot_ind) + "_mm_anova_lsd_" + str(_nr) + ext
                     _nr += 1
                     self.save_image_file(self.canvas, filename, dpi=dpi)
                     if self.no_to_all:
@@ -1563,8 +1566,8 @@ class ExportImages:
             _types = ['F1', 'F2', 'F3', 'F4']
             for _type in _types:
                 if self.plot_ok([_type], MixModel_ANOVA_Plotter_3way):
-                    filename = outputdir + "/" + \
-                        self.int2str(plot_ind) + "_mm_anova_f_" + str(_nr) + ext
+                    filename = outputdir + "/" + self.int2str(
+                        plot_ind) + "_mm_anova_f_" + str(_nr) + ext
                     _nr += 1
                     self.save_image_file(self.canvas, filename, dpi=dpi)
                     if self.no_to_all:
@@ -1574,8 +1577,8 @@ class ExportImages:
             _nr = 1
             for _type in lsd_types:
                 if self.plot_ok([_type], MixModel_ANOVA_LSD_Plotter_3way):
-                    filename = outputdir + "/" + \
-                        self.int2str(plot_ind) + "_mm_anova_lsd_" + str(_nr) + ext
+                    filename = outputdir + "/" + self.int2str(
+                        plot_ind) + "_mm_anova_lsd_" + str(_nr) + ext
                     _nr += 1
                     self.save_image_file(self.canvas, filename, dpi=dpi)
                     if self.no_to_all:

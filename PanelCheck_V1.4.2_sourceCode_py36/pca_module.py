@@ -258,7 +258,7 @@ def nipals_arr(X, PCs, threshold, E_matrices):
             _temp = eigenvalue_vec(p)
             # ....................................... step 3
             #t = mat_prod(E, p) / _temp
-            t = np.matmul(E,p) /_temp
+            t = np.matmul(E, p) / _temp
             eigenval_new = eigenvalue_vec(t)
             if not ready_for_compare:
                 ready_for_compare = True

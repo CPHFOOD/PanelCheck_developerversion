@@ -438,8 +438,9 @@ def EggshellPlotter(s_data, plot_data, num_subplot=[1, 1, 1], **kwargs):
                    min_x_scale, max_x_scale, min_y_scale, max_y_scale])
     else:
         axes_setup(
-            ax, '', '', myTitle, [
-                min_x_scale, max_x_scale, min_y_scale, max_y_scale], font_size=10)
+            ax, '', '', myTitle,
+            [min_x_scale, max_x_scale, min_y_scale, max_y_scale],
+            font_size=10)
 
     # Starting generation of the list that contains the raw data
     # that is shown in "Raw Data" when pushing the button in the plot

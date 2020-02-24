@@ -241,10 +241,16 @@ class DataFile:
         [x_min, x_max, y_min, y_max]
         """
         self.min_max_values = [-1, 1, -1, 1]  # values will be overwritten
-        self.min_max_values[2] = float(self.s_data.SparseMatrix[(
-            self.AssessorList[0], self.SampleList[0], self.ReplicateList[0])][0])
-        self.min_max_values[3] = float(self.s_data.SparseMatrix[(
-            self.AssessorList[0], self.SampleList[0], self.ReplicateList[0])][0])
+        self.min_max_values[2] = float(
+            self.s_data.SparseMatrix
+            [(self.AssessorList[0],
+              self.SampleList[0],
+              self.ReplicateList[0])][0])
+        self.min_max_values[3] = float(
+            self.s_data.SparseMatrix
+            [(self.AssessorList[0],
+              self.SampleList[0],
+              self.ReplicateList[0])][0])
 
         for ass in self.AssessorList:
             for samp in self.SampleList:
@@ -753,8 +759,8 @@ class DataFile:
                             value +
                             3)):  # must add with 3 because of the three first non-score columns
                         # two equal columns found!
-                        self.error = "Column number " + \
-                            str(i + 4) + " and number " + str(int(value) + 4) + " are equal!"
+                        self.error = "Column number " + str(
+                            i + 4) + " and number " + str(int(value) + 4) + " are equal!"
                         self.error += "\nDo you wish to drop column number " + \
                             str(value + 4) + " in this data analysis?"
                         self.showErrorDialog_YES_NO(self.error)
@@ -934,16 +940,12 @@ class DataFile:
         if len(missing_values_positions) > 0:
             if len(rows_missing) > 0:
                 self.show_msg(
-                    "Data set has " +
-                    str(
-                        len(missing_values_positions)) +
+                    "Data set has " + str(len(missing_values_positions)) +
                     " missing values.\nThere are rows that consist of missing values only.\nDataset will be considered unbalanced.",
                     "Warning!")
             else:
                 self.show_msg(
-                    "Data set has " +
-                    str(
-                        len(missing_values_positions)) +
+                    "Data set has " + str(len(missing_values_positions)) +
                     " missing values.\nNew values will be imputed for the missing values.",
                     "Warning!")
             # m_data = mvt.IMP(m_data) # impute new values for NaN values
@@ -1511,7 +1513,8 @@ class Unbalanced_Data(wx.Dialog):
 
         box_balance = wx.BoxSizer(wx.VERTICAL)
         self.box_title = wx.StaticText(
-            self, -1, "Select group to be removed for balancing the data:", size=(400, -1))
+            self, -1, "Select group to be removed for balancing the data:",
+            size=(400, -1))
         self.radio1 = wx.RadioButton(
             self, -1, "Remove Assessors: ", style=wx.RB_GROUP, size=(400, -1))
         self.radio2 = wx.RadioButton(

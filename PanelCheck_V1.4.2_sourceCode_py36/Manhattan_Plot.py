@@ -4,6 +4,7 @@
 from Plot_Tools import *
 import matplotlib as mpl
 
+
 def ManhattanCalc(X, PCs=14, standardize=False):
     """
 
@@ -328,8 +329,10 @@ def get_numerical_data_manhattan(
             pc_str = "PC" + str(PC_i + 1)
             dataline.append(pc_str)
             for att_ind in range(len(active_attributes)):
-                dataline.append(num2str(
-                    c_data[active_assessors[0]][2][PC_i, att_ind] * 100.0, fmt="%.3f") + "%")
+                dataline.append(
+                    num2str(
+                        c_data[active_assessors[0]][2]
+                        [PC_i, att_ind] * 100.0, fmt="%.3f") + "%")
 
             numericDataList.append(dataline)
 
@@ -411,14 +414,21 @@ def get_numerical_data_manhattan(
                         active_att = c_data[active_assessors[ass_ind]][3]
                         # index pos of current active variable:
                         active_att_ind = active_att.index(active_attributes[0])
-                        dataline.append(num2str(
-                            c_data[active_assessors[ass_ind]][2][PC_i, active_att_ind] * 100.0, fmt="%.3f") + "%")
+                        dataline.append(
+                            num2str(
+                                c_data
+                                [active_assessors[ass_ind]][2]
+                                [PC_i, active_att_ind] * 100.0,
+                                fmt="%.3f") + "%")
                 else:
                     # index pos of current active variable:
                     active_att_ind = plot_data.activeAttributesList.index(
                         active_attributes[0])
-                    dataline.append(num2str(
-                        c_data[active_assessors[ass_ind]][2][PC_i, active_att_ind] * 100.0, fmt="%.3f") + "%")
+                    dataline.append(
+                        num2str(
+                            c_data[active_assessors[ass_ind]]
+                            [2][PC_i, active_att_ind] * 100.0,
+                            fmt="%.3f") + "%")
 
             numericDataList.append(dataline)
     return numericDataList
@@ -570,7 +580,8 @@ def ManhattanPlotImage(s_data, plot_data, m_data, col_list, cmap=None):
 
     return collection, pointAndLabelList  # Vector image added successfully
 
-def reverse_colourmap(cmap, name = 'my_cmap_r'):
+
+def reverse_colourmap(cmap, name='my_cmap_r'):
     """
     In:
     cmap, name
@@ -599,12 +610,13 @@ def reverse_colourmap(cmap, name = 'my_cmap_r'):
         data = []
 
         for t in channel:
-            data.append((1-t[0],t[2],t[1]))
+            data.append((1 - t[0], t[2], t[1]))
         reverse.append(sorted(data))
 
-    LinearL = dict(zip(k,reverse))
+    LinearL = dict(zip(k, reverse))
     my_cmap_r = mpl.colors.LinearSegmentedColormap(name, LinearL)
     return my_cmap_r
+
 
 def set_manhattan_colorbar(fig, colormap):
     """

@@ -307,13 +307,19 @@ def SampleLinePlotter(
                         [xSampleValue, ySampleValue, label, 1])
                     if not checkBox:
                         #plotList.append(ax.scatter([xSampleValue], [ySampleValue], s = 30, color = symbolList[symItem][0], marker = 'o'))
-                        plotList.append(ax.scatter([xSampleValue], [ySampleValue], s=scatter_width, color=colors[(
-                            items, replicate)][0], marker=colors[(items, replicate)][1]))
+                        plotList.append(
+                            ax.scatter(
+                                [xSampleValue],
+                                [ySampleValue],
+                                s=scatter_width,
+                                color=colors[(items, replicate)][0],
+                                marker=colors[(items, replicate)][1]))
                         checkBox = 1
 
                     x_samples.append(xSampleValue)
-                ax.scatter(x_samples, y_samples, s=scatter_width, color=colors[(
-                    items, replicate)][0], marker=colors[(items, replicate)][1])
+                ax.scatter(x_samples, y_samples, s=scatter_width,
+                           color=colors[(items, replicate)][0],
+                           marker=colors[(items, replicate)][1])
 
     # print pointAndLabelList
 
@@ -329,7 +335,12 @@ def SampleLinePlotter(
             # plotList.append(p)
 
             plotList.append(
-                Line2D([], [], color=colors[(a, s_data.ReplicateList[0])][0], linewidth=5))
+                Line2D(
+                    [],
+                    [],
+                    color=colors[(a, s_data.ReplicateList[0])]
+                                [0],
+                    linewidth=5))
             i += 1
         # CircleLegend(fig, [['#FF0000', '#00FF00', '#0000FF'], ['dommer1',
         # 'dommer2', 'dommer3']])
