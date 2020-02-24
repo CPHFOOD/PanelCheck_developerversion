@@ -411,8 +411,8 @@ def Tucker1Plotter(
     # Start of generating the resultList for case that standardization
     # is NOT activated (this before PCA analysis, because Tucker1Matrix
     # will be changed/standardized in PCA class)
-    import pdb
-    pdb.set_trace()
+    #import pdb
+    #pdb.set_trace()
     if selection[0] == 0:
         resultList1 = []
         emptyLine = ['']
@@ -767,8 +767,8 @@ def Tucker1Plotter(
         # Find out where in the activeAttributeList the selected attribute is.
         # Depending on the position the correlation loadings will
         # be picked.
-        import pdb
-        pdb.set_trace()
+        #import pdb
+        #pdb.set_trace()
         specificPositionAttribute = activeAttributesList.index(itemID[0])
 
         # specificAttributeSequence contains the correct positions of the
@@ -986,8 +986,8 @@ def Tucker1Plotter(
         plot_data.selection = PCAmodeSelected
 
 # Frame draw, for standard Matplotlib frame only use show()
-    import pdb
-    pdb.set_trace()
+    #import pdb
+    #pdb.set_trace()
     return plot_data
 
 

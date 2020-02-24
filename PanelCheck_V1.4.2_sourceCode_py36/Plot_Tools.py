@@ -407,8 +407,8 @@ def check_point(x, y, epsilon, pointAndLabelList, max):
 
 
 def equal_lists(listA, listB):
-    import pdb
-    pdb.set_trace()
+    #import pdb
+    #pdb.set_trace()
     a = len(listA)
     b = len(listB)
     if a != b:

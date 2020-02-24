@@ -471,7 +471,7 @@ def MixModel_ANOVA_Plotter_2way1rep(
 
     if plot_data.view_legend:
         plotList = [None]
-        lables = ['SIGNIFICANCE:', 'ns', 'p<0.05', 'p<0.01', 'p<0.001']
+        lables = ['', 'ns', 'p<0.05', 'p<0.01', 'p<0.001']
         i = 0
         for c in colors:
             #p = Patch(facecolor = c)
@@ -481,7 +481,7 @@ def MixModel_ANOVA_Plotter_2way1rep(
             i += 1
     # CircleLegend(fig, [['#FF0000', '#00FF00', '#0000FF'], ['dommer1',
     # 'dommer2', 'dommer3']])
-    figlegend = fig.legend(plotList, lables, 'upper right')
+    figlegend = fig.legend(plotList, lables, 'upper right',title='SIGNIFICANCE:')
 
     # One element in the pointAndLabelList will always contain 3 items [x, y,
     # label]
@@ -963,7 +963,7 @@ def MixModel_ANOVA_Plotter_2way(
         set_xlabeling_rotation(ax, 'vertical')
     if plot_data.view_legend:
         plotList = [None]
-        lables = ['SIGNIFICANCE:', 'ns', 'p<0.05', 'p<0.01', 'p<0.001']
+        lables = ['', 'ns', 'p<0.05', 'p<0.01', 'p<0.001']
     i = 0
     for c in colors:
         #p = Patch(facecolor = c)
@@ -973,7 +973,7 @@ def MixModel_ANOVA_Plotter_2way(
         i += 1
     # CircleLegend(fig, [['#FF0000', '#00FF00', '#0000FF'], ['dommer1',
     # 'dommer2', 'dommer3']])
-    figlegend = fig.legend(plotList, lables, 'upper right')
+    figlegend = fig.legend(plotList, lables, 'upper right',title='SIGNIFICANCE:')
 
     # One element in the pointAndLabelList will always contain 3 items [x, y,
     # label]
@@ -1460,7 +1460,7 @@ def MixModel_ANOVA_Plotter_3way(
         set_xlabeling_rotation(ax, 'vertical')
     if plot_data.view_legend:
         plotList = [None]
-        lables = ['SIGNIFICANCE:', 'ns', 'p<0.05', 'p<0.01', 'p<0.001']
+        lables = ['', 'ns', 'p<0.05', 'p<0.01', 'p<0.001']
         i = 0
         for c in colors:
             #p = Patch(facecolor = c)
@@ -1470,7 +1470,7 @@ def MixModel_ANOVA_Plotter_3way(
             i += 1
         # CircleLegend(fig, [['#FF0000', '#00FF00', '#0000FF'], ['dommer1',
         # 'dommer2', 'dommer3']])
-        figlegend = fig.legend(plotList, lables, 'upper right')
+        figlegend = fig.legend(plotList, lables, 'upper right',title='SIGNIFICANCE:')
 
     # One element in the pointAndLabelList will always contain 3 items [x, y,
     # label]
