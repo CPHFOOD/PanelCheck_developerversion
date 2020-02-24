@@ -307,31 +307,32 @@ class PlotFrame(wx.Frame):
 
         #self.button_print = wx.Button(self.button_panel, butt_print, "Print")
         #self.button_save = wx.Button(self.button_panel, butt_save, "Save")
-        self.button_print = wx.BitmapButton(
-            bitmap=wx.Bitmap(
-                self.ProgPathAbs +
-                u'/gfx/_ctrl_print.gif',
-                wx.BITMAP_TYPE_GIF),
-            parent=self.button_panel,
-            size=wx.Size(
-                24,
-                24),
-            style=wx.BU_AUTODRAW,
-            id=butt_print)
-        self.button_print.SetToolTip(u'Print Image')
 
-        self.button_print_setup = wx.BitmapButton(
-            bitmap=wx.Bitmap(
-                self.ProgPathAbs +
-                u'/gfx/_ctrl_print_setup.gif',
-                wx.BITMAP_TYPE_GIF),
-            parent=self.button_panel,
-            size=wx.Size(
-                24,
-                24),
-            style=wx.BU_AUTODRAW,
-            id=butt_print_setup)
-        self.button_print_setup.SetToolTip(u'Print Setup')
+        # self.button_print = wx.BitmapButton(
+        #     bitmap=wx.Bitmap(
+        #         self.ProgPathAbs +
+        #         u'/gfx/_ctrl_print.gif',
+        #         wx.BITMAP_TYPE_GIF),
+        #     parent=self.button_panel,
+        #     size=wx.Size(
+        #         24,
+        #         24),
+        #     style=wx.BU_AUTODRAW,
+        #     id=butt_print)
+        # self.button_print.SetToolTip(u'Print Image')
+        #
+        # self.button_print_setup = wx.BitmapButton(
+        #     bitmap=wx.Bitmap(
+        #         self.ProgPathAbs +
+        #         u'/gfx/_ctrl_print_setup.gif',
+        #         wx.BITMAP_TYPE_GIF),
+        #     parent=self.button_panel,
+        #     size=wx.Size(
+        #         24,
+        #         24),
+        #     style=wx.BU_AUTODRAW,
+        #     id=butt_print_setup)
+        # self.button_print_setup.SetToolTip(u'Print Setup')
 
         self.button_copy_clip = wx.BitmapButton(
             bitmap=wx.Bitmap(
@@ -497,8 +498,8 @@ class PlotFrame(wx.Frame):
         self.p = None
 
         # add to sizer
-        self.sizer_inner.Add(self.button_print, 0, wx.EXPAND)
-        self.sizer_inner.Add(self.button_print_setup, 0, wx.EXPAND)
+        # self.sizer_inner.Add(self.button_print, 0, wx.EXPAND)
+        # self.sizer_inner.Add(self.button_print_setup, 0, wx.EXPAND)
         self.sizer_inner.Add(self.button_copy_clip, 0, wx.EXPAND)
         self.sizer_inner.Add(self.button_save, 0, wx.EXPAND)
 
@@ -1035,15 +1036,7 @@ class PlotFrame(wx.Frame):
             if self.plot_type == "manhattan_ass" or self.plot_type == "manhattan_att":
                 if ax == self.plot_panel.figure.axes[1] or ax == self.plot_panel.figure.axes[0]:
                     return
-            # event.guiEvent # actual wx.MouseEvent
-            #self.replot(self.plot_type, ax._num)
-            # self.update_gui()
-            #self.overview_plot = False
-            # print(ax.__dict__.keys(),'\n\n{}'.format(ax._position))
 
-            #indexer = {(0, 0): 0, (0, 1): 1, (0, 2): 2, (1, 0): 3, (1, 1): 4, (1, 2): 5, (2, 0): 6, (2, 1): 7, (2, 2): 8}
-            #print("Row: {} Col: {} Pos: {}".format(ax.rowNum,ax.colNum,(ax.rowNum+1)*(ax.colNum+1)))
-            # print(ax.__dict__.keys())
             idx = self.indexer(ax.numRows, ax.numCols)
             # print(idx)
             plot_data = self.newplot(
@@ -1186,7 +1179,7 @@ class PlotFrame(wx.Frame):
 
         dlg = wx.FileDialog(self, message='Save Plot Figure as...',
                             defaultDir=thisdir, defaultFile='plot',
-                            wildcard=file_choices, style=wx.SAVE)
+                            wildcard=file_choices, style=wx.FD_SAVE)
 
         if dlg.ShowModal() == wx.ID_OK:
             path = dlg.GetPath()
@@ -1203,11 +1196,11 @@ class PlotFrame(wx.Frame):
                     'fontweight': 'bold',
                     'fontsize': 14,
                     'alpha': 0.25})
-            self.plot_panel.canvas.print_figure(path.encode(codec), dpi=150)
+            self.plot_panel.canvas.print_figure(path, dpi=150)
             if (path.find(thisdir) == 0):
                 path = path[len(thisdir) + 1:]
-            print('Saved plot to %s' % path.encode(codec))
-            print('in ' + self.mother.image_save_path.encode(codec))
+            print('Saved plot to %s' % path)
+            print('in ' + self.mother.image_save_path)
             del self.plot_panel.figure.texts[-1]
         dlg.Destroy()
 
@@ -1220,7 +1213,7 @@ class PlotFrame(wx.Frame):
         if not self.summaryFrameShowing or self.summary_changed:
             self.summFrame = SummaryFrame(
                 self, self.get_summary_text(
-                    self.plot_type))
+                    self.plot_type),abspath=self.ProgPathAbs)
             self.summary_changed = False
         else:
             self.summFrame.Raise()
@@ -1310,7 +1303,7 @@ class PlotFrame(wx.Frame):
         if not self.gridFrameShowingRawData or self.raw_data_changed:
             _title = self.fig_title["fig"] + ": " + \
                 self.fig_title["plot"] + " (" + self.s_data.abspath + ")"
-            self.gridFrame_raw = GridFrame(self, _title, self.rawData)
+            self.gridFrame_raw = GridFrame(self, _title, self.rawData,abspath=self.ProgPathAbs)
             self.gridFrame_raw.grid.set_color_on_pos(
                 self.plot_data.raw_data_mv_pos)
             print(self.plot_data.raw_data_mv_pos)
@@ -1341,7 +1334,7 @@ class PlotFrame(wx.Frame):
                 _title = self.fig_title["fig"] + ": " + \
                     self.fig_title["plot"] + " (" + self.s_data.abspath + ")"
                 self.gridFrame_num = GridFrame(
-                    self, _title, self.results, config=self.plot_data.numeric_data_config)
+                    self, _title, self.results, config=self.plot_data.numeric_data_config,abspath=self.ProgPathAbs)
                 self.num_res_changed = False
         else:
             self.gridFrame_num.Raise()
@@ -2153,6 +2146,7 @@ class NavigationToolbar2Wx(NavigationToolbar2, wx.ToolBar):
         self.canvas = canvas
         self._idle = True
         self.statbar = None
+        self.overlay = wx.Overlay()
 
     def _init_toolbar(self):
         self._parent = self.canvas.GetParent()
@@ -2180,50 +2174,21 @@ class NavigationToolbar2Wx(NavigationToolbar2, wx.ToolBar):
             self.canvas.draw()
             self._idle = True
 
-    def draw_rubberband(self, event, x0, y0, x1, y1):
-        canvas = self.canvas
-        dc = wx.ClientDC(canvas)
+    def OnMouseMove(self, evt):
+        if evt.Dragging() and evt.LeftIsDown():
+            rect = wx.RectPP(self.startPos, evt.GetPosition())
+            dc   = wx.ClientDC(self)
+            odc  = wx.DCOverlay(self.overlay, dc)
+            odc.Clear()
 
-        # Set logical function to XOR for rubberbanding
-        dc.SetLogicalFunction(wx.XOR)
+            dc.SetPen(wx.Pen("black", 2))
+            if 'wxMac' in wx.PlatformInfo:
+                dc.SetBrush(wx.Brush(wx.Colour(0xC0, 0xC0, 0xC0, 0x80)))
+            else:
+                dc.SetBrush(wx.TRANSPARENT_BRUSH)
 
-        # Set dc brush and pen
-        # Here I set brush and pen to white and grey respectively
-        # You can set it to your own choices
-
-        # The brush setting is not really needed since we
-        # dont do any filling of the dc. It is set just for
-        # the sake of completion.
-
-        wbrush = wx.Brush(wx.Colour(255, 255, 255), wx.TRANSPARENT)
-        wpen = wx.Pen(wx.Colour(200, 200, 200), 1, wx.SOLID)
-        dc.SetBrush(wbrush)
-        dc.SetPen(wpen)
-
-        dc.ResetBoundingBox()
-        dc.BeginDrawing()
-        height = self.canvas.figure.bbox.height()
-        y1 = height - y1
-        y0 = height - y0
-
-        if y1 < y0:
-            y0, y1 = y1, y0
-        if x1 < y0:
-            x0, x1 = x1, x0
-
-        w = x1 - x0
-        h = y1 - y0
-
-        rect = int(x0), int(y0), int(w), int(h)
-        try:
-            lastrect = self.lastrect
-        except AttributeError:
-            pass
-        else:
-            dc.DrawRectangle(*lastrect)  # erase last
-        self.lastrect = rect
-        dc.DrawRectangle(*rect)
-        dc.EndDrawing()
+            dc.DrawRectangle(rect)
+            del odc
 
 
 class SimpleFigLegend(Figure):

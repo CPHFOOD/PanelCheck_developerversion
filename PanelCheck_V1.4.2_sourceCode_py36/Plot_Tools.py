@@ -407,6 +407,7 @@ def check_point(x, y, epsilon, pointAndLabelList, max):
 
 
 def equal_lists(listA, listB):
+    import pdb; pdb.set_trace()
     a = len(listA)
     b = len(listB)
     if a != b:
@@ -911,7 +912,7 @@ def significance_legend(plot_data, pos='upper right'):
         for c in _colors:
             plotList.append(Line2D([], [], color=c, linewidth=5))
             #i += 1
-
+        #import pdb; pdb.set_trace()
         figlegend = plot_data.fig.legend(
             plotList, lables, pos, title='Prod. sign.\n (2-way ANOVA):')
 

@@ -340,7 +340,8 @@ def SampleLinePlotter(
         axes_setup(ax, 'Attributes', 'Score', myTitle, plot_data.limits)
         set_xlabeling(ax, activeAttributesList)
         if len(activeAttributesList) > 7:
-            set_xlabeling_rotation(ax, 'vertical')
+            #set_xlabeling_rotation(ax, 'vertical')
+            set_xlabeling_rotation(ax, 45)
     else:
         axes_setup(ax, '', '', myTitle, plot_data.limits, font_size=10)
 
@@ -687,7 +688,7 @@ def AssessorLinePlotter(
             axes_setup(ax, 'Attributes', 'Score', myTitle, plot_data.limits)
             set_xlabeling(ax, activeAttributesList)
             if len(activeAttributesList) > 7:
-                set_xlabeling_rotation(ax, 'vertical')
+                set_xlabeling_rotation(ax, 45)
         else:
             axes_setup(ax, '', '', myTitle, plot_data.limits, font_size=10)
         # These four lines are for setting the maximum-value of the X-axis back
@@ -960,7 +961,7 @@ def ReplicateLinePlotter(s_data, plot_data, abspath=None, **kwargs):
 
         set_xlabeling(ax, activeAttributesList)
         if len(activeAttributesList) > 7:
-            set_xlabeling_rotation(ax, 'vertical')
+            set_xlabeling_rotation(ax, 45)
 
         # update plot-data variables:
         plot_data.point_lables = pointAndLabelList

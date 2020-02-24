@@ -33,9 +33,9 @@ class SummaryFrame(wx.Frame):
                             id=wxID_SUMMARYFRAMEBUTTON_OK)
         self.Bind(wx.EVT_CLOSE, self.closeFrame)
 
-        pathname = os.path.dirname(sys.argv[0])
-        self.progPath = os.path.abspath(
-            pathname).decode(sys.getfilesystemencoding())
+        #pathname = os.path.dirname(sys.argv[0])
+        #self.progPath = os.path.abspath(
+        #    pathname).decode(sys.getfilesystemencoding())
         self.icon = wx.Icon(self.progPathAbs + "/fig.ico", wx.BITMAP_TYPE_ICO)
         self.SetIcon(self.icon)
 
