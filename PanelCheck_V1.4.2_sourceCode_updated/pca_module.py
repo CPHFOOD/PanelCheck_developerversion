@@ -21,13 +21,14 @@ def mean_center(X):
 
 
 def standardization(X):
+    #import pdb; pdb.set_trace()
     (rows, cols) = shape(X)
     new_X = zeros((rows, cols))
-    _STDs = std(X, 0)
+    _STDs = std(X, 0)+0.1
 
     for value in _STDs:
         if value == 0:
-            raise(ZeroDivisionError, 'division by zero, cannot proceed')
+            raise ValueError('division by zero, cannot proceed')
 
     for row in range(rows):
         new_X[row, 0:cols] = X[row, 0:cols] / _STDs[0:cols]

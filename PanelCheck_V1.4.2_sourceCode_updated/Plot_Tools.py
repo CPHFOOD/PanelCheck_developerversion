@@ -17,6 +17,7 @@ from matplotlib.colorbar import Colorbar
 from matplotlib.cm import ScalarMappable
 from matplotlib.collections import LineCollection, PolyCollection
 from matplotlib.artist import Artist
+#from MM_ANOVA_Plot import load_mm_anova_data
 import matplotlib
 import wx
 import os
@@ -388,8 +389,13 @@ def axes_setup(ax, xLabel, yLabel, title, limits, font_size=13):
     ax.set_xlabel(xLabel, font)
     ax.set_ylabel(yLabel, font)
     ax.set_title(title, font)
-    ax.set_xlim(limits[0], limits[1])
-    ax.set_ylim(limits[2], limits[3])
+
+    if np.isscalar(limits[0]):
+        ax.set_xlim(limits[0], limits[1])
+        ax.set_ylim(limits[2], limits[3])
+    else:
+        ax.set_xlim(limits[0].item(), limits[1].item())
+        ax.set_ylim(limits[2].item(), limits[3].item())
 
 
 def check_point(x, y, epsilon, pointAndLabelList, max):
@@ -697,8 +703,8 @@ def check_columns(X):
 
 ############### R script (attribute significance) ###############
 
-def attribute_significance(s_data, plot_data, one_rep=False):
-
+def attribute_significance(s_data, plot_data, one_rep=False,abspath=None):
+    from MM_ANOVA_Plot import load_mm_anova_data
     activeAssessorsList = plot_data.activeAssessorsList
     activeAttributesList = plot_data.activeAttributesList
     activeSamplesList = plot_data.activeSamplesList
@@ -796,17 +802,17 @@ def attribute_significance(s_data, plot_data, one_rep=False):
     # Each of them has dimension:(8 rows) x (no. of attributes).
 
     # First initialise Per's function, then run it with our data-frame.
-    if one_rep:
-        script_source = 'source(\"R_scripts/sensmixedNoRepVer1.1.R\")'
-        progress.set_gauge(value=7, text="Running R script...\n")
-        r(script_source)
-        res = r.sensmixedNoRep11(frame)
-    else:
-        script_source = 'source(\"R_scripts/sensmixedVer4.2.R\")'
-        progress.set_gauge(value=7, text="Running R script...\n")
-        r(script_source)
-        res = r.sensmixedVer42(frame)
-
+    # if one_rep:
+    #     script_source = 'source(\"R_scripts/sensmixedNoRepVer1.1.R\")'
+    #     progress.set_gauge(value=7, text="Running R script...\n")
+    #     r(script_source)
+    #     res = r.sensmixedNoRep11(frame)
+    # else:
+    #     script_source = 'source(\"R_scripts/sensmixedVer4.2.R\")'
+    #     progress.set_gauge(value=7, text="Running R script...\n")
+    #     r(script_source)
+    #     res = r.sensmixedVer42(frame)
+    res = load_mm_anova_data(s_data, plot_data, abspath=progPath)
     os.chdir(last_dir)  # go back
     progress.set_gauge(value=100, text="Done\n")
     progress.Destroy()
@@ -955,6 +961,7 @@ def OverviewPlotter(
     part = int(floor(100 / num_plots))
     val = part
 
+    #import pdb; pdb.set_trace()
     plot_data.tree_path = itemID_list[0]
     plot_data = plotter(
         s_data,

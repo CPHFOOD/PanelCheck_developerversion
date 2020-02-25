@@ -351,8 +351,8 @@ class Export_Images_Dialog(wx.Dialog):
 
         # go to program folder (Default is that images will be stored under
         # Exports in the program folder)
-        os.chdir(self.progPath)
-        export_path = os.getcwdu() + "/Exports"
+        os.chdir(self.progPathAbs)
+        export_path = os.getcwd() + "/Exports"
         if not os.path.isdir(export_path):  # if folder not exists:
             os.mkdir(export_path)
         os.chdir(export_path)
@@ -612,7 +612,8 @@ class Export_Images_Dialog(wx.Dialog):
             self.view_legend,
             saving_ppt_file=self.saving_ppt_file,
             selection=selection,
-            dpi=dpi)
+            dpi=dpi,
+            abspath=self.progPathAbs)
 
         # self.EndModal(1)
 
@@ -750,7 +751,8 @@ class ExportImages:
             legend,
             saving_ppt_file=False,
             selection=0,
-            dpi=128):
+            dpi=128,
+            abspath=None):
         print("saving images")
         self.s_data = s_data
 
@@ -776,10 +778,10 @@ class ExportImages:
 
         self.view_grid = grid
         self.view_legend = legend
-
+        self.progPathAbs = abspath
         self.image_files = []
 
-        folder = "_data_set_" + self.ascii_encode(self.s_data.filename)
+        folder = "_data_set_" + self.s_data.filename
         if not saving_ppt_file:
             self.im_out_dir = outputdir + "/" + folder
         else:
@@ -799,7 +801,7 @@ class ExportImages:
         filename = self.im_out_dir + "_null_.png"
 
         #filename = str(filename)
-        self.canvas.print_figure(filename.encode(codec), dpi=dpi)
+        self.canvas.print_figure(filename, dpi=dpi)
         os.remove(filename)
 
         if saving_ppt_file:
@@ -810,9 +812,9 @@ class ExportImages:
             self.save_ppt_file(self.image_files, self.outputdir)
         else:
             if selection == 0:
-                self.save_image_files(self.im_out_dir, dpi)
+                self.save_image_files(self.im_out_dir, dpi,abspath=abspath)
             else:
-                self.save_image_files(self.im_out_dir, dpi, ext=".eps")
+                self.save_image_files(self.im_out_dir, dpi, ext=".eps",abspath=abspath)
 
     def find_image_files(self, images_dir):
         files = glob.glob(images_dir + "/*.png")
@@ -929,13 +931,13 @@ class ExportImages:
                     self.view_legend)
                 self.mm_anova2_plot_data.set_limits(self.s_data.scale_limits)
                 self.mm_anova2_plot_data = plotter(
-                    self.s_data, self.mm_anova2_plot_data)
+                    self.s_data, self.mm_anova2_plot_data,abspath=self.progPathAbs)
                 return self.canvas_ok(self.mm_anova2_plot_data, plotter)
             else:
                 self.mm_anova2_plot_data.tree_path = tree_path
                 self.mm_anova2_plot_data.fig = None  # reset Figure
                 self.mm_anova2_plot_data = plotter(
-                    self.s_data, self.mm_anova2_plot_data, selection=selection)
+                    self.s_data, self.mm_anova2_plot_data, selection=selection,abspath=self.progPathAbs)
                 return self.canvas_ok(self.mm_anova2_plot_data, plotter)
 
         elif plotter == MixModel_ANOVA_Plotter_2way1rep or plotter == MixModel_ANOVA_LSD_Plotter_2way1rep:
@@ -979,10 +981,10 @@ class ExportImages:
             len_num += 1
         return _zeros + str_num
 
-    def save_image_files(self, outputdir, dpi, ext=".png"):
+    def save_image_files(self, outputdir, dpi, ext=".png",abspath=None):
         self.yes_to_all = False
         self.no_to_all = False
-        progress = Progress(None)
+        progress = Progress(None,abspath=abspath)
         progress.set_gauge(
             value=0,
             text="Saving images...\nThis may take several minutes.\nPlease wait...\n")
@@ -1637,7 +1639,7 @@ class ExportImages:
         @type type:    int
         @param type:    file type
         """
-        file = file.encode(codec)
+        file = file
 
         canvas.figure.text(
             0.01,
@@ -1677,6 +1679,7 @@ class ExportImages:
                 canvas.print_figure(file, dpi=dpi)
                 self.image_files.append(file)
         else:
+            print(file)
             canvas.print_figure(file, dpi=dpi)
             self.image_files.append(file)
 

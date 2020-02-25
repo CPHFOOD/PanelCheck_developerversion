@@ -1364,13 +1364,12 @@ class Excel(DataFile):
                     datasheet.append(first_sheet.row_values(i))
                 # extracting first row:
                 firstRow = datasheet[0]
-
                 if self.is_standard_file(firstRow):
                     self.summaryFrame.set_grid(datasheet)
                     del datasheet[0]  # remove header row
 
                     if not self.load_data(
-                            datasheet, firstRow, encode_text=True):
+                            datasheet, firstRow):
                         return True
             else:
                 self.fileRead = False

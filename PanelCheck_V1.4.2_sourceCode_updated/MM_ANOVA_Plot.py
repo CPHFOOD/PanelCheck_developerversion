@@ -21,9 +21,8 @@ def load_mm_anova_data(s_data, plot_data, one_rep=False, abspath=None):
     new_active_attributes_list = activeAttributesList
     activeSamplesList = plot_data.activeSamplesList
     itemID = plot_data.tree_path
-
-    if plot_data.sensmixed_data is None:
-
+    #import pdb; pdb.set_trace()
+    if 'sensmixed_data' not in plot_data.__dict__.keys() or plot_data.sensmixed_data is None:
         matrix_num_lables = s_data.MatrixNumLables(
             assessors=activeAssessorsList, samples=activeSamplesList)
         matrix_selected_scores = s_data.MatrixDataSelected(
@@ -83,7 +82,7 @@ def load_mm_anova_data(s_data, plot_data, one_rep=False, abspath=None):
                         s_data.value_index):
                     lables.append(i)
                 #plot_data.accepted_active_attributes = plot_data.activeAttributesList
-        print(matrix_num_lables)
+        #print(matrix_num_lables)
 
         raw = hstack((matrix_num_lables, matrix_selected_scores))
 
@@ -123,21 +122,42 @@ def load_mm_anova_data(s_data, plot_data, one_rep=False, abspath=None):
         # Each of them has dimension:(8 rows) x (no. of attributes).
 
         # First initialise Per's function, then run it with our data-frame.
-        if one_rep:
-            script_source = 'source(\"R_scripts/sensmixedNoRepVer1.1.R\")'
-            progress.set_gauge(value=7, text="Running R script...\n")
-            r(script_source)
-            res = r.sensmixedNoRep11(frame)
-        else:
-            script_source = 'source(\"R_scripts/sensmixedVer4.2.R\")'
-            progress.set_gauge(value=7, text="Running R script...\n")
-            r(script_source)
-            res = r.sensmixedVer42(frame)
-            if add_p_matr:
-                plot_data.p_matr = res[2][6]
+        if 'Exports' in abspath:
+            os.chdir(abspath.replace('Exports',''))
+            if one_rep:
+                script_source = 'source(\"R_scripts/sensmixedNoRepVer1.1.R\")'
+                progress.set_gauge(value=7, text="Running R script...\n")
+                r(script_source)
+                res = r.sensmixedNoRep11(frame)
             else:
-                plot_data.p_matr = None
-
+                script_source = 'source(\"R_scripts/sensmixedVer4.2.R\")'
+                progress.set_gauge(value=7, text="Running R script...\n")
+                r(script_source)
+                res = r.sensmixedVer42(frame)
+                if add_p_matr:
+                    plot_data.p_matr = res[2][6]
+                else:
+                    plot_data.p_matr = None
+            os.chdir(abspath)
+        else:
+            last_dir = os.getcwd()
+            os.chdir(abspath)
+            if one_rep:
+                script_source = 'source(\"R_scripts/sensmixedNoRepVer1.1.R\")'
+                progress.set_gauge(value=7, text="Running R script...\n")
+                r(script_source)
+                res = r.sensmixedNoRep11(frame)
+            else:
+                script_source = 'source(\"R_scripts/sensmixedVer4.2.R\")'
+                progress.set_gauge(value=7, text="Running R script...\n")
+                r(script_source)
+                res = r.sensmixedVer42(frame)
+                if add_p_matr:
+                    plot_data.p_matr = res[2][6]
+                else:
+                    plot_data.p_matr = None
+            os.chdir(last_dir)
+            
         plot_data.sensmixed_data = res
 
     # print res
@@ -932,7 +952,7 @@ def MixModel_ANOVA_Plotter_2way(
         i = 0
         for att in s_data.AttributeList:
             if att in activeAttributesList:
-                print("Index: {} and atrribute: {}".format(i, att))
+                #print("Index: {} and atrribute: {}".format(i, att))
                 ax.bar(att_indices[i] + (1 - _width) + (_width / 2),
                        f_matr[i],
                        _width,

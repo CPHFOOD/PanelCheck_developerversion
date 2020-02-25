@@ -806,9 +806,9 @@ class Main_Frame(wx.Frame):
             self.summaryFrame.set_gauge(0)
 
             newData = PlainText(self, self.fileName, self.summaryFrame, ',')
-            print('#' * 100)
-            print(newData.fileRead)
-            print('#' * 100)
+            #print('#' * 100)
+            #print(newData.fileRead)
+            #print('#' * 100)
             if(newData.fileRead):
                 self.summaryFrame.append_text("\nLoading data...\n")
                 self.s_data = newData.s_data
@@ -1076,7 +1076,8 @@ class Main_Frame(wx.Frame):
                 view_grid=self.menuViewGrid,
                 view_legend=self.menuViewLegend,
                 active_plots=self.export_active_plots,
-                selection_changes=selection_changes)
+                selection_changes=selection_changes,
+                abspath=self.ProgPathAbs)
         else:
             dlg = wx.MessageDialog(
                 None,

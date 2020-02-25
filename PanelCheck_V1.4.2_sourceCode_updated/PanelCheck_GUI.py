@@ -1080,7 +1080,8 @@ class Main_Frame(wx.Frame):
                 view_grid=self.menuViewGrid,
                 view_legend=self.menuViewLegend,
                 active_plots=self.export_active_plots,
-                selection_changes=selection_changes)
+                selection_changes=selection_changes,
+                abspath=self.ProgPathAbs)
         else:
             dlg = wx.MessageDialog(
                 None,
@@ -1107,7 +1108,8 @@ class Main_Frame(wx.Frame):
                 view_grid=self.menuViewGrid,
                 view_legend=self.menuViewLegend,
                 active_plots=self.export_active_plots,
-                selection_changes=selection_changes)
+                selection_changes=selection_changes,
+                abspath=self.ProgPathAbs)
         else:
             dlg = wx.MessageDialog(
                 None,
@@ -1139,7 +1141,7 @@ class Main_Frame(wx.Frame):
 
         dlg = wx.FileDialog(self, message='Save current dataset as...',
                             defaultDir=thisdir, defaultFile='dataset001.pchk',
-                            wildcard=file_choices, style=wx.SAVE)
+                            wildcard=file_choices, style=wx.FD_SAVE)
 
         if dlg.ShowModal() == wx.ID_OK:
             abspath = dlg.GetPath()

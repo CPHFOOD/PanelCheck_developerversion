@@ -249,20 +249,20 @@ def save_dataset(abspath, dataset):
         f.write("Assessor\tSample\tReplicate\t")
         for att in dataset.AttributeList:
             if att == dataset.AttributeList[-1]:
-                f.write(att.encode(codec))
+                f.write(att)
             else:
-                f.write(att.encode(codec) + "\t")
+                f.write(att + "\t")
         f.write("\n")
 
         for ass in dataset.AssessorList:
             for samp in dataset.SampleList:
                 for rep in dataset.ReplicateList:
                     f.write(
-                        ass.encode(codec) +
+                        ass +
                         "\t" +
-                        samp.encode(codec) +
+                        samp +
                         "\t" +
-                        rep.encode(codec) +
+                        rep +
                         "\t")
                     for i in range(len(dataset.AttributeList)):
                         if i >= len(dataset.AttributeList) - 1:
@@ -274,7 +274,7 @@ def save_dataset(abspath, dataset):
                     f.write("\n")
         f.close()
 
-        return "Dataset saved as: " + abspath.encode(codec)
+        return "Dataset saved as: " + abspath
 
     except BaseException:
         import traceback

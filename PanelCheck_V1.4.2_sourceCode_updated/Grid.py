@@ -222,7 +222,7 @@ class GridFramePerfInd(GridFrame):
         row = event.GetRow()
         col = event.GetCol()
 
-        print(row, col)
+        #print(row, col)
 
         import PlotFrame
         import perfInd_Plot
