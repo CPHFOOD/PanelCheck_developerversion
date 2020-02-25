@@ -157,7 +157,7 @@ def load_mm_anova_data(s_data, plot_data, one_rep=False, abspath=None):
                 else:
                     plot_data.p_matr = None
             os.chdir(last_dir)
-            
+
         plot_data.sensmixed_data = res
 
     # print res
@@ -1445,7 +1445,7 @@ def MixModel_ANOVA_Plotter_3way(
     j = 0
     for att in s_data.AttributeList:
         if att in activeAttributesList:
-            print(j)
+            #print(j)
             j += 1
     i = 0
     for att in s_data.AttributeList:

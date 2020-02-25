@@ -856,7 +856,8 @@ def ManhattanPlotter(
             s_data,
             plot_data,
             c_data["accepted_active_atts"],
-            current_active)
+            current_active,
+            abspath=abspath)
         if frame_colored:
             significance_legend(plot_data)
 

@@ -812,7 +812,7 @@ def attribute_significance(s_data, plot_data, one_rep=False,abspath=None):
     #     progress.set_gauge(value=7, text="Running R script...\n")
     #     r(script_source)
     #     res = r.sensmixedVer42(frame)
-    res = load_mm_anova_data(s_data, plot_data, abspath=progPath)
+    res = load_mm_anova_data(s_data, plot_data, abspath=abspath)
     os.chdir(last_dir)  # go back
     progress.set_gauge(value=100, text="Done\n")
     progress.Destroy()
@@ -825,7 +825,7 @@ def attribute_significance(s_data, plot_data, one_rep=False,abspath=None):
         return res[2][6]  # Product Effect p-matrix
 
 
-def colored_frame(s_data, plot_data, active_att_list, active_att):
+def colored_frame(s_data, plot_data, active_att_list, active_att,abspath=None):
 
     if len(s_data.ReplicateList) == 1:
         one_rep = True
@@ -837,10 +837,10 @@ def colored_frame(s_data, plot_data, active_att_list, active_att):
         # print("collection_calc")
         if not plot_data.collection_calc_data.__contains__("p_matr"):
             plot_data.collection_calc_data["p_matr"] = attribute_significance(
-                s_data, plot_data, one_rep=one_rep)  # Product Effect p-matrix
+                s_data, plot_data, one_rep=one_rep,abspath=abspath)  # Product Effect p-matrix
         elif plot_data.collection_calc_data["p_matr"].size == 0:
             plot_data.collection_calc_data["p_matr"] = attribute_significance(
-                s_data, plot_data, one_rep=one_rep)  # Product Effect p-matrix
+                s_data, plot_data, one_rep=one_rep,abspath=abspath)  # Product Effect p-matrix
         else:
             pass  # ok
         p_matr = plot_data.collection_calc_data["p_matr"]
@@ -848,10 +848,10 @@ def colored_frame(s_data, plot_data, active_att_list, active_att):
         #import pdb; pdb.set_trace()
         if not hasattr(plot_data, "p_matr"):
             plot_data.p_matr = attribute_significance(
-                s_data, plot_data, one_rep=one_rep)  # Product Effect p-matrix
+                s_data, plot_data, one_rep=one_rep,abspath=abspath)  # Product Effect p-matrix
         elif 'None' in str(type(plot_data.p_matr)):
             plot_data.p_matr = attribute_significance(
-                s_data, plot_data, one_rep=one_rep)  # Product Effect p-matrix
+                s_data, plot_data, one_rep=one_rep,abspath=abspath)  # Product Effect p-matrix
         else:
             pass  # ok
         p_matr = plot_data.p_matr

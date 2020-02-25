@@ -815,7 +815,7 @@ def Tucker1Plotter(
 
                 # print itemID[0]
                 frame_colored = colored_frame(
-                    s_data, plot_data, activeAttributesList, itemID[0])
+                    s_data, plot_data, activeAttributesList, itemID[0],abspath=abspath)
 
                 if selection[1] == 0:
                     # Find out where in the activeAttributeList the selected attribute is.

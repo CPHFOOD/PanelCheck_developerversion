@@ -9,7 +9,7 @@ from plistlib import Plist
 import os
 
 data = [("R_scripts", [r"./R_scripts/sensmixedVer4.2.R", r"./R_scripts/sensmixedNoRepVer1.1.R"]),
-        ("", ["fig.ico", "help.chm", "about.png", "logo.png", "about.html"]),
+        ("", ["fig.ico", "help.pdf", "about.png", "logo.png", "about.html","dtu_logo.png","nofima_logo.png","uoc_logo.png","workflow.pdf"]),
         ("gfx", [r"./gfx/_pc_circle.gif",
                  r"./gfx/_pc_pointer_down.gif",
                  r"./gfx/_pc_pointer_up.gif",
