@@ -49,6 +49,7 @@ def pmsePlotter(s_data, plot_data, num_subplot=[1, 1, 1], **kwargs):
     @version: 1.0
     @since: 01.07.2005
     """
+    #import pdb; pdb.set_trace()
     activeAssessorsList = plot_data.activeAssessorsList
     activeAttributesList = plot_data.activeAttributesList
     activeSamplesList = plot_data.activeSamplesList

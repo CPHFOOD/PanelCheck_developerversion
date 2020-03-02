@@ -233,7 +233,7 @@ def Tucker1Plotter(
     # and so on
     PCAmodeSelected = selection
     numberOfAssessors = len(activeAssessorsList)
-    pdb.set_trace()
+    #pdb.set_trace()
     numberOfAttributes = len(activeAttributesList)
     numberOfSamples = len(activeSamplesList)
     numberOfReplicates = len(s_data.ReplicateList)

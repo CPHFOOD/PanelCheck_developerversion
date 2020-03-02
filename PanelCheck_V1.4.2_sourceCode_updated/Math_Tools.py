@@ -159,13 +159,11 @@ def ANOVA(s_data, plot_data, active_data=None):
             # p*MSE plot
             if max_MSE < MSE_val:
                 max_MSE = MSE_val
-                ANOVA_F_list[ass_ind].append(F_val)
-                ANOVA_p_list[ass_ind].append(p_val)
-                ANOVA_MSE_list[ass_ind].append(MSE_val)
-            else:
-                ANOVA_F_list[ass_ind].append(np.nan)
-                ANOVA_p_list[ass_ind].append(np.nan)
-                ANOVA_MSE_list[ass_ind].append(np.nan)
+
+            ANOVA_F_list[ass_ind].append(F_val)
+            ANOVA_p_list[ass_ind].append(p_val)
+            ANOVA_MSE_list[ass_ind].append(MSE_val)
+
     # Here the scanning for the F values at 5% and 1% significance
     # value starts. 'DF sample' and 'DF error' stay the same and
     # F is increased by 0.01 until p values goes down to 0.05
