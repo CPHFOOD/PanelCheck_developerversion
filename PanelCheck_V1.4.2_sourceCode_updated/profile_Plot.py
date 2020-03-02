@@ -155,7 +155,7 @@ def profileCalc(
     return mean_array_sorted, assessors_scores_sorted, samples_sorted, mean_array, assessors_scores
 
 
-def profilePlotter(s_data, plot_data, num_subplot=[1, 1, 1], **kwargs):
+def profilePlotter(s_data, plot_data, num_subplot=[1, 1, 1],abspath=None, **kwargs):
     # (f_sparseMatrix, f_activeAssessorsList, f_activeSamplesList, f_attributesList, f_selectedAttribute):
     """
     Function for plotting Profile Plot in PanelCheck (some small modifications
@@ -391,7 +391,7 @@ def profilePlotter(s_data, plot_data, num_subplot=[1, 1, 1], **kwargs):
         s_data,
         plot_data,
         plot_data.activeAttributesList,
-        plot_data.tree_path[0])
+        plot_data.tree_path[0],abspath=abspath)
     if frame_colored:
         significance_legend(plot_data, pos='lower right')
 
