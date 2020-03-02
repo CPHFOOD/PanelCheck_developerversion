@@ -4,7 +4,7 @@
 from Plot_Tools import *
 
 
-def pmsePlotter(s_data, plot_data, num_subplot=[1, 1, 1], **kwargs):
+def pmsePlotter(s_data, plot_data, num_subplot=[1, 1, 1],abspath=None, **kwargs):
     """
     This function generates the Tucker-1 plots, both Common Score Plot,
     Correlation Loadings focused on assessor and Correlation Loadings focused
@@ -243,7 +243,7 @@ def pmsePlotter(s_data, plot_data, num_subplot=[1, 1, 1], **kwargs):
         # If an attribute is selected:
         if itemID[0] in activeAttributesList:
             frame_colored = colored_frame(
-                s_data, plot_data, activeAttributesList, itemID[0])
+                s_data, plot_data, activeAttributesList, itemID[0],abspath=abspath)
             active_att_ind = activeAttributesList.index(itemID[0])
 
             spec_x_values = []

@@ -145,7 +145,7 @@ def ANOVA(s_data, plot_data, active_data=None):
                 F_val = round(ANOVAresults[0], 2)
                 if max_F < F_val:
                     max_F = F_val
-                    p_val = round(ANOVAresults[1], 3)
+                p_val = round(ANOVAresults[1], 3)
                 # Determine highest p value for setting limits in the
                 # p*MSE plot
                 # pdb.set_trace()
